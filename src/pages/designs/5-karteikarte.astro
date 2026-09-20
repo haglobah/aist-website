@@ -1,0 +1,386 @@
+---
+import Base from '../../layouts/Base.astro'
+import TypeIcon from '../../components/TypeIcon.astro'
+import { calendar, contact, eventTypes, hangout, hero, links, parts, site, typeById } from '../../data/site'
+---
+
+<Base title={`${site.name}: Karteikarte`} design={5}>
+  <div class="page">
+    <header class="top">
+      <span class="brand">{site.name}</span>
+      <span class="tag">{site.tagline}</span>
+    </header>
+
+    <section class="card hero" id="was">
+      <div class="hero-text">
+        <h1>{hero.heading}</h1>
+        <p>{hero.text}</p>
+      </div>
+      <ul class="links" role="list">
+        {links.map((l) => (
+          <li>
+            <a href={l.href}>{l.label}</a>
+            <span>{l.note}</span>
+          </li>
+        ))}
+      </ul>
+      <aside class="note">
+        <h2>{hangout.heading}</h2>
+        <p>{hangout.text}</p>
+        <p class="actions">
+          {hangout.actions.map((a) => <a href={a.href}>{a.label}</a>)}
+        </p>
+      </aside>
+    </section>
+
+    <div class="tabs" data-filter-group role="group" aria-label="Filter nach Event-Typ">
+      <button data-filter="all" aria-pressed="true">Alle</button>
+      {eventTypes.map((t) => <button data-filter={t.id}>{t.name}</button>)}
+    </div>
+
+    <section class="types" id="formate">
+      <ul role="list" data-filter-target>
+        {eventTypes.map((t) => (
+          <li class="card type" data-event-type={t.id}>
+            <span class="tab"><span class="ico"><TypeIcon type={t.id} /></span>{t.name}</span>
+            <p class="rhythm">{t.rhythm}</p>
+            <p>{t.description}</p>
+            <p class="type-links">
+              <a href={t.foodUrl}>Essen abstimmen</a>
+              <a href={t.feedbackUrl}>Feedback geben</a>
+            </p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="card cal" id="kalender">
+      <span class="tab tab-cal">Kalender</span>
+      <p class="cal-sub">Wo, was, wann?</p>
+      <ol role="list" data-filter-target>
+        {calendar.map((e) => {
+          const d = parts(e.date)
+          return (
+            <li data-event-type={e.type}>
+              <time datetime={e.date}>{d.weekday} {d.dayPadded}.{d.monthPadded}.</time>
+              <span class="time">{e.time}</span>
+              <span class="title">{e.title}</span>
+              <span class="place">{typeById(e.type).name}, {e.place}</span>
+            </li>
+          )
+        })}
+      </ol>
+      <p data-filter-empty hidden>Für diesen Typ steht gerade nichts im Kalender.</p>
+    </section>
+
+    <footer class="card contact" id="kontakt">
+      <div>
+        <h2>{contact.heading}</h2>
+        <p>{contact.text}</p>
+      </div>
+      <ul role="list" class="socials">
+        {contact.socials.map((s) => <li><a href={s.href}>{s.label}</a></li>)}
+      </ul>
+    </footer>
+  </div>
+</Base>
+
+<script src="../../scripts/filter.ts"></script>
+
+<style>
+  .page {
+    --bg: #faf7f0;
+    --ink: #2a2622;
+    --accent: #2e4a7a;
+    --ochre: #b8862b;
+    --ochre-soft: #f6e7bd;
+    --line: #dcd4c3;
+    --card: #fffdf8;
+    --muted: #7a7267;
+    --lh: 1.75rem;
+    max-width: 70rem;
+    margin-inline: auto;
+    padding: 1.25rem 1.25rem 7rem;
+    line-height: var(--lh);
+  }
+  a {
+    color: var(--accent);
+    text-underline-offset: 0.2em;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.5rem 0.25rem 1.5rem;
+  }
+  .brand {
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 0.06em;
+  }
+  .tag {
+    color: var(--muted);
+  }
+
+  .card {
+    position: relative;
+    background-color: var(--card);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(var(--lh) - 1px),
+      var(--line) calc(var(--lh) - 1px),
+      var(--line) var(--lh)
+    );
+    background-origin: content-box;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(70, 50, 20, 0.08), 0 8px 24px -12px rgba(70, 50, 20, 0.25);
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    gap: 0 3rem;
+    padding: 0 2rem calc(var(--lh) * 1) 2.25rem;
+    border-top: 6px solid var(--ochre);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 1.25rem;
+    width: 1px;
+    background: #e5b7b0;
+  }
+  .hero-text {
+    grid-row: 1 / span 2;
+    padding-top: var(--lh);
+  }
+  .hero h1 {
+    font-size: 3.5rem;
+    line-height: calc(var(--lh) * 2);
+    font-weight: 400;
+    margin-bottom: var(--lh);
+  }
+  .hero p {
+    font-size: 1.1rem;
+    max-width: 52ch;
+  }
+  .links {
+    padding-top: var(--lh);
+  }
+  .links li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    height: var(--lh);
+    white-space: nowrap;
+  }
+  .links span {
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .note {
+    align-self: end;
+    margin: var(--lh) -0.5rem 0 0;
+    padding: 1rem 1.25rem 1.25rem;
+    background: var(--ochre-soft);
+    color: var(--ink);
+    transform: rotate(-1.2deg);
+    box-shadow: 0 6px 14px -8px rgba(70, 50, 20, 0.4);
+    line-height: 1.5;
+  }
+  .note h2 {
+    font-size: 1.5rem;
+    font-style: italic;
+    font-weight: 400;
+    margin-bottom: 0.25rem;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin-top: 0.75rem;
+  }
+  .actions a {
+    font-weight: 700;
+  }
+
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 3rem 0 0;
+    padding: 0 1rem;
+  }
+  .tabs button {
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-bottom: 0;
+    border-radius: 6px 6px 0 0;
+    padding: 0.3rem 1rem;
+    color: var(--muted);
+  }
+  .tabs button:hover {
+    color: var(--ink);
+  }
+  .tabs button[aria-pressed='true'] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #faf7f0;
+  }
+
+  .types ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    padding: 1.5rem 0 0;
+    border-top: 1px solid var(--accent);
+  }
+  .type {
+    padding: calc(var(--lh) * 1.5) 1.5rem var(--lh);
+  }
+  .tab {
+    position: absolute;
+    top: -1px;
+    left: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.2rem 0.9rem 0.25rem;
+    background: var(--accent);
+    color: #faf7f0;
+    border-radius: 0 0 6px 6px;
+    line-height: 1.4;
+  }
+  .ico {
+    display: inline-flex;
+    font-size: 1.1rem;
+  }
+  .rhythm {
+    color: var(--muted);
+  }
+  .type-links {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  .cal {
+    margin-top: 2.5rem;
+    padding: calc(var(--lh) * 1.5) 1.5rem var(--lh);
+  }
+  .tab-cal {
+    background: var(--ochre);
+    color: var(--ink);
+  }
+  .cal-sub {
+    color: var(--muted);
+    font-style: italic;
+  }
+  .cal li {
+    display: grid;
+    grid-template-columns: 6.5rem 3.5rem minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 1rem;
+    white-space: nowrap;
+  }
+  .cal li > * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cal time {
+    color: var(--accent);
+  }
+  .cal .time {
+    color: var(--muted);
+  }
+  .cal .place {
+    color: var(--muted);
+  }
+  [data-filter-empty] {
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .contact {
+    margin-top: 2.5rem;
+    padding: var(--lh) 1.5rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 2rem;
+    border-top: 6px solid var(--accent);
+  }
+  .contact h2 {
+    font-size: 1.6rem;
+    font-weight: 400;
+    font-style: italic;
+    line-height: var(--lh);
+  }
+  .socials li {
+    height: var(--lh);
+  }
+
+  @media (max-width: 52rem) {
+    .hero {
+      grid-template-columns: 1fr;
+      padding-inline: 1.25rem;
+    }
+    .hero::before {
+      display: none;
+    }
+    .hero-text {
+      grid-row: auto;
+    }
+    .hero h1 {
+      font-size: 2.6rem;
+    }
+    .links li {
+      flex-direction: column;
+      height: auto;
+      gap: 0;
+      margin-bottom: var(--lh);
+    }
+    .note {
+      margin: var(--lh) 0 0.5rem;
+    }
+    .types ul {
+      grid-template-columns: 1fr;
+    }
+    .cal li {
+      grid-template-columns: 6.5rem 3.5rem minmax(0, 1fr);
+    }
+    .cal .place {
+      grid-column: 3;
+    }
+    .contact {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 30rem) {
+    .cal li {
+      grid-template-columns: 6.5rem minmax(0, 1fr);
+      grid-template-rows: auto auto;
+      row-gap: 0;
+      white-space: normal;
+      margin-bottom: calc(var(--lh) / 2);
+    }
+    .cal .time {
+      display: none;
+    }
+    .cal time {
+      grid-row: 1;
+      grid-column: 1;
+    }
+    .cal .title {
+      grid-row: 1;
+      grid-column: 2;
+    }
+    .cal .place {
+      grid-row: 2;
+      grid-column: 2;
+    }
+  }
+</style>

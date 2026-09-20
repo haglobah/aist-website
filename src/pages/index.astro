@@ -1,17 +1,81 @@
 ---
-
+import Base from '../layouts/Base.astro'
+import { designs, site } from '../data/site'
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base title={`${site.name}: fünf Design-Entwürfe`}>
+  <main class="wrap">
+    <header>
+      <h1>Fünf Entwürfe für die {site.name}-Website</h1>
+      <p>
+        Alle fünf zeigen denselben Inhalt aus dem Papier-Mock: Was ist AIS, drei Links, Let's hang out,
+        ein Filter, vier Event-Typen, der Kalender und Get in touch. Gleiche Schrift (PT Serif), gleicher
+        Off-White-Grund. Unterschiedlich sind Layout, Akzentfarbe und Ton.
+      </p>
+    </header>
+    <ol class="list" role="list">
+      {designs.map((d) => (
+        <li>
+          <a href={`/designs/${d.slug}`}>
+            <span class="n">{d.n}</span>
+            <span class="name">{d.name}</span>
+            <span class="note">{d.note}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </main>
+</Base>
+
+<style>
+  .wrap {
+    max-width: 44rem;
+    margin-inline: auto;
+    padding: clamp(2rem, 8vw, 6rem) 1.25rem 6rem;
+  }
+  h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    line-height: 1.15;
+    font-weight: 400;
+    margin-bottom: 1rem;
+  }
+  header p {
+    max-width: 60ch;
+    color: #55534d;
+  }
+  .list {
+    margin-top: 3rem;
+    border-top: 1px solid #cfcabf;
+  }
+  .list a {
+    display: grid;
+    grid-template-columns: 2.5rem 9rem 1fr;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid #cfcabf;
+    text-decoration: none;
+  }
+  .list a:hover .name {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .n {
+    font-style: italic;
+    color: #8b877d;
+  }
+  .name {
+    font-size: 1.25rem;
+  }
+  .note {
+    color: #55534d;
+  }
+  @media (max-width: 40rem) {
+    .list a {
+      grid-template-columns: 2.5rem 1fr;
+    }
+    .note {
+      grid-column: 2;
+    }
+  }
+</style>

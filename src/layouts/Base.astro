@@ -1,0 +1,44 @@
+---
+import '@fontsource/pt-serif/400.css'
+import '@fontsource/pt-serif/400-italic.css'
+import '@fontsource/pt-serif/700.css'
+import '@fontsource/pt-serif/700-italic.css'
+import '../styles/global.css'
+import { designs, site } from '../data/site'
+
+interface Props {
+  title: string
+  description?: string
+  /** Design number for the switcher, omit on the overview page */
+  design?: number
+}
+
+const { title, description = site.tagline, design } = Astro.props
+---
+
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+    <nav class="design-switch" aria-label="Design-Varianten">
+      <ol>
+        <li><a href="/" aria-current={design === undefined ? 'page' : undefined}>Übersicht</a></li>
+        {designs.map((d) => (
+          <li>
+            <a href={`/designs/${d.slug}`} aria-current={d.n === design ? 'page' : undefined} title={d.name}>
+              {d.n}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  </body>
+</html>
