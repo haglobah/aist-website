@@ -2,13 +2,13 @@
 const people = [
   {
     name: 'Johannes Koch',
-    image: '/people/johannes-koch.jpg',
+    image: `${import.meta.env.BASE_URL}people/johannes-koch.jpg`,
     href: 'https://www.linkedin.com/in/johannes-koch-5b4620259/?locale=en_US',
     bio: 'Machine Learning Master’s student at the University of Tübingen and Pathfinder Fellow.',
   },
   {
     name: 'Katharina Deckenbach',
-    image: '/people/katharina-deckenbach.jpg',
+    image: `${import.meta.env.BASE_URL}people/katharina-deckenbach.jpg`,
     href: 'https://www.linkedin.com/in/katharina-deckenbach/',
     bio: 'PhD student in Sahar Abdelnabi’s COMPASS group, with a background in Cognitive Science and Machine Learning. Previously organized AI safety events in Stockholm.',
   },
@@ -34,6 +34,6 @@ const people = [
   </div>
   <div class="mt-8 flex items-center gap-5 text-sm text-muted">
     <span>Supported by</span>
-    <img src="/pathfinder.webp" alt="Pathfinder" width="400" height="209" loading="lazy" class="h-auto w-28 mix-blend-multiply" />
+    <img src={`${import.meta.env.BASE_URL}pathfinder.webp`} alt="Pathfinder" width="400" height="209" loading="lazy" class="h-auto w-28 mix-blend-multiply" />
   </div>
 </section>

@@ -17,8 +17,8 @@ const { title, description = hero.text } = Astro.props
 <html lang="en" class="leading-relaxed antialiased has-[dialog[data-modal][open]]:overflow-hidden [&_:focus-visible:not([data-filter])]:outline-2 [&_:focus-visible:not([data-filter])]:outline-offset-4 [&_:focus-visible:not([data-filter])]:outline-accent">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.ico`} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
