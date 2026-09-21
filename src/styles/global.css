@@ -6,9 +6,9 @@
 
   --color-paper: #f8f6f1;
   --color-ink: #1b1b1f;
-  --color-accent: #1f2a5a;
-  --color-rule: #cfcabf;
-  --color-muted: #6b6860;
+  --color-accent: #476b65;
+  --color-rule: var(--color-accent);
+  --color-muted: var(--color-ink);
 }
 
 @layer components {
@@ -28,6 +28,10 @@
 }
 
 @layer base {
+  @media (prefers-reduced-motion: no-preference) {
+    * { scroll-behavior: smooth; }
+  }
+
   html {
     line-height: 1.55;
     text-rendering: optimizeLegibility;

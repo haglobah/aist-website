@@ -1,0 +1,86 @@
+---
+interface Props {
+  id: string
+  title: string
+}
+const { id, title } = Astro.props
+---
+
+<dialog id={id} aria-labelledby={`${id}-title`} data-modal>
+  <div class="modal-surface">
+    <header class="modal-header">
+      <h2 id={`${id}-title`} tabindex="-1" autofocus>{title}</h2>
+      <button type="button" data-modal-close aria-label={`Close ${title}`}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="m6 6 12 12M18 6 6 18" />
+        </svg>
+      </button>
+    </header>
+    <div class="modal-content"><slot /></div>
+  </div>
+</dialog>
+
+<script>
+  import '../scripts/modal'
+</script>
+
+<style>
+  dialog {
+    margin: auto;
+    padding: 0;
+    width: min(64rem, calc(100% - 2rem));
+    max-width: none;
+    max-height: calc(100dvh - 2rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    border: 1px solid var(--color-accent);
+    box-shadow: 0 24px 80px #0003, 0 4px 16px #0002;
+    opacity: 0;
+    transition:
+      opacity 150ms ease-in,
+      display 150ms allow-discrete,
+      overlay 150ms allow-discrete;
+  }
+  dialog[open] {
+    opacity: 1;
+    transition-duration: 220ms;
+    transition-timing-function: ease-out;
+  }
+  dialog::backdrop {
+    background: rgb(27 27 31 / 55%);
+    opacity: 0;
+    transition: opacity 150ms ease-in, display 150ms allow-discrete, overlay 150ms allow-discrete;
+  }
+  dialog[open]::backdrop { opacity: 1; transition-duration: 220ms; }
+  @starting-style {
+    dialog[open] { opacity: 0; }
+    dialog[open]::backdrop { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    dialog, dialog[open], dialog::backdrop, dialog[open]::backdrop { transition: none; }
+  }
+  .modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: var(--color-paper);
+    border-bottom: 1px solid var(--color-accent);
+  }
+  h2 { font-size: 1.6rem; text-wrap: balance; }
+  h2:focus { outline: none; }
+  button { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; cursor: pointer; }
+  button:hover { background: color-mix(in srgb, var(--color-accent) 10%, transparent); }
+  .modal-content { padding: 1.5rem; }
+  :global(html:has(dialog[data-modal][open])) { overflow: hidden; }
+  @media (max-width: 40rem) {
+    .modal-header { padding: .75rem 1rem; }
+    .modal-content { padding: 1rem; }
+  }
+</style>

@@ -1,0 +1,81 @@
+---
+import Modal from './Modal.astro'
+---
+
+<section id="feedback" aria-labelledby="feedback-heading">
+  <h2 id="feedback-heading" class="mb-5 text-[1.6rem]">Contact us / Give feedback</h2>
+  <form id="feedback-form" aria-label="Feedback" aria-describedby="feedback-status">
+    <label for="feedback-message">Message</label>
+    <textarea id="feedback-message" name="message" rows="6" required></textarea>
+    <div class="identity-row">
+      <div>
+        <label for="feedback-name">Name <span>(optional)</span></label>
+        <input id="feedback-name" name="name" autocomplete="name" />
+      </div>
+      <div>
+        <label for="feedback-email">Email <span>(optional)</span></label>
+        <input id="feedback-email" name="email" type="email" autocomplete="email" />
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" disabled>Send message</button>
+      <p id="feedback-status">Sending is not available yet.</p>
+    </div>
+  </form>
+</section>
+<Modal id="feedback-modal" title="Contact us / Give feedback">
+  <div data-feedback-slot></div>
+</Modal>
+
+<script>
+  const section = document.querySelector<HTMLElement>('#feedback')!
+  const form = document.querySelector<HTMLFormElement>('#feedback-form')!
+  const dialog = document.querySelector<HTMLDialogElement>('#feedback-modal')!
+  const slot = dialog.querySelector<HTMLElement>('[data-feedback-slot]')!
+  const desktop = window.matchMedia('(min-width: 48rem)')
+  const triggers = document.querySelectorAll<HTMLAnchorElement>('[data-feedback-open]')
+
+  // Move the same form to preserve drafts when the viewport changes.
+  function updateLayout() {
+    if (!desktop.matches && dialog.open) dialog.close()
+    ;(desktop.matches ? slot : section).append(form)
+    section.hidden = desktop.matches
+    triggers.forEach(trigger => {
+      trigger.setAttribute('aria-controls', desktop.matches ? dialog.id : section.id)
+      if (desktop.matches) trigger.setAttribute('aria-haspopup', 'dialog')
+      else trigger.removeAttribute('aria-haspopup')
+    })
+  }
+  updateLayout()
+  desktop.addEventListener('change', updateLayout)
+  triggers.forEach(trigger => trigger.addEventListener('click', event => {
+    event.preventDefault()
+    if (desktop.matches) dialog.showModal()
+    else section.scrollIntoView({ block: 'start' })
+    form.querySelector('textarea')?.focus({ preventScroll: !desktop.matches })
+  }))
+  // No navigation or transmission, including implicit submission via Enter.
+  form.addEventListener('submit', event => event.preventDefault())
+</script>
+
+<style>
+  section { padding-top: 2rem; border-top: 1px solid var(--color-accent); scroll-margin-top: 1.5rem; }
+  :global(#feedback-modal) { width: min(40rem, calc(100% - 2rem)); }
+  label { display: block; margin-bottom: .4rem; }
+  label span { font-size: .85rem; }
+  input, textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: .65rem .75rem;
+    border: 1px solid var(--color-accent);
+    background: var(--color-paper);
+    font: inherit;
+  }
+  textarea { resize: vertical; min-height: 8rem; }
+  .identity-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
+  .identity-row > div { min-width: 0; }
+  .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; margin-top: 1.5rem; }
+  button { min-height: 44px; padding: .6rem 1rem; border: 1px solid var(--color-accent); opacity: .5; cursor: not-allowed; }
+  .form-actions p { font-size: .9rem; }
+</style>

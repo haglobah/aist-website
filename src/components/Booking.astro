@@ -1,0 +1,46 @@
+---
+import Modal from './Modal.astro'
+import OrganizerBooking from './OrganizerBooking.astro'
+---
+
+<section id="one-on-one-section" aria-labelledby="one-on-one-heading">
+  <h2 id="one-on-one-heading" tabindex="-1" class="mb-5 text-[1.6rem]">Book a 1:1</h2>
+  <OrganizerBooking id="one-on-one" />
+</section>
+<Modal id="one-on-one" title="Book a 1:1">
+  <div data-booking-slot></div>
+</Modal>
+
+<script>
+  const section = document.querySelector<HTMLElement>('#one-on-one-section')!
+  const picker = section.querySelector<HTMLElement>('organizer-booking')!
+  const dialog = document.querySelector<HTMLDialogElement>('#one-on-one')!
+  const slot = dialog.querySelector<HTMLElement>('[data-booking-slot]')!
+  const desktop = window.matchMedia('(min-width: 48rem)')
+  const triggers = document.querySelectorAll<HTMLElement>('[data-booking-open]')
+
+  // Move one picker so organizer selection survives viewport changes.
+  function updateLayout() {
+    if (!desktop.matches && dialog.open) dialog.close()
+    ;(desktop.matches ? slot : section).append(picker)
+    section.hidden = desktop.matches
+    triggers.forEach(trigger => {
+      trigger.setAttribute('aria-controls', desktop.matches ? dialog.id : section.id)
+      if (desktop.matches) trigger.setAttribute('aria-haspopup', 'dialog')
+      else trigger.removeAttribute('aria-haspopup')
+    })
+  }
+  updateLayout()
+  desktop.addEventListener('change', updateLayout)
+  triggers.forEach(trigger => trigger.addEventListener('click', () => {
+    if (desktop.matches) dialog.showModal()
+    else {
+      section.scrollIntoView({ block: 'start' })
+      section.querySelector<HTMLElement>('h2')?.focus({ preventScroll: true })
+    }
+  }))
+</script>
+
+<style>
+  section { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--color-accent); scroll-margin-top: 1.5rem; }
+</style>

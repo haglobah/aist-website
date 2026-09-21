@@ -91,16 +91,6 @@ export const calendar: CalendarEntry[] = [
   { type: 'technical-ai-safety', title: 'Scalable Oversight, Part 2', place: 'Location TBA' },
 ]
 
-export const contact = {
-  heading: 'Get in touch',
-  text: 'Drop by an event or send us a message first. Either works.',
-  email: 'hello@example.org',
-  socials: [
-    { label: 'Email', href: 'mailto:hello@example.org' },
-    { label: 'Mastodon', href: '#mastodon' },
-  ],
-}
-
 // Helpers
 
 const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
