@@ -1,0 +1,173 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - link "AI Safety Tübingen" [ref=e5] [cursor=pointer]:
+      - /url: /
+    - navigation "Main navigation" [ref=e6]:
+      - link "About us" [ref=e7] [cursor=pointer]:
+        - /url: "#about-us"
+      - link "Resources" [ref=e8] [cursor=pointer]:
+        - /url: "#resources"
+  - generic [ref=e9]:
+    - generic [ref=e10]:
+      - heading "Let’s make sure AI development happens safely." [level=1] [ref=e11]
+      - paragraph [ref=e12]: AI Safety Tübingen is a student-led initiative dedicated to reducing the risks posed by advanced AI Systems. Together, we want to learn about current research in AI Safety, develop relevant skills, and connect students with the international research community.
+    - complementary [ref=e13]:
+      - heading "Come join us!" [level=2] [ref=e14]
+      - paragraph [ref=e15]: Want to discuss an idea, get feedback on a project, or simply meet someone from the group? We’ll make time.
+      - paragraph [ref=e16]:
+        - link "Join our WhatsApp group" [ref=e17] [cursor=pointer]:
+          - /url: https://chat.whatsapp.com/LDB5MYKqpsN17pzGBwrKwv
+        - button "Book a 1:1" [ref=e18] [cursor=pointer]
+        - link "Contact us" [ref=e19] [cursor=pointer]:
+          - /url: "#feedback"
+  - generic [ref=e20]:
+    - generic [ref=e21]:
+      - heading "Event types" [level=2] [ref=e22]
+      - list [ref=e23]:
+        - listitem [ref=e24]:
+          - heading "Technical AI Safety Group" [level=3] [ref=e25]:
+            - button "Technical AI Safety Group" [ref=e26] [cursor=pointer]:
+              - img [ref=e28]
+              - generic [ref=e30]: Technical AI Safety Group
+          - generic [ref=e31]:
+            - paragraph [ref=e32]: Mondays, 18:00, Maria-von-Linden-Straße 1
+            - paragraph [ref=e33]: We read a paper beforehand, get a small presentation, and then discuss and eat.
+            - paragraph [ref=e34]:
+              - link "Vote on food" [ref=e35] [cursor=pointer]:
+                - /url: "#food-technical-ai-safety"
+              - link "Give feedback" [ref=e36] [cursor=pointer]:
+                - /url: "#feedback"
+        - listitem [ref=e37]:
+          - heading "AI Governance Group" [level=3] [ref=e38]:
+            - button "AI Governance Group" [ref=e39] [cursor=pointer]:
+              - img [ref=e41]
+              - generic [ref=e44]: AI Governance Group
+          - generic [ref=e45]:
+            - paragraph [ref=e46]: Thursdays, 18:00, irgendwo unten in der Stadt?
+            - paragraph [ref=e47]: A group member or guest introduces a topic, followed by questions, debate, and discussion.
+            - paragraph [ref=e48]:
+              - link "Vote on food" [ref=e49] [cursor=pointer]:
+                - /url: "#food-ai-governance"
+              - link "Give feedback" [ref=e50] [cursor=pointer]:
+                - /url: "#feedback"
+        - listitem [ref=e51]:
+          - heading "Introductory Course" [level=3] [ref=e52]:
+            - button "Introductory Course" [ref=e53] [cursor=pointer]:
+              - img [ref=e55]
+              - generic [ref=e58]: Introductory Course
+          - generic [ref=e59]:
+            - paragraph [ref=e60]: "Hands-on: we build, evaluate, or red-team a model. Bring your laptop; we provide compute."
+            - paragraph [ref=e61]:
+              - link "Vote on food" [ref=e62] [cursor=pointer]:
+                - /url: "#food-introductory-course"
+              - link "Give feedback" [ref=e63] [cursor=pointer]:
+                - /url: "#feedback"
+        - listitem [ref=e64]:
+          - heading "Other events" [level=3] [ref=e65]:
+            - button "Other events" [ref=e66] [cursor=pointer]:
+              - img [ref=e68]
+              - generic [ref=e71]: Other events
+          - generic [ref=e72]:
+            - paragraph [ref=e73]: No agenda, just people. Eat, drink, and chat. New faces are always welcome.
+            - paragraph [ref=e74]:
+              - link "Vote on food" [ref=e75] [cursor=pointer]:
+                - /url: "#food-events"
+              - link "Give feedback" [ref=e76] [cursor=pointer]:
+                - /url: "#feedback"
+    - complementary [ref=e77]:
+      - list [ref=e78]:
+        - listitem [ref=e79]:
+          - time [ref=e80]:
+            - generic [ref=e81]: Mon 21
+            - text: Sep
+          - generic [ref=e82]:
+            - generic [ref=e83]: Sleeper Agents (Hubinger et al.)
+            - generic [ref=e84]: Technical AI Safety Group, 18:00, Location TBA
+        - listitem [ref=e85]:
+          - time [ref=e86]:
+            - generic [ref=e87]: Thu 24
+            - text: Sep
+          - generic [ref=e88]:
+            - generic [ref=e89]: How do we measure deception in language models?
+            - generic [ref=e90]: AI Governance Group, 18:00, Location TBA
+        - listitem [ref=e91]:
+          - time [ref=e92]:
+            - generic [ref=e93]: Mon 28
+            - text: Sep
+          - generic [ref=e94]:
+            - generic [ref=e95]: Scalable Oversight, Part 1
+            - generic [ref=e96]: Technical AI Safety Group, 18:00, Location TBA
+        - listitem [ref=e97]:
+          - time [ref=e98]:
+            - generic [ref=e99]: Tue 29
+            - text: Sep
+          - generic [ref=e100]:
+            - generic [ref=e101]: Social meetup
+            - generic [ref=e102]: Other events, 18:30, Location TBA
+        - listitem [ref=e103]:
+          - time [ref=e104]:
+            - generic [ref=e105]: Thu 1
+            - text: Oct
+          - generic [ref=e106]:
+            - generic [ref=e107]: "Guest talk: AI regulation in the EU"
+            - generic [ref=e108]: AI Governance Group, 18:00, Location TBA
+        - listitem [ref=e109]:
+          - time [ref=e110]:
+            - generic [ref=e111]: Mon 5
+            - text: Oct
+          - generic [ref=e112]:
+            - generic [ref=e113]: Scalable Oversight, Part 2
+            - generic [ref=e114]: Technical AI Safety Group, 18:00, Location TBA
+        - listitem [ref=e115]:
+          - time [ref=e116]:
+            - generic [ref=e117]: Sat 17
+            - text: Oct
+          - generic [ref=e118]:
+            - generic [ref=e119]: Interpretability hack day
+            - generic [ref=e120]: Introductory Course, 10:00, Location TBA
+        - listitem [ref=e121]:
+          - time [ref=e122]:
+            - generic [ref=e123]: Tue 27
+            - text: Oct
+          - generic [ref=e124]:
+            - generic [ref=e125]: Social meetup
+            - generic [ref=e126]: Other events, 18:30, Location TBA
+  - region "Book a 1:1" [ref=e127]:
+    - heading "Book a 1:1" [level=2] [ref=e128]
+    - generic [ref=e129]:
+      - paragraph [ref=e130]: Choose an organizer to chat with. You can switch between people and book a separate call with each.
+      - generic [ref=e131]:
+        - generic [ref=e132]:
+          - heading "Who would you like to meet?" [level=3] [ref=e133]
+          - list [ref=e134]:
+            - listitem [ref=e135]:
+              - button "Organizer 1 Introduction coming soon." [ref=e136] [cursor=pointer]:
+                - generic [ref=e137]: Organizer 1
+                - generic [ref=e138]: Introduction coming soon.
+            - listitem [ref=e139]:
+              - button "Organizer 2 Introduction coming soon." [ref=e140] [cursor=pointer]:
+                - generic [ref=e141]: Organizer 2
+                - generic [ref=e142]: Introduction coming soon.
+            - listitem [ref=e143]:
+              - button "Organizer 3 Introduction coming soon." [ref=e144] [cursor=pointer]:
+                - generic [ref=e145]: Organizer 3
+                - generic [ref=e146]: Introduction coming soon.
+        - region "Booking" [ref=e147]:
+          - generic [ref=e148]:
+            - heading "Make time for a conversation" [level=3] [ref=e149]
+            - status [ref=e150]: Select someone to see their booking availability.
+  - region "Contact us / Give feedback" [ref=e151]:
+    - heading "Contact us / Give feedback" [level=2] [ref=e152]
+    - form "Feedback" [ref=e153]:
+      - generic [ref=e154]: Message
+      - textbox "Message" [ref=e155]
+      - generic [ref=e156]:
+        - generic [ref=e157]:
+          - generic [ref=e158]: Name (optional)
+          - textbox "Name (optional)" [ref=e159]
+        - generic [ref=e160]:
+          - generic [ref=e161]: Email (optional)
+          - textbox "Email (optional)" [ref=e162]
+      - generic [ref=e163]:
+        - button "Send message" [disabled] [ref=e164]
+        - paragraph [ref=e165]: Sending is not available yet.

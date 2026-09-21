@@ -1,0 +1,51 @@
+export default async function testEventCards(page, baseURL = 'http://localhost:4321') {
+  const check = (value, message) => { if (!value) throw new Error(message) }
+  await page.goto(baseURL)
+  await page.addStyleTag({ content: 'astro-dev-toolbar { display: none; }' })
+  await page.evaluate(() => document.fonts.ready)
+  for (const width of [1280, 390]) {
+    await page.setViewportSize({ width, height: 900 })
+    const card = page.locator('[data-filter-card]').first()
+    const filter = card.locator('[data-filter]')
+    const type = await card.getAttribute('data-filter-card')
+    await card.scrollIntoViewIfNeeded()
+    const description = await card.locator('p').first().boundingBox()
+    await page.mouse.click(description.x + 20, description.y + 10)
+    check(await filter.getAttribute('aria-pressed') === 'true', 'Clicking card body must activate filter')
+    check(await page.locator('[data-event-type]:visible').evaluateAll((events, type) => events.every(event => event.dataset.eventType === type), type), 'Only matching dates must remain visible')
+    await page.waitForTimeout(220)
+    const matchingDate = page.locator(`[data-event-type="${type}"]`).first()
+    check(await card.evaluate(el => getComputedStyle(el).backgroundColor) === await matchingDate.evaluate(el => getComputedStyle(el).backgroundColor), 'Card and date highlights must have identical colors')
+    check(await card.locator('.activity-title').evaluate(el => getComputedStyle(el).backgroundSize) === '100% 1px', 'Hovering card body must reveal title underline')
+    for (const link of await card.locator('a').all()) {
+      check(await link.evaluate(el => {
+        const rect = el.getBoundingClientRect()
+        return el.contains(document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2))
+      }), 'Secondary links must stay above the card hit area')
+    }
+    await page.mouse.move(0, 0)
+    await page.waitForTimeout(220)
+    check(await filter.evaluate(el => el === document.activeElement), 'Clicking the card must focus its filter')
+    check(await matchingDate.getAttribute('data-highlighted') === 'true', 'Active filter must keep matching dates highlighted after the pointer leaves')
+    check(await card.evaluate(el => getComputedStyle(el).backgroundColor) === await matchingDate.evaluate(el => getComputedStyle(el).backgroundColor), 'Active filter must retain the card highlight')
+    await page.mouse.click(description.x + 20, description.y + 10)
+    check(await filter.getAttribute('aria-pressed') === 'false', 'Clicking card body again must clear filter')
+    check(await matchingDate.getAttribute('data-highlighted') === 'false', 'Second click must clear the date highlight even while hovering')
+    await page.waitForTimeout(220)
+    check(await card.evaluate(el => getComputedStyle(el).backgroundColor) === 'rgba(0, 0, 0, 0)', 'Inactive focused card must lose its highlight')
+    check(await card.locator('.activity-title').evaluate(el => getComputedStyle(el).backgroundSize) === '0% 1px', 'Inactive card must lose its underline')
+    await page.mouse.move(0, 0)
+    await filter.focus()
+    await page.keyboard.press('Enter')
+    check(await filter.getAttribute('aria-pressed') === 'true', 'Keyboard activation must filter events')
+    await page.keyboard.press('Space')
+    check(await filter.getAttribute('aria-pressed') === 'false', 'Space must toggle the filter off')
+    check(await card.getAttribute('data-highlighted') === 'false', 'Keyboard deactivation must clear card highlight')
+    await filter.evaluate(el => el.blur())
+    check(await matchingDate.getAttribute('data-highlighted') === 'false', 'Leaving the card must clear its highlight')
+  }
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  check(await page.locator('.activity-title').first().evaluate(el => getComputedStyle(el).transitionDuration) === '0s', 'Reduced motion must disable underline animation')
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  return 'Full card clicks, filter toggling, matching highlights, underline, secondary links, keyboard and reduced motion passed on desktop and mobile.'
+}

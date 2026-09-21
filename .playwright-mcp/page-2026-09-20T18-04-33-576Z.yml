@@ -1,0 +1,158 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "AIS" [ref=e5] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e6]: AI Safety in Bonn
+    - navigation "Hauptnavigation" [ref=e7]:
+      - link "Wer sind wir" [ref=e8] [cursor=pointer]:
+        - /url: "#wer"
+      - link "Ressourcen" [ref=e9] [cursor=pointer]:
+        - /url: "#ressourcen"
+  - generic [ref=e10]:
+    - generic [ref=e11]:
+      - heading "Was ist AIS?" [level=1] [ref=e12]
+      - paragraph [ref=e13]: AIS ist eine offene Gruppe in Bonn, die sich mit der Sicherheit von KI-Systemen beschäftigt. Wir lesen Paper, hören Vorträge, bauen kleine Experimente und kochen zusammen. Vorwissen brauchst du nicht, Neugier schon.
+    - complementary [ref=e14]:
+      - heading "Let's hang out!" [level=2] [ref=e15]
+      - paragraph [ref=e16]: Du willst über ein Thema reden, brauchst Feedback zu einem Projekt oder willst einfach jemanden von uns kennenlernen? Wir nehmen uns Zeit.
+      - paragraph [ref=e17]:
+        - link "1:1 buchen" [ref=e18] [cursor=pointer]:
+          - /url: "#eins-zu-eins"
+        - link "Feedback holen" [ref=e19] [cursor=pointer]:
+          - /url: "#feedback"
+  - generic [ref=e20]:
+    - generic [ref=e21]:
+      - heading "Event-Typen" [level=2] [ref=e22]
+      - list [ref=e23]:
+        - listitem [ref=e24]:
+          - heading "Lesekreis" [level=3] [ref=e25]:
+            - button "Lesekreis" [ref=e26] [cursor=pointer]:
+              - img [ref=e28]
+              - generic [ref=e30]: Lesekreis
+          - generic [ref=e31]:
+            - paragraph [ref=e32]: Alle zwei Wochen, donnerstags
+            - paragraph [ref=e33]: Wir lesen vorab ein Paper oder ein Kapitel und besprechen es gemeinsam. Etwa 90 Minuten, danach oft noch Pizza.
+            - paragraph [ref=e34]:
+              - link "Essen abstimmen" [ref=e35] [cursor=pointer]:
+                - /url: "#essen-lesekreis"
+              - link "Feedback geben" [ref=e36] [cursor=pointer]:
+                - /url: "#feedback-lesekreis"
+        - listitem [ref=e37]:
+          - heading "Vortrag" [level=3] [ref=e38]:
+            - button "Vortrag" [ref=e39] [cursor=pointer]:
+              - img [ref=e41]
+              - generic [ref=e44]: Vortrag
+          - generic [ref=e45]:
+            - paragraph [ref=e46]: Einmal im Monat
+            - paragraph [ref=e47]: Jemand aus der Gruppe oder ein Gast stellt ein Thema vor. Danach Fragen, Widerspruch und Diskussion.
+            - paragraph [ref=e48]:
+              - link "Essen abstimmen" [ref=e49] [cursor=pointer]:
+                - /url: "#essen-vortrag"
+              - link "Feedback geben" [ref=e50] [cursor=pointer]:
+                - /url: "#feedback-vortrag"
+        - listitem [ref=e51]:
+          - heading "Workshop" [level=3] [ref=e52]:
+            - button "Workshop" [ref=e53] [cursor=pointer]:
+              - img [ref=e55]
+              - generic [ref=e58]: Workshop
+          - generic [ref=e59]:
+            - paragraph [ref=e60]: Samstags, ganztägig
+            - paragraph [ref=e61]: "Hands-on: Wir bauen, evaluieren oder red-teamen ein Modell. Laptop mitbringen, wir stellen Rechenzeit."
+            - paragraph [ref=e62]:
+              - link "Essen abstimmen" [ref=e63] [cursor=pointer]:
+                - /url: "#essen-workshop"
+              - link "Feedback geben" [ref=e64] [cursor=pointer]:
+                - /url: "#feedback-workshop"
+        - listitem [ref=e65]:
+          - heading "Stammtisch" [level=3] [ref=e66]:
+            - button "Stammtisch" [ref=e67] [cursor=pointer]:
+              - img [ref=e69]
+              - generic [ref=e72]: Stammtisch
+          - generic [ref=e73]:
+            - paragraph [ref=e74]: Letzter Dienstag im Monat
+            - paragraph [ref=e75]: Kein Programm, nur Leute. Essen, trinken, reden. Neue Gesichter sind ausdrücklich willkommen.
+            - paragraph [ref=e76]:
+              - link "Essen abstimmen" [ref=e77] [cursor=pointer]:
+                - /url: "#essen-stammtisch"
+              - link "Feedback geben" [ref=e78] [cursor=pointer]:
+                - /url: "#feedback-stammtisch"
+    - complementary [ref=e79]:
+      - heading "Kalender" [level=2] [ref=e80]
+      - paragraph [ref=e81]: Wo, was, wann?
+      - list [ref=e82]:
+        - listitem [ref=e83]:
+          - time [ref=e84]:
+            - generic [ref=e85]: Do 24.
+            - text: Sep
+          - generic [ref=e86]:
+            - generic [ref=e87]: Sleeper Agents (Hubinger et al.)
+            - generic [ref=e88]: Lesekreis, 19:00 Uhr, Raum 1.014, Uni Bonn
+        - listitem [ref=e89]:
+          - time [ref=e90]:
+            - generic [ref=e91]: Di 29.
+            - text: Sep
+          - generic [ref=e92]:
+            - generic [ref=e93]: Stammtisch
+            - generic [ref=e94]: Stammtisch, 18:30 Uhr, Brauhaus Bönnsch
+        - listitem [ref=e95]:
+          - time [ref=e96]:
+            - generic [ref=e97]: Do 8.
+            - text: Okt
+          - generic [ref=e98]:
+            - generic [ref=e99]: Wie misst man Täuschung in Sprachmodellen?
+            - generic [ref=e100]: Vortrag, 19:00 Uhr, Hörsaal 2, Uni Bonn
+        - listitem [ref=e101]:
+          - time [ref=e102]:
+            - generic [ref=e103]: Sa 17.
+            - text: Okt
+          - generic [ref=e104]:
+            - generic [ref=e105]: Interpretability-Hackday
+            - generic [ref=e106]: Workshop, 10:00 Uhr, Coworking Altstadt
+        - listitem [ref=e107]:
+          - time [ref=e108]:
+            - generic [ref=e109]: Do 22.
+            - text: Okt
+          - generic [ref=e110]:
+            - generic [ref=e111]: Scalable Oversight, Teil 1
+            - generic [ref=e112]: Lesekreis, 19:00 Uhr, Raum 1.014, Uni Bonn
+        - listitem [ref=e113]:
+          - time [ref=e114]:
+            - generic [ref=e115]: Di 27.
+            - text: Okt
+          - generic [ref=e116]:
+            - generic [ref=e117]: Stammtisch
+            - generic [ref=e118]: Stammtisch, 18:30 Uhr, Brauhaus Bönnsch
+        - listitem [ref=e119]:
+          - time [ref=e120]:
+            - generic [ref=e121]: Do 5.
+            - text: Nov
+          - generic [ref=e122]:
+            - generic [ref=e123]: "Gastvortrag: KI-Regulierung in der EU"
+            - generic [ref=e124]: Vortrag, 19:00 Uhr, Hörsaal 2, Uni Bonn
+        - listitem [ref=e125]:
+          - time [ref=e126]:
+            - generic [ref=e127]: Do 19.
+            - text: Nov
+          - generic [ref=e128]:
+            - generic [ref=e129]: Scalable Oversight, Teil 2
+            - generic [ref=e130]: Lesekreis, 19:00 Uhr, Raum 1.014, Uni Bonn
+  - contentinfo [ref=e131]:
+    - generic [ref=e132]:
+      - heading "Get in touch" [level=2] [ref=e133]
+      - paragraph [ref=e134]: Komm einfach zu einem Termin vorbei oder schreib uns vorher. Beides ist gut.
+    - list [ref=e135]:
+      - listitem [ref=e136]:
+        - link "E-Mail" [ref=e137] [cursor=pointer]:
+          - /url: mailto:hallo@example.org
+      - listitem [ref=e138]:
+        - link "Signal-Gruppe" [ref=e139] [cursor=pointer]:
+          - /url: "#signal"
+      - listitem [ref=e140]:
+        - link "Discord" [ref=e141] [cursor=pointer]:
+          - /url: "#discord"
+      - listitem [ref=e142]:
+        - link "Mastodon" [ref=e143] [cursor=pointer]:
+          - /url: "#mastodon"
+    - link "Schreib uns" [ref=e144] [cursor=pointer]:
+      - /url: mailto:hallo@example.org

@@ -1,0 +1,141 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - link "AI Safety Tübingen" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - img "AI Safety Tübingen" [ref=e5]
+    - navigation "Main navigation" [ref=e6]:
+      - link "About us" [ref=e7] [cursor=pointer]:
+        - /url: "#about-us"
+      - link "Resources" [ref=e8] [cursor=pointer]:
+        - /url: "#resources"
+  - generic [ref=e9]:
+    - heading "Let’s make sure AI development happens safely." [level=1] [ref=e10]
+    - paragraph [ref=e12]: AI Safety Tübingen is a student-led initiative dedicated to reducing the risks posed by advanced AI Systems. Together, we want to learn about current research in AI Safety, develop relevant skills, and connect students with the international research community.
+    - complementary [ref=e13]:
+      - heading "Come join us!" [level=2] [ref=e14]
+      - paragraph [ref=e15]: Want to discuss an idea, get feedback on a project, or simply meet someone from the group? We’ll make time.
+      - paragraph [ref=e16]:
+        - link "Join our WhatsApp group" [ref=e17] [cursor=pointer]:
+          - /url: https://chat.whatsapp.com/LDB5MYKqpsN17pzGBwrKwv
+        - button "Book a 1:1" [ref=e18] [cursor=pointer]
+        - button "Contact us" [ref=e19] [cursor=pointer]
+  - generic [ref=e20]:
+    - generic [ref=e21]:
+      - heading "Event types" [level=2] [ref=e22]
+      - list [ref=e23]:
+        - listitem [ref=e24]:
+          - heading "Technical AI Safety Group" [level=3] [ref=e25]:
+            - button "Technical AI Safety Group" [ref=e26] [cursor=pointer]:
+              - img [ref=e28]
+              - generic [ref=e30]: Technical AI Safety Group
+          - generic [ref=e31]:
+            - paragraph [ref=e32]: Mondays, 18:00, Maria-von-Linden-Straße 1
+            - paragraph [ref=e33]: We read a paper beforehand, get a small presentation, and then discuss and eat.
+            - paragraph [ref=e34]:
+              - link "Vote on food" [ref=e35] [cursor=pointer]:
+                - /url: "#food-technical-ai-safety"
+              - link "Give feedback" [ref=e36] [cursor=pointer]:
+                - /url: "#feedback"
+        - listitem [ref=e37]:
+          - heading "AI Governance Group" [level=3] [ref=e38]:
+            - button "AI Governance Group" [ref=e39] [cursor=pointer]:
+              - img [ref=e41]
+              - generic [ref=e44]: AI Governance Group
+          - generic [ref=e45]:
+            - paragraph [ref=e46]: Thursdays, 18:00, irgendwo unten in der Stadt?
+            - paragraph [ref=e47]: A group member or guest introduces a topic, followed by questions, debate, and discussion.
+            - paragraph [ref=e48]:
+              - link "Vote on food" [ref=e49] [cursor=pointer]:
+                - /url: "#food-ai-governance"
+              - link "Give feedback" [ref=e50] [cursor=pointer]:
+                - /url: "#feedback"
+        - listitem [ref=e51]:
+          - heading "Introductory Course" [level=3] [ref=e52]:
+            - button "Introductory Course" [ref=e53] [cursor=pointer]:
+              - img [ref=e55]
+              - generic [ref=e58]: Introductory Course
+          - generic [ref=e59]:
+            - paragraph [ref=e60]: "Hands-on: we build, evaluate, or red-team a model. Bring your laptop; we provide compute."
+            - paragraph [ref=e61]:
+              - link "Vote on food" [ref=e62] [cursor=pointer]:
+                - /url: "#food-introductory-course"
+              - link "Give feedback" [ref=e63] [cursor=pointer]:
+                - /url: "#feedback"
+        - listitem [ref=e64]:
+          - heading "Other events" [level=3] [ref=e65]:
+            - button "Other events" [ref=e66] [cursor=pointer]:
+              - img [ref=e68]
+              - generic [ref=e71]: Other events
+          - generic [ref=e72]:
+            - paragraph [ref=e73]: No agenda, just people. Eat, drink, and chat. New faces are always welcome.
+            - paragraph [ref=e74]:
+              - link "Vote on food" [ref=e75] [cursor=pointer]:
+                - /url: "#food-events"
+              - link "Give feedback" [ref=e76] [cursor=pointer]:
+                - /url: "#feedback"
+    - complementary [ref=e77]:
+      - list [ref=e78]:
+        - listitem [ref=e79]:
+          - time [ref=e80]:
+            - generic [ref=e81]: Mon 21
+            - text: Sep
+            - generic [ref=e82]: 18:00
+          - generic [ref=e83]:
+            - generic [ref=e84]: Sleeper Agents (Hubinger et al.)
+            - generic [ref=e85]: Technical AI Safety Group, Location TBA
+        - listitem [ref=e86]:
+          - time [ref=e87]:
+            - generic [ref=e88]: Thu 24
+            - text: Sep
+            - generic [ref=e89]: 18:00
+          - generic [ref=e90]:
+            - generic [ref=e91]: How do we measure deception in language models?
+            - generic [ref=e92]: AI Governance Group, Location TBA
+        - listitem [ref=e93]:
+          - time [ref=e94]:
+            - generic [ref=e95]: Mon 28
+            - text: Sep
+            - generic [ref=e96]: 18:00
+          - generic [ref=e97]:
+            - generic [ref=e98]: Scalable Oversight, Part 1
+            - generic [ref=e99]: Technical AI Safety Group, Location TBA
+        - listitem [ref=e100]:
+          - time [ref=e101]:
+            - generic [ref=e102]: Tue 29
+            - text: Sep
+            - generic [ref=e103]: 18:30
+          - generic [ref=e104]:
+            - generic [ref=e105]: Social meetup
+            - generic [ref=e106]: Other events, Location TBA
+        - listitem [ref=e107]:
+          - time [ref=e108]:
+            - generic [ref=e109]: Thu 1
+            - text: Oct
+            - generic [ref=e110]: 18:00
+          - generic [ref=e111]:
+            - generic [ref=e112]: "Guest talk: AI regulation in the EU"
+            - generic [ref=e113]: AI Governance Group, Location TBA
+        - listitem [ref=e114]:
+          - time [ref=e115]:
+            - generic [ref=e116]: Mon 5
+            - text: Oct
+            - generic [ref=e117]: 18:00
+          - generic [ref=e118]:
+            - generic [ref=e119]: Scalable Oversight, Part 2
+            - generic [ref=e120]: Technical AI Safety Group, Location TBA
+        - listitem [ref=e121]:
+          - time [ref=e122]:
+            - generic [ref=e123]: Sat 17
+            - text: Oct
+            - generic [ref=e124]: 10:00
+          - generic [ref=e125]:
+            - generic [ref=e126]: Interpretability hack day
+            - generic [ref=e127]: Introductory Course, Location TBA
+        - listitem [ref=e128]:
+          - time [ref=e129]:
+            - generic [ref=e130]: Tue 27
+            - text: Oct
+            - generic [ref=e131]: 18:30
+          - generic [ref=e132]:
+            - generic [ref=e133]: Social meetup
+            - generic [ref=e134]: Other events, Location TBA
