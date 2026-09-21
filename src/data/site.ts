@@ -1,125 +1,112 @@
-// Shared content for all design variants. Placeholder copy, based on the paper mock.
+// Site content. Placeholder copy, based on the paper mock.
 
-export type EventTypeId = 'lesekreis' | 'vortrag' | 'workshop' | 'stammtisch'
+export type EventTypeId = 'technical-ai-safety' | 'ai-governance' | 'introductory-course' | 'events'
 
 export interface EventType {
   id: EventTypeId
   name: string
-  rhythm: string
+  schedule?: { weekday: number; dayLabel: string; time: string; place: string }
   description: string
   foodUrl: string
   feedbackUrl: string
 }
 
 export interface CalendarEntry {
-  date: string // ISO date
-  time: string
+  date?: string // ISO date override; otherwise use the next regular occurrence
+  time?: string
   type: EventTypeId
   title: string
   place: string
 }
 
 export const site = {
-  name: 'AIS',
-  tagline: 'AI Safety in Bonn',
-  url: 'https://example.org',
+  name: 'AI Safety Tübingen',
+  url: 'https://aisafetytuebingen.com',
 }
 
 export const hero = {
-  heading: 'Was ist AIS?',
-  text: 'AIS ist eine offene Gruppe in Bonn, die sich mit der Sicherheit von KI-Systemen beschäftigt. Wir lesen Paper, hören Vorträge, bauen kleine Experimente und kochen zusammen. Vorwissen brauchst du nicht, Neugier schon.',
+  heading: 'Let’s make sure AI development happens safely.',
+  text: 'AI Safety Tübingen is a student-led initiative dedicated to reducing the risks posed by advanced AI Systems. Together, we want to learn about current research in AI Safety, develop relevant skills, and connect students with the international research community.',
 }
 
 export const links = [
-  { label: 'Wer sind wir', href: '#wer', note: 'Die Leute hinter AIS' },
-  { label: 'Ressourcen', href: '#ressourcen', note: 'Leselisten, Kurse, Werkzeuge' },
-  { label: 'Galerie alter Events', href: '#galerie', note: 'Fotos und Folien' },
+  { label: 'About us', href: '#about-us', note: 'The people behind AI Safety Tübingen' },
+  { label: 'Resources', href: '#resources', note: 'Reading lists, courses, tools' },
 ]
 
 export const hangout = {
-  heading: "Let's hang out!",
-  text: 'Du willst über ein Thema reden, brauchst Feedback zu einem Projekt oder willst einfach jemanden von uns kennenlernen? Wir nehmen uns Zeit.',
+  heading: "Come join us!",
+  text: 'Want to discuss an idea, get feedback on a project, or simply meet someone from the group? We’ll make time.',
   actions: [
-    { label: '1:1 buchen', href: '#eins-zu-eins' },
-    { label: 'Feedback holen', href: '#feedback' },
+    { label: 'Join our WhatsApp group', href: 'https://chat.whatsapp.com/LDB5MYKqpsN17pzGBwrKwv' },
+    { label: 'Book a 1:1', href: '#one-on-one' },
+    { label: 'Contact us', href: '#contact' },
   ],
 }
 
 export const eventTypes: EventType[] = [
   {
-    id: 'lesekreis',
-    name: 'Lesekreis',
-    rhythm: 'Alle zwei Wochen, donnerstags',
+    id: 'technical-ai-safety',
+    name: 'Technical AI Safety Group',
+    schedule: { weekday: 1, dayLabel: 'Mondays', time: '18:00', place: 'Maria-von-Linden-Straße 1' },
     description:
-      'Wir lesen vorab ein Paper oder ein Kapitel und besprechen es gemeinsam. Etwa 90 Minuten, danach oft noch Pizza.',
-    foodUrl: '#essen-lesekreis',
-    feedbackUrl: '#feedback-lesekreis',
+      'We read a paper beforehand, get a small presentation, and then discuss and eat.',
+    foodUrl: '#food-technical-ai-safety',
+    feedbackUrl: '#feedback-technical-ai-safety',
   },
   {
-    id: 'vortrag',
-    name: 'Vortrag',
-    rhythm: 'Einmal im Monat',
+    id: 'ai-governance',
+    name: 'AI Governance Group',
+    schedule: { weekday: 4, dayLabel: 'Thursdays', time: '18:00', place: 'irgendwo unten in der Stadt?' },
     description:
-      'Jemand aus der Gruppe oder ein Gast stellt ein Thema vor. Danach Fragen, Widerspruch und Diskussion.',
-    foodUrl: '#essen-vortrag',
-    feedbackUrl: '#feedback-vortrag',
+      'A group member or guest introduces a topic, followed by questions, debate, and discussion.',
+    foodUrl: '#food-ai-governance',
+    feedbackUrl: '#feedback-ai-governance',
   },
   {
-    id: 'workshop',
-    name: 'Workshop',
-    rhythm: 'Samstags, ganztägig',
+    id: 'introductory-course',
+    name: 'Introductory Course',
     description:
-      'Hands-on: Wir bauen, evaluieren oder red-teamen ein Modell. Laptop mitbringen, wir stellen Rechenzeit.',
-    foodUrl: '#essen-workshop',
-    feedbackUrl: '#feedback-workshop',
+      'Hands-on: we build, evaluate, or red-team a model. Bring your laptop; we provide compute.',
+    foodUrl: '#food-introductory-course',
+    feedbackUrl: '#feedback-introductory-course',
   },
   {
-    id: 'stammtisch',
-    name: 'Stammtisch',
-    rhythm: 'Letzter Dienstag im Monat',
-    description: 'Kein Programm, nur Leute. Essen, trinken, reden. Neue Gesichter sind ausdrücklich willkommen.',
-    foodUrl: '#essen-stammtisch',
-    feedbackUrl: '#feedback-stammtisch',
+    id: 'events',
+    name: 'Other events',
+    description: 'No agenda, just people. Eat, drink, and chat. New faces are always welcome.',
+    foodUrl: '#food-events',
+    feedbackUrl: '#feedback-events',
   },
 ]
 
 export const calendar: CalendarEntry[] = [
-  { date: '2026-09-24', time: '19:00', type: 'lesekreis', title: 'Sleeper Agents (Hubinger et al.)', place: 'Raum 1.014, Uni Bonn' },
-  { date: '2026-09-29', time: '18:30', type: 'stammtisch', title: 'Stammtisch', place: 'Brauhaus Bönnsch' },
-  { date: '2026-10-08', time: '19:00', type: 'vortrag', title: 'Wie misst man Täuschung in Sprachmodellen?', place: 'Hörsaal 2, Uni Bonn' },
-  { date: '2026-10-17', time: '10:00', type: 'workshop', title: 'Interpretability-Hackday', place: 'Coworking Altstadt' },
-  { date: '2026-10-22', time: '19:00', type: 'lesekreis', title: 'Scalable Oversight, Teil 1', place: 'Raum 1.014, Uni Bonn' },
-  { date: '2026-10-27', time: '18:30', type: 'stammtisch', title: 'Stammtisch', place: 'Brauhaus Bönnsch' },
-  { date: '2026-11-05', time: '19:00', type: 'vortrag', title: 'Gastvortrag: KI-Regulierung in der EU', place: 'Hörsaal 2, Uni Bonn' },
-  { date: '2026-11-19', time: '19:00', type: 'lesekreis', title: 'Scalable Oversight, Teil 2', place: 'Raum 1.014, Uni Bonn' },
+  { type: 'technical-ai-safety', title: 'Sleeper Agents (Hubinger et al.)', place: 'Location TBA' },
+  { date: '2026-09-29', time: '18:30', type: 'events', title: 'Social meetup', place: 'Location TBA' },
+  { type: 'ai-governance', title: 'How do we measure deception in language models?', place: 'Location TBA' },
+  { date: '2026-10-17', time: '10:00', type: 'introductory-course', title: 'Interpretability hack day', place: 'Location TBA' },
+  { type: 'technical-ai-safety', title: 'Scalable Oversight, Part 1', place: 'Location TBA' },
+  { date: '2026-10-27', time: '18:30', type: 'events', title: 'Social meetup', place: 'Location TBA' },
+  { type: 'ai-governance', title: 'Guest talk: AI regulation in the EU', place: 'Location TBA' },
+  { type: 'technical-ai-safety', title: 'Scalable Oversight, Part 2', place: 'Location TBA' },
 ]
 
 export const contact = {
   heading: 'Get in touch',
-  text: 'Komm einfach zu einem Termin vorbei oder schreib uns vorher. Beides ist gut.',
-  email: 'hallo@example.org',
+  text: 'Drop by an event or send us a message first. Either works.',
+  email: 'hello@example.org',
   socials: [
-    { label: 'E-Mail', href: 'mailto:hallo@example.org' },
-    { label: 'Signal-Gruppe', href: '#signal' },
-    { label: 'Discord', href: '#discord' },
+    { label: 'Email', href: 'mailto:hello@example.org' },
     { label: 'Mastodon', href: '#mastodon' },
   ],
 }
 
-export const designs = [
-  { slug: '1-aushang', n: 1, name: 'Aushang', note: 'Der Mock eins zu eins: zwei Spalten, Kalender rechts, Tinte auf Papier.' },
-  { slug: '2-lesespalte', n: 2, name: 'Lesespalte', note: 'Eine schmale Textspalte, Termine hängen im Rand. Ruhig und lesbar.' },
-  { slug: '3-stundenplan', n: 3, name: 'Stundenplan', note: 'Kalender zuerst: Monatsraster mit einer Farbe pro Event-Typ.' },
-  { slug: '4-plakat', n: 4, name: 'Plakat', note: 'Große Schrift, vier schwere Blöcke, Termine als Tabelle.' },
-  { slug: '5-karteikarte', n: 5, name: 'Karteikarte', note: 'Linierte Karteikarten mit Reitern. Schreibtisch statt Website.' },
-]
-
 // Helpers
 
-const weekdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
+const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const months = [
-  'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
-  'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember',
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
 ]
 
 export function parts(iso: string) {
@@ -137,4 +124,36 @@ export function parts(iso: string) {
 
 export function typeById(id: EventTypeId): EventType {
   return eventTypes.find((t) => t.id === id)!
+}
+
+// Resolve in local calendar time so daylight-saving changes preserve the meeting hour.
+export function resolveCalendar(entries: CalendarEntry[] = calendar, now = new Date()) {
+  const local = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
+  }).formatToParts(now).map(part => [part.type, part.value]))
+  const today = `${local.year}-${local.month}-${local.day}`
+  const currentTime = `${local.hour}:${local.minute}:${local.second}`
+  const previous = new Map<EventTypeId, string>()
+
+  return entries.map((entry, index) => {
+    const schedule = typeById(entry.type).schedule
+    const time = entry.time ?? schedule?.time
+    if (!time || (!entry.date && !schedule)) {
+      throw new Error(`Event "${entry.title}" needs an explicit date and time without a regular schedule`)
+    }
+    let date = entry.date
+    if (!date && schedule) {
+      const candidate = new Date(`${today}T00:00:00Z`)
+      candidate.setUTCDate(candidate.getUTCDate() + (schedule.weekday - candidate.getUTCDay() + 7) % 7)
+      date = candidate.toISOString().slice(0, 10)
+      while ((date === today && `${time}:00` < currentTime) || date <= (previous.get(entry.type) ?? '')) {
+        candidate.setUTCDate(candidate.getUTCDate() + 7)
+        date = candidate.toISOString().slice(0, 10)
+      }
+    }
+    if (!date) throw new Error(`Missing date for "${entry.title}"`)
+    previous.set(entry.type, date > (previous.get(entry.type) ?? '') ? date : previous.get(entry.type)!)
+    return { ...entry, date, time, index }
+  }).sort((a, b) => `${a.date}T${a.time}`.localeCompare(`${b.date}T${b.time}`))
 }

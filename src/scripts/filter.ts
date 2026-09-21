@@ -1,15 +1,19 @@
 // Event-type filter. Markup contract:
 //   <div data-filter-group>
-//     <button data-filter="all" aria-pressed="true">…</button>
-//     <button data-filter="lesekreis">…</button>
+//     Clicking the selected category again restores all events.
+//     Hovering the card highlights matching events without changing the filter.
+//     <li data-filter-card="technical-ai-safety">
+//       <button data-filter="technical-ai-safety">…</button>
+//     </li>
 //   </div>
 //   <ul data-filter-target>
-//     <li data-event-type="lesekreis">…</li>
+//     <li data-event-type="technical-ai-safety">…</li>
 //   </ul>
 //   <p data-filter-empty hidden>…</p>  (optional)
 
 function setup(group: HTMLElement) {
   const buttons = Array.from(group.querySelectorAll<HTMLButtonElement>('[data-filter]'))
+  const cards = Array.from(group.querySelectorAll<HTMLElement>('[data-filter-card]'))
   const targets = Array.from(document.querySelectorAll<HTMLElement>('[data-filter-target] [data-event-type]'))
   const empties = Array.from(document.querySelectorAll<HTMLElement>('[data-filter-empty]'))
 
@@ -25,7 +29,23 @@ function setup(group: HTMLElement) {
     group.dataset.active = value
   }
 
-  for (const b of buttons) b.addEventListener('click', () => apply(b.dataset.filter ?? 'all'))
+  for (const card of cards) {
+    card.addEventListener('mouseenter', () => {
+      for (const t of targets) t.dataset.highlighted = String(t.dataset.eventType === card.dataset.filterCard)
+    })
+    card.addEventListener('mouseleave', () => {
+      for (const t of targets) t.dataset.highlighted = 'false'
+    })
+  }
+
+  for (const b of buttons) {
+    b.addEventListener('click', () => {
+      const value = b.dataset.filter ?? 'all'
+      apply(group.dataset.active === value ? 'all' : value)
+    })
+  }
+
+  apply('all')
 }
 
 document.querySelectorAll<HTMLElement>('[data-filter-group]').forEach(setup)

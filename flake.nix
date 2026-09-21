@@ -6,43 +6,53 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
-  outputs = inputs @ {
-    flake-parts,
-    self,
-    ...
-  }:
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      imports = [];
-      systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
-      perSystem = {
-        config,
-        self',
-        inputs',
-        pkgs,
-        system,
-        ...
-      }: {
-        _module.args.pkgs = import self.inputs.nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-        };
-        # Per-system attributes can be defined here. The self' and inputs'
-        # module parameters provide easy access to attributes of the same
-        # system.
+  outputs =
+    inputs@{
+      flake-parts,
+      self,
+      ...
+    }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [ ];
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ];
+      perSystem =
+        {
+          config,
+          self',
+          inputs',
+          pkgs,
+          system,
+          ...
+        }:
+        {
+          _module.args.pkgs = import self.inputs.nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+          # Per-system attributes can be defined here. The self' and inputs'
+          # module parameters provide easy access to attributes of the same
+          # system.
 
-        # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
-        packages.default = pkgs.hello;
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-            nixfmt
-            typescript-language-server
-            just
-            nodejs_24
-          ];
-          shellHook = ''
-          '';
+          # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
+          packages.default = pkgs.hello;
+          devShells.default = pkgs.mkShell {
+            packages = with pkgs; [
+              nixfmt
+              # Astro needs the JavaScript SDK, which TypeScript 7 does not ship.
+              typescript_5
+              typescript-language-server
+              just
+              nodejs_24
+              astro-language-server
+            ];
+            shellHook = "";
+          };
         };
-      };
       flake = {
         # The usual flake attributes can be defined here, including system-
         # agnostic ones like nixosModule and system-enumerating ones, although

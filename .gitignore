@@ -8,6 +8,7 @@ tmp/
 result*
 
 node_modules/
+.direnv/
 
 
 # build output
