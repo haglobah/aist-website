@@ -11,6 +11,14 @@ document.addEventListener('click', (event) => {
 })
 
 document.querySelectorAll<HTMLDialogElement>('dialog[data-modal]').forEach((dialog) => {
+  dialog.addEventListener('beforetoggle', (event) => {
+    if ((event as ToggleEvent).newState !== 'open' || document.querySelector('dialog[data-modal][open]')) return
+    // Measure before the open attribute locks scrolling and removes the scrollbar.
+    document.documentElement.style.setProperty(
+      '--modal-scrollbar-width',
+      `${window.innerWidth - document.documentElement.clientWidth}px`,
+    )
+  })
   dialog.querySelector('[data-modal-close]')?.addEventListener('click', () => dialog.close())
   // Require both ends of the click to be outside, so dragging from content won't dismiss it.
   let startedOnBackdrop = false

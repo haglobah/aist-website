@@ -79,6 +79,10 @@ const { id, title } = Astro.props
   button:hover { background: color-mix(in srgb, var(--color-accent) 10%, transparent); }
   .modal-content { padding: 1.5rem; }
   :global(html:has(dialog[data-modal][open])) { overflow: hidden; }
+  /* Reserve scrollbar space inside the page so the backdrop can cover it. */
+  :global(html:has(dialog[data-modal][open]) body) {
+    padding-inline-end: var(--modal-scrollbar-width, 0px);
+  }
   @media (max-width: 40rem) {
     .modal-header { padding: .75rem 1rem; }
     .modal-content { padding: 1rem; }
