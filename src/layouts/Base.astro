@@ -1,20 +1,20 @@
 ---
 import '@fontsource/pt-serif/400.css'
-import '@fontsource/pt-serif/400-italic.css'
 import '@fontsource/pt-serif/700.css'
-import '@fontsource/pt-serif/700-italic.css'
+import '@fontsource/pt-sans/400.css'
+import '@fontsource/pt-sans/700.css'
 import '../styles/global.css'
-import { site } from '../data/site'
+import { hero, site } from '../data/site'
 
 interface Props {
   title: string
   description?: string
 }
 
-const { title, description = site.tagline } = Astro.props
+const { title, description = hero.text } = Astro.props
 ---
 
-<html lang="en">
+<html lang="en" class="leading-relaxed antialiased has-[dialog[data-modal][open]]:overflow-hidden [&_:focus-visible:not([data-filter])]:outline-2 [&_:focus-visible:not([data-filter])]:outline-offset-4 [&_:focus-visible:not([data-filter])]:outline-accent">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -24,7 +24,7 @@ const { title, description = site.tagline } = Astro.props
     <meta name="description" content={description} />
     <title>{title}</title>
   </head>
-  <body class="min-h-dvh bg-paper text-ink">
+  <body class="min-h-dvh overflow-x-clip bg-paper text-ink in-[html:has(dialog[data-modal][open])]:pe-[var(--modal-scrollbar-width,0px)]">
     <slot />
   </body>
 </html>

@@ -1,7 +1,7 @@
 // Event-type filter. Markup contract:
 //   <div data-filter-group>
 //     Clicking the selected category again restores all events.
-//     Hovering the card highlights matching events without changing the filter.
+//     Hovering previews matching events; only an active filter retains its highlight.
 //     <li data-filter-card="technical-ai-safety">
 //       <button data-filter="technical-ai-safety">…</button>
 //     </li>
@@ -29,19 +29,32 @@ function setup(group: HTMLElement) {
     group.dataset.active = value
   }
 
+  let hoveredCard: HTMLElement | undefined
+
+  function highlight() {
+    const highlighted = (type: string | undefined) => type === hoveredCard?.dataset.filterCard || type === group.dataset.active
+    for (const card of cards) card.dataset.highlighted = String(highlighted(card.dataset.filterCard))
+    for (const target of targets) target.dataset.highlighted = String(highlighted(target.dataset.eventType))
+  }
+
   for (const card of cards) {
     card.addEventListener('mouseenter', () => {
-      for (const t of targets) t.dataset.highlighted = String(t.dataset.eventType === card.dataset.filterCard)
+      hoveredCard = card
+      highlight()
     })
     card.addEventListener('mouseleave', () => {
-      for (const t of targets) t.dataset.highlighted = 'false'
+      hoveredCard = undefined
+      highlight()
     })
   }
 
   for (const b of buttons) {
     b.addEventListener('click', () => {
+      b.focus({ preventScroll: true })
       const value = b.dataset.filter ?? 'all'
       apply(group.dataset.active === value ? 'all' : value)
+      hoveredCard = undefined
+      highlight()
     })
   }
 

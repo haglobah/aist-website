@@ -94,7 +94,7 @@ class OrganizerBooking extends HTMLElement {
         }
         const mount = document.createElement('div')
         mount.id = `booking-widget-${++widgetId}`
-        mount.className = 'booking-widget'
+        mount.className = 'min-h-[650px] bg-white'
         embed.append(mount)
         if (target.kind === 'cal') {
           window.Cal ??= commandQueue()

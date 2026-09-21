@@ -1,0 +1,39 @@
+---
+const people = [
+  {
+    name: 'Johannes Koch',
+    image: '/people/johannes-koch.jpg',
+    href: 'https://www.linkedin.com/in/johannes-koch-5b4620259/?locale=en_US',
+    bio: 'Machine Learning Master’s student at the University of Tübingen and Pathfinder Fellow.',
+  },
+  {
+    name: 'Katharina Deckenbach',
+    image: '/people/katharina-deckenbach.jpg',
+    href: 'https://www.linkedin.com/in/katharina-deckenbach/',
+    bio: 'PhD student in Sahar Abdelnabi’s COMPASS group, with a background in Cognitive Science and Machine Learning. Previously organized AI safety events in Stockholm.',
+  },
+]
+---
+
+<section id="about-us" aria-labelledby="about-us-heading" class="mt-16 scroll-mt-8 border-t border-rule pt-10 md:mt-20">
+  <h2 id="about-us-heading" class="font-serif text-3xl text-balance">About us</h2>
+  <p class="mt-3 text-muted">Meet the people behind AI Safety Tübingen.</p>
+  <div class="mt-8 grid gap-10 md:grid-cols-2 md:gap-12">
+    {people.map(person => (
+      <article class="grid grid-cols-[6rem_1fr] items-start gap-5 sm:grid-cols-[8rem_1fr] sm:gap-6">
+        <img src={person.image} alt={person.name} width="400" height="400" loading="lazy" class="aspect-square w-full object-cover outline-1 -outline-offset-1 outline-ink/10" />
+        <div>
+          <p class="mb-1 text-sm text-muted">Organizer</p>
+          <h3 class="font-serif text-xl text-balance">
+            <a href={person.href} class="underline decoration-rule underline-offset-4 hover:text-accent hover:decoration-accent">{person.name}</a>
+          </h3>
+          <p class="mt-3 text-pretty">{person.bio}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+  <div class="mt-8 flex items-center gap-5 text-sm text-muted">
+    <span>Supported by</span>
+    <img src="/pathfinder.webp" alt="Pathfinder" width="400" height="209" loading="lazy" class="h-auto w-28 mix-blend-multiply" />
+  </div>
+</section>

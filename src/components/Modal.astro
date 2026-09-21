@@ -2,21 +2,22 @@
 interface Props {
   id: string
   title: string
+  class?: string
 }
-const { id, title } = Astro.props
+const { id, title, class: className = 'w-[min(64rem,calc(100%-2rem))]' } = Astro.props
 ---
 
-<dialog id={id} aria-labelledby={`${id}-title`} data-modal>
-  <div class="modal-surface">
-    <header class="modal-header">
-      <h2 id={`${id}-title`} tabindex="-1" autofocus>{title}</h2>
-      <button type="button" data-modal-close aria-label={`Close ${title}`}>
+<dialog id={id} aria-labelledby={`${id}-title`} data-modal class:list={[`m-auto max-h-[calc(100dvh-2rem)] max-w-none overflow-auto overscroll-contain rounded-sm border border-rule bg-sheet p-0 text-ink backdrop:bg-ink/60`, className]}>
+  <div>
+    <header class="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-rule bg-sheet px-4 py-3 sm:px-6 sm:py-4">
+      <h2 class="text-balance font-serif text-2xl focus:outline-none" id={`${id}-title`} tabindex="-1" autofocus>{title}</h2>
+      <button class="grid size-11 shrink-0 cursor-pointer place-items-center hover:bg-surface" type="button" data-modal-close aria-label={`Close ${title}`}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
           <path d="m6 6 12 12M18 6 6 18" />
         </svg>
       </button>
     </header>
-    <div class="modal-content"><slot /></div>
+    <div class="p-4 sm:p-6"><slot /></div>
   </div>
 </dialog>
 
@@ -25,66 +26,29 @@ const { id, title } = Astro.props
 </script>
 
 <style>
-  dialog {
-    margin: auto;
-    padding: 0;
-    width: min(64rem, calc(100% - 2rem));
-    max-width: none;
-    max-height: calc(100dvh - 2rem);
-    overflow: auto;
-    overscroll-behavior: contain;
-    background: var(--color-paper);
-    color: var(--color-ink);
-    border: 1px solid var(--color-accent);
-    box-shadow: 0 24px 80px #0003, 0 4px 16px #0002;
-    opacity: 0;
-    transition:
-      opacity 150ms ease-in,
-      display 150ms allow-discrete,
-      overlay 150ms allow-discrete;
-  }
-  dialog[open] {
-    opacity: 1;
-    transition-duration: 220ms;
-    transition-timing-function: ease-out;
-  }
-  dialog::backdrop {
-    background: rgb(27 27 31 / 55%);
-    opacity: 0;
-    transition: opacity 150ms ease-in, display 150ms allow-discrete, overlay 150ms allow-discrete;
-  }
-  dialog[open]::backdrop { opacity: 1; transition-duration: 220ms; }
-  @starting-style {
-    dialog[open] { opacity: 0; }
-    dialog[open]::backdrop { opacity: 0; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    dialog, dialog[open], dialog::backdrop, dialog[open]::backdrop { transition: none; }
-  }
-  .modal-header {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem 1.5rem;
-    background: var(--color-paper);
-    border-bottom: 1px solid var(--color-accent);
-  }
-  h2 { font-size: 1.6rem; text-wrap: balance; }
-  h2:focus { outline: none; }
-  button { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; cursor: pointer; }
-  button:hover { background: color-mix(in srgb, var(--color-accent) 10%, transparent); }
-  .modal-content { padding: 1.5rem; }
-  :global(html:has(dialog[data-modal][open])) { overflow: hidden; }
-  /* Reserve scrollbar space inside the page so the backdrop can cover it. */
-  :global(html:has(dialog[data-modal][open]) body) {
-    padding-inline-end: var(--modal-scrollbar-width, 0px);
-  }
-  @media (max-width: 40rem) {
-    .modal-header { padding: .75rem 1rem; }
-    .modal-content { padding: 1rem; }
+  @media (prefers-reduced-motion: no-preference) {
+    dialog {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 160ms ease-out, transform 160ms ease-out,
+        display 160ms allow-discrete, overlay 160ms allow-discrete;
+    }
+    dialog[open] {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    dialog::backdrop {
+      opacity: 0;
+      transition: opacity 160ms ease-out,
+        display 160ms allow-discrete, overlay 160ms allow-discrete;
+    }
+    dialog[open]::backdrop { opacity: 1; }
+    @starting-style {
+      dialog[open] {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      dialog[open]::backdrop { opacity: 0; }
+    }
   }
 </style>

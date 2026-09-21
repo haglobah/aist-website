@@ -1,0 +1,14 @@
+---
+import OuterLink from './OuterLink.astro'
+import type { Resource } from '../data/resources'
+interface Props { links: Resource[] }
+const { links } = Astro.props
+---
+
+<ul role="list" class="divide-y divide-rule/60 group-resourcelist/hover:bg-sheet">
+  {links.map(link => (
+    <li>
+      <OuterLink href={link.href} label={link.label} note={link.note} />
+    </li>
+  ))}
+</ul>

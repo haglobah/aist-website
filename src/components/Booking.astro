@@ -3,8 +3,8 @@ import Modal from './Modal.astro'
 import OrganizerBooking from './OrganizerBooking.astro'
 ---
 
-<section id="one-on-one-section" aria-labelledby="one-on-one-heading">
-  <h2 id="one-on-one-heading" tabindex="-1" class="mb-5 text-[1.6rem]">Book a 1:1</h2>
+<section class="mt-8 scroll-mt-6 border-t border-rule pt-8" id="one-on-one-section" aria-labelledby="one-on-one-heading">
+  <h2 id="one-on-one-heading" tabindex="-1" class="text-balance mb-5 font-serif text-2xl">Book a 1:1</h2>
   <OrganizerBooking id="one-on-one" />
 </section>
 <Modal id="one-on-one" title="Book a 1:1">
@@ -40,7 +40,3 @@ import OrganizerBooking from './OrganizerBooking.astro'
     }
   }))
 </script>
-
-<style>
-  section { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--color-accent); scroll-margin-top: 1.5rem; }
-</style>

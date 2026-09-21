@@ -2,28 +2,28 @@
 import Modal from './Modal.astro'
 ---
 
-<section id="feedback" aria-labelledby="feedback-heading">
-  <h2 id="feedback-heading" class="mb-5 text-[1.6rem]">Contact us / Give feedback</h2>
+<section class="scroll-mt-6 border-t border-rule pt-8" id="feedback" aria-labelledby="feedback-heading">
+  <h2 id="feedback-heading" class="text-balance mb-5 font-serif text-2xl">Contact us / Give feedback</h2>
   <form id="feedback-form" aria-label="Feedback" aria-describedby="feedback-status">
-    <label for="feedback-message">Message</label>
-    <textarea id="feedback-message" name="message" rows="6" required></textarea>
-    <div class="identity-row">
-      <div>
-        <label for="feedback-name">Name <span>(optional)</span></label>
-        <input id="feedback-name" name="name" autocomplete="name" />
+    <label class="mb-2 block text-sm font-bold" for="feedback-message">Message</label>
+    <textarea class="block w-full min-w-0 rounded-sm border border-rule bg-sheet px-3 py-2 font-sans text-base min-h-32 resize-y" id="feedback-message" name="message" rows="6" required></textarea>
+    <div class="mt-4 grid grid-cols-2 gap-4">
+      <div class="min-w-0">
+        <label class="mb-2 block text-sm font-bold" for="feedback-name">Name <span class="text-sm font-normal text-muted">(optional)</span></label>
+        <input class="block w-full min-w-0 rounded-sm border border-rule bg-sheet px-3 py-2 font-sans text-base" id="feedback-name" name="name" autocomplete="name" />
       </div>
-      <div>
-        <label for="feedback-email">Email <span>(optional)</span></label>
-        <input id="feedback-email" name="email" type="email" autocomplete="email" />
+      <div class="min-w-0">
+        <label class="mb-2 block text-sm font-bold" for="feedback-email">Email <span class="text-sm font-normal text-muted">(optional)</span></label>
+        <input class="block w-full min-w-0 rounded-sm border border-rule bg-sheet px-3 py-2 font-sans text-base" id="feedback-email" name="email" type="email" autocomplete="email" />
       </div>
     </div>
-    <div class="form-actions">
-      <button type="submit" disabled>Send message</button>
-      <p id="feedback-status">Sending is not available yet.</p>
+    <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
+      <button class="min-h-11 cursor-not-allowed rounded-sm border border-rule bg-surface px-4 py-2 text-muted" type="submit" disabled>Send message</button>
+      <p class="text-pretty text-sm" id="feedback-status">Sending is not available yet.</p>
     </div>
   </form>
 </section>
-<Modal id="feedback-modal" title="Contact us / Give feedback">
+<Modal class="w-[min(40rem,calc(100%-2rem))]" id="feedback-modal" title="Contact us / Give feedback">
   <div data-feedback-slot></div>
 </Modal>
 
@@ -33,7 +33,9 @@ import Modal from './Modal.astro'
   const dialog = document.querySelector<HTMLDialogElement>('#feedback-modal')!
   const slot = dialog.querySelector<HTMLElement>('[data-feedback-slot]')!
   const desktop = window.matchMedia('(min-width: 48rem)')
-  const triggers = document.querySelectorAll<HTMLAnchorElement>('[data-feedback-open]')
+  const triggers = document.querySelectorAll<HTMLElement>('[data-feedback-open]')
+  const message = form.querySelector<HTMLTextAreaElement>('#feedback-message')!
+  let prefilledHeading = ''
 
   // Move the same form to preserve drafts when the viewport changes.
   function updateLayout() {
@@ -50,32 +52,19 @@ import Modal from './Modal.astro'
   desktop.addEventListener('change', updateLayout)
   triggers.forEach(trigger => trigger.addEventListener('click', event => {
     event.preventDefault()
+    const eventType = trigger.dataset.feedbackType
+    if (eventType) {
+      const draft = prefilledHeading && message.value.startsWith(prefilledHeading)
+        ? message.value.slice(prefilledHeading.length)
+        : message.value
+      prefilledHeading = `${eventType}:\n`
+      message.value = prefilledHeading + draft
+    }
     if (desktop.matches) dialog.showModal()
     else section.scrollIntoView({ block: 'start' })
-    form.querySelector('textarea')?.focus({ preventScroll: !desktop.matches })
+    message.focus({ preventScroll: !desktop.matches })
+    message.setSelectionRange(message.value.length, message.value.length)
   }))
   // No navigation or transmission, including implicit submission via Enter.
   form.addEventListener('submit', event => event.preventDefault())
 </script>
-
-<style>
-  section { padding-top: 2rem; border-top: 1px solid var(--color-accent); scroll-margin-top: 1.5rem; }
-  :global(#feedback-modal) { width: min(40rem, calc(100% - 2rem)); }
-  label { display: block; margin-bottom: .4rem; }
-  label span { font-size: .85rem; }
-  input, textarea {
-    display: block;
-    width: 100%;
-    min-width: 0;
-    padding: .65rem .75rem;
-    border: 1px solid var(--color-accent);
-    background: var(--color-paper);
-    font: inherit;
-  }
-  textarea { resize: vertical; min-height: 8rem; }
-  .identity-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
-  .identity-row > div { min-width: 0; }
-  .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; margin-top: 1.5rem; }
-  button { min-height: 44px; padding: .6rem 1rem; border: 1px solid var(--color-accent); opacity: .5; cursor: not-allowed; }
-  .form-actions p { font-size: .9rem; }
-</style>

@@ -1,45 +1,55 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-serif: 'PT Serif', Georgia, 'Times New Roman', serif;
-  --default-font-family: var(--font-serif);
-
-  --color-paper: #f8f6f1;
-  --color-ink: #1b1b1f;
-  --color-accent: #476b65;
-  --color-rule: var(--color-accent);
-  --color-muted: var(--color-ink);
+  --font-serif: 'PT Serif', Georgia, serif;
+  --font-sans: 'PT Sans', 'Helvetica Neue', Arial, sans-serif;
+  --default-font-family: var(--font-sans);
+  /* Neutral grey paper, black ink, a whiter sheet for content surfaces, one mid-blue accent. */
+  --color-paper: #efefed;
+  --color-sheet: #fbfbfa;
+  --color-surface: #e4e4e1;
+  --color-ink: #1d1d1b;
+  --color-muted: #5c5d59;
+  --color-rule: #cbcbc7;
+  --color-accent: #2864b4;
+  --color-highlight: color-mix(in srgb, var(--color-accent) 10%, var(--color-sheet));
 }
 
-@layer components {
-  [data-filter-target] [data-event-type] {
-    transition: background-color 150ms ease-out;
-  }
+.activity-filter:enabled:active { scale: none; }
 
-  [data-filter-target] [data-highlighted='true'] {
-    background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    [data-filter-target] [data-event-type] {
-      transition: none;
-    }
-  }
+.activity-title {
+  background-image: linear-gradient(var(--color-accent), var(--color-accent));
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  padding-bottom: 4px;
 }
 
+.activity[data-highlighted='true'] .activity-title,
+.activity-filter[aria-pressed='true'] .activity-title {
+  background-size: 100% 1px;
+}
+
+/* Shared motion hooks; layout, typography, colors and states use utilities in markup. */
 @layer base {
   @media (prefers-reduced-motion: no-preference) {
     * { scroll-behavior: smooth; }
+    button:enabled, .action {
+      transition: background-color 160ms ease-out, color 160ms ease-out,
+        border-color 160ms ease-out, scale 120ms ease-out;
+    }
+    button:enabled:active, .action:active {
+      scale: 0.96;
+    }
+    a:not(.action), .activity-title {
+      transition: color 160ms ease-out, text-decoration-color 160ms ease-out,
+        text-underline-offset 160ms ease-out;
+    }
+    .activity, .calendar-event { transition: background-color 160ms ease-out; }
+    .activity-title { transition: background-size 180ms ease-out; }
   }
+}
 
-  html {
-    line-height: 1.55;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  :focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 3px;
-  }
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  a:not(.action):hover { text-underline-offset: 6px; }
 }
