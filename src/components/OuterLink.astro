@@ -7,7 +7,7 @@ interface Props {
 const { href, label, note } = Astro.props
 ---
 
-<a href={href} class="group group-resourcelist flex min-h-11 items-baseline justify-between gap-4 py-2.5 text-accent underline-offset-4 hover:text-ink">
+<a href={href} class="group flex min-h-11 items-baseline justify-between gap-4 py-2.5 text-accent underline-offset-4 hover:text-ink">
   <span>
     <span class="link-label underline decoration-accent/40 group-hover:decoration-accent">{label}</span>
     {note && <span class="mt-0.5 block text-sm text-muted">{note}</span>}

@@ -1,6 +1,8 @@
 ---
 import ResourceList from './ResourceList.astro'
 import { resourceGroups, fellowshipGroups, careerAdvice } from '../data/resources'
+
+const groupClass = 'relative isolate border-t border-rule p-4 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:bg-paper before:opacity-0 before:blur-[8px] before:content-[\'\'] hover:before:opacity-100 motion-safe:before:transition-opacity motion-safe:before:duration-160 motion-safe:before:ease-out'
 ---
 
 <section id="resources" aria-labelledby="resources-heading" class="mt-12 scroll-mt-8 border-t border-rule pt-10 md:mt-16">
@@ -11,7 +13,7 @@ import { resourceGroups, fellowshipGroups, careerAdvice } from '../data/resource
 
   <div class="mt-10 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
     {resourceGroups.map((group, index) => (
-      <div class="border-t border-rule pt-4">
+      <div class={groupClass}>
         <div class="mb-3 flex items-baseline gap-3">
           <span aria-hidden="true" class="text-sm text-muted tabular-nums">{String(index + 1).padStart(2, '0')}</span>
           <h3 class="font-serif text-xl text-balance">{group.title}</h3>
@@ -22,22 +24,17 @@ import { resourceGroups, fellowshipGroups, careerAdvice } from '../data/resource
     ))}
   </div>
 
-  <div class="mt-12 bg-sheet p-6 shadow-[0_0_0_1px_var(--color-rule)] sm:p-8">
+  <div class="mt-12">
     <div class="grid gap-4 md:grid-cols-[1fr_2fr] md:gap-12">
-      <div>
-        <p class="mb-2 text-sm text-accent">Put learning into practice</p>
-        <h3 class="font-serif text-2xl">Fellowships</h3>
-      </div>
+      <h3 class="font-serif text-2xl">Fellowships</h3>
       <p class="text-pretty">Fellowships are a great way to try AI safety work, from technical research to policy and governance. There are full-time and part-time options. Applications can be very competitive, so don’t be discouraged if your first attempt doesn’t work out.</p>
     </div>
-    <div class="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
-      {fellowshipGroups.map((group, index) => (
-        <div class:list={[index === 4 && 'sm:col-span-2 lg:col-span-4 border-t border-rule pt-6']}>
-          <h4 class="mb-2 font-serif text-lg">{group.title}</h4>
+    <div class="mt-10 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
+      {fellowshipGroups.map(group => (
+        <div class={groupClass}>
+          <h4 class="mb-3 font-serif text-xl text-balance">{group.title}</h4>
           {group.note && <p class="mb-2 text-sm text-muted">{group.note}</p>}
-          <div class:list={[index === 4 && 'sm:[&_ul]:grid sm:[&_ul]:grid-cols-2 sm:[&_ul]:gap-x-10 sm:[&_li]:border-0 lg:[&_ul]:grid-cols-3']}>
-            <ResourceList links={group.links} />
-          </div>
+          <ResourceList links={group.links} />
         </div>
       ))}
     </div>

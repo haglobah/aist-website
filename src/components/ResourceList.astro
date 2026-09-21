@@ -5,7 +5,7 @@ interface Props { links: Resource[] }
 const { links } = Astro.props
 ---
 
-<ul role="list" class="divide-y divide-rule/60 group-resourcelist/hover:bg-sheet">
+<ul role="list" class="divide-y divide-rule/60">
   {links.map(link => (
     <li>
       <OuterLink href={link.href} label={link.label} note={link.note} />
