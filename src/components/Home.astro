@@ -11,6 +11,7 @@ import SiteFooter from './SiteFooter.astro'
 import Emphasis from './Emphasis.astro'
 import SocialIcon from './SocialIcon.astro'
 import { resolveCalendar, eventTypes, hangout, hero, parts, site, socials } from '../data/site'
+import { people } from '../data/people'
 import { l, useTranslations, type Lang } from '../i18n'
 
 interface Props { lang: Lang }
@@ -40,7 +41,14 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
         <p class="text-pretty mt-5">{l(hero.closing, lang)}</p>
       </div>
       <aside id="contact" aria-labelledby="hangout-heading" class="flex scroll-mt-4 flex-col border-t border-rule pt-8 md:border-t-0 md:border-l md:pt-0 md:pl-8">
-        <h2 id="hangout-heading" class="text-balance font-serif text-2xl">{l(hangout.heading, lang)}</h2>
+        <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+          <h2 id="hangout-heading" class="text-balance font-serif text-2xl">{l(hangout.heading, lang)}</h2>
+          <a href="#about-us" class="flex -space-x-2 rounded-full" title={people.map(person => person.name).join(', ')}>
+            {people.filter(person => person.image).map(person => (
+              <img src={person.image} alt={person.name} width="40" height="40" loading="lazy" class="size-10 rounded-full object-cover ring-2 ring-paper" />
+            ))}
+          </a>
+        </div>
         <!-- Rows share the column height so the block lines up with the introduction; the arrows fold out details. -->
         <div class="mt-3 flex flex-1 flex-col divide-y divide-rule text-lg leading-snug">
           <details name="hangout" class="group flex flex-1 flex-col justify-center py-3">
@@ -57,7 +65,7 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
             <span><Emphasis text={l(hangout.stayUpToDate, lang)} /></span>
             <span class="flex gap-2">
               {socials.map((social) => social.href
-                ? <a href={social.href} aria-label={social.label} title={social.label} class="action grid size-11 place-items-center rounded-full border border-rule text-2xl text-ink hover:border-accent hover:text-accent"><SocialIcon id={social.id} /></a>
+                ? <a href={social.href} target="_blank" rel="noopener noreferrer" aria-label={social.label} title={social.label} class="action grid size-11 place-items-center rounded-full border border-rule text-2xl text-ink hover:border-accent hover:text-accent"><SocialIcon id={social.id} /></a>
                 : <span role="img" aria-label={`${social.label} (${t('linkComingSoon')})`} title={`${social.label} (${t('linkComingSoon')})`} class="grid size-11 place-items-center rounded-full border border-dashed border-rule text-2xl text-muted/60"><SocialIcon id={social.id} /></span>)}
             </span>
           </div>
@@ -124,12 +132,12 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
                 <div class="col-span-4">
                   <!-- The description opens on hover, or on click/tap via the title. -->
                   <button type="button" data-calendar-toggle aria-expanded="false" aria-controls={`calendar-details-${e.index}`} class="block w-full cursor-pointer text-left font-serif text-lg leading-snug hover:text-accent aria-expanded:text-accent">{l(e.title, lang)}</button>
+                  <p class="mt-1 text-base text-muted">{l(e.place, lang)}</p>
                   {e.registerUrl
-                    ? <a href={e.registerUrl} class={`${accentLink} mt-1 inline-flex min-h-10 items-center gap-2`}>{t('register')} <Arrow direction="up-right" /></a>
-                    : <p class="mt-1 text-base text-muted">{t('registrationSoon')}</p>}
+                    ? <a href={e.registerUrl} target="_blank" rel="noopener noreferrer" class={`${accentLink} inline-flex min-h-10 items-center gap-2`}>{t('register')} <Arrow direction="up-right" /></a>
+                    : <p class="text-base text-muted">{t('registrationSoon')}</p>}
                   <div id={`calendar-details-${e.index}`} class="mt-2 hidden text-base leading-relaxed group-hover:block group-has-[[aria-expanded=true]]:block">
                     <p class="text-pretty">{l(e.description, lang)}</p>
-                    <p class="mt-1 text-muted">{l(e.place, lang)}</p>
                   </div>
                 </div>
               </li>

@@ -1,50 +1,10 @@
 ---
-import { l, useTranslations, type Lang, type Localized } from '../i18n'
+import { people } from '../data/people'
+import { l, useTranslations, type Lang } from '../i18n'
 
 interface Props { lang: Lang }
 const { lang } = Astro.props
 const t = useTranslations(lang)
-
-interface Person {
-  name: string
-  role: Localized
-  image?: string // until a photo exists, initials stand in
-  href?: string
-  bio: Localized
-}
-
-const people: Person[] = [
-  {
-    name: 'Johannes Koch',
-    role: 'Co-founder & Advisor',
-    image: `${import.meta.env.BASE_URL}people/johannes-koch.jpg`,
-    href: 'https://www.linkedin.com/in/johannes-koch-5b4620259/?locale=en_US',
-    bio: {
-      en: 'Fellowship Manager at Safe AI Germany. Previously co-founded and led the AI Safety Tübingen student group, while studying Machine Learning.',
-      de: 'Fellowship Manager bei Safe AI Germany. Hat zuvor neben dem Machine-Learning-Studium die Studierendengruppe AI Safety Tübingen mitgegründet und geleitet.',
-    },
-  },
-  {
-    name: 'Katharina Deckenbach',
-    role: 'Co-founder & Director',
-    image: `${import.meta.env.BASE_URL}people/katharina-deckenbach.jpg`,
-    href: 'https://www.linkedin.com/in/katharina-deckenbach/',
-    bio: {
-      en: 'PhD student in Sahar Abdelnabi’s COMPASS group, with a background in Cognitive Science and Machine Learning. Previously organized AI safety events in Stockholm.',
-      de: 'Promoviert in Sahar Abdelnabis COMPASS-Gruppe, mit Hintergrund in Kognitionswissenschaft und Machine Learning. Hat zuvor Events zu KI-Sicherheit in Stockholm organisiert.',
-    },
-  },
-  {
-    name: 'Aleksandra Shcherbakova',
-    role: 'Governance Lead & Pathfinder Fellow',
-    image: `${import.meta.env.BASE_URL}people/aleksandra-shcherbakova.jpg`,
-    href: 'https://www.linkedin.com/in/sasha-shcherbakova/',
-    bio: {
-      en: 'Researches middle-power AISIs as a SPAR fellow and works on the Cambridge Commentary of the AI Act at the Institute for Law and AI. Previously studied law.',
-      de: 'Forscht als SPAR Fellow an middle-power AISIs und arbeitet am Cambridge Commentary of the AI Act beim Institute for Law and AI. Hat zuvor Rechtswissenschaften studiert.',
-    },
-  },
-]
 
 const initials = (name: string) => name.split(' ').map(part => part[0]).join('')
 ---
@@ -62,7 +22,7 @@ const initials = (name: string) => name.split(' ').map(part => part[0]).join('')
           <p class="mb-1 text-sm text-muted">{l(person.role, lang)}</p>
           <h3 class="font-serif text-xl text-balance">
             {person.href
-              ? <a href={person.href} class="underline decoration-rule underline-offset-4 hover:text-accent hover:decoration-accent">{person.name}</a>
+              ? <a href={person.href} target="_blank" rel="noopener noreferrer" class="underline decoration-rule underline-offset-4 hover:text-accent hover:decoration-accent">{person.name}</a>
               : person.name}
           </h3>
           <p class="mt-3 text-pretty">{l(person.bio, lang)}</p>
@@ -72,7 +32,7 @@ const initials = (name: string) => name.split(' ').map(part => part[0]).join('')
   </div>
   <div class="mt-8 flex items-center gap-5 text-sm text-muted">
     <span>{t('supportedBy')}</span>
-    <a href="https://pathfinder.kairos-project.org/" class="block hover:opacity-80">
+    <a href="https://pathfinder.kairos-project.org/" target="_blank" rel="noopener noreferrer" class="block hover:opacity-80">
       <img src={`${import.meta.env.BASE_URL}pathfinder.webp`} alt="Pathfinder" width="400" height="209" loading="lazy" class="h-auto w-56 mix-blend-multiply dark:rounded-lg dark:bg-white dark:p-2 dark:mix-blend-normal" />
     </a>
   </div>
