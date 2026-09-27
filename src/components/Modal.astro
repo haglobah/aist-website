@@ -2,16 +2,17 @@
 interface Props {
   id: string
   title: string
+  closeLabel: string
   class?: string
 }
-const { id, title, class: className = 'w-[min(64rem,calc(100%-2rem))]' } = Astro.props
+const { id, title, closeLabel, class: className = 'w-[min(64rem,calc(100%-2rem))]' } = Astro.props
 ---
 
-<dialog id={id} aria-labelledby={`${id}-title`} data-modal class:list={[`m-auto max-h-[calc(100dvh-2rem)] max-w-none overflow-auto overscroll-contain rounded-sm border border-rule bg-sheet p-0 text-ink backdrop:bg-ink/60`, className]}>
+<dialog id={id} aria-labelledby={`${id}-title`} data-modal class:list={[`m-auto max-h-[calc(100dvh-2rem)] max-w-none overflow-auto overscroll-contain rounded-sm border border-rule bg-sheet p-0 text-ink backdrop:bg-black/60`, className]}>
   <div>
     <header class="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-rule bg-sheet px-4 py-3 sm:px-6 sm:py-4">
       <h2 class="text-balance font-serif text-2xl focus:outline-none" id={`${id}-title`} tabindex="-1" autofocus>{title}</h2>
-      <button class="grid size-11 shrink-0 cursor-pointer place-items-center hover:bg-surface" type="button" data-modal-close aria-label={`Close ${title}`}>
+      <button class="grid size-11 shrink-0 cursor-pointer place-items-center hover:bg-surface" type="button" data-modal-close aria-label={closeLabel}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
           <path d="m6 6 12 12M18 6 6 18" />
         </svg>

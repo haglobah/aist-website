@@ -1,33 +1,35 @@
 ---
 import { organizers as defaults, type Organizer } from '../data/organizers'
 import { bookingTarget } from '../scripts/booking-target'
-interface Props { organizers?: Organizer[]; id: string }
-const { organizers = defaults, id } = Astro.props
+import { l, ui, useTranslations, type Lang } from '../i18n'
+interface Props { organizers?: Organizer[]; id: string; lang: Lang }
+const { organizers = defaults, id, lang } = Astro.props
+const t = useTranslations(lang)
 // Invalid configuration should fail the build rather than publish broken or unsafe links.
 organizers.forEach(organizer => bookingTarget(organizer.booking, 'localhost'))
 ---
 
-<organizer-booking class="block">
-  <p class="text-pretty mb-5 max-w-xl">Choose an organizer to chat with. You can switch between people and book a separate call with each.</p>
+<organizer-booking class="block" data-strings={JSON.stringify(ui[lang])}>
+  <p class="text-pretty mb-5 max-w-xl">{t('bookingIntro')}</p>
   <div class="grid gap-6 md:grid-cols-3">
     <div>
-      <h3 class="text-balance mb-2 font-serif text-xl">Who would you like to meet?</h3>
+      <h3 class="text-balance mb-2 font-serif text-xl">{t('bookingWho')}</h3>
       <ul class="grid gap-2" role="list">
         {organizers.map((organizer) => (
           <li>
             <button type="button" data-organizer={JSON.stringify(organizer)} aria-pressed="false" aria-controls={`${id}-booking`} class="w-full cursor-pointer border-l-2 border-rule px-4 py-3 text-left hover:bg-surface aria-pressed:border-accent aria-pressed:bg-surface">
               <span class="block text-lg font-bold">{organizer.name}</span>
-              <span class="mt-1 block text-sm">{organizer.introduction}</span>
+              <span class="mt-1 block text-sm">{l(organizer.introduction, lang)}</span>
             </button>
           </li>
         ))}
       </ul>
     </div>
-    <section id={`${id}-booking`} aria-label="Booking" class="min-w-0 border border-rule bg-sheet md:col-span-2">
+    <section id={`${id}-booking`} aria-label={t('booking')} class="min-w-0 border border-rule bg-sheet md:col-span-2">
       <div class="p-5">
-        <h3 data-booking-heading class="text-balance font-serif text-xl">Make time for a conversation</h3>
-        <p data-booking-status role="status" class="text-pretty mt-2">Select someone to see their booking availability.</p>
-        <a data-booking-link hidden target="_blank" rel="noopener noreferrer" class="mt-3 inline-block min-h-10 underline decoration-accent underline-offset-4 hover:text-ink">Open booking page in a new tab ↗</a>
+        <h3 data-booking-heading class="text-balance font-serif text-xl">{t('bookingHeading')}</h3>
+        <p data-booking-status role="status" class="text-pretty mt-2">{t('bookingSelect')}</p>
+        <a data-booking-link hidden target="_blank" rel="noopener noreferrer" class="mt-3 inline-block min-h-10 underline decoration-accent underline-offset-4 hover:text-ink">{t('bookingOpenLink')}</a>
       </div>
       <div data-booking-embed class="empty:hidden [&_iframe]:h-[650px] [&_iframe]:w-full [&_iframe]:border-0 [&_iframe]:bg-white"></div>
     </section>

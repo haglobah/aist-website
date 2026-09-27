@@ -4,24 +4,31 @@ import '@fontsource/pt-serif/700.css'
 import '@fontsource/pt-sans/400.css'
 import '@fontsource/pt-sans/700.css'
 import '../styles/global.css'
-import { hero, site } from '../data/site'
+import { getAbsoluteLocaleUrl } from 'astro:i18n'
+import { hero } from '../data/site'
+import { languages, type Lang } from '../i18n'
 
 interface Props {
   title: string
+  lang: Lang
+  path?: string // page path without the language prefix
   description?: string
 }
 
-const { title, description = hero.text } = Astro.props
+const { title, lang, path = '', description = hero.text[lang] } = Astro.props
 ---
 
-<html lang="en" class="leading-relaxed antialiased has-[dialog[data-modal][open]]:overflow-hidden [&_:focus-visible:not([data-filter])]:outline-2 [&_:focus-visible:not([data-filter])]:outline-offset-4 [&_:focus-visible:not([data-filter])]:outline-accent">
+<html lang={lang} class="leading-relaxed antialiased has-[dialog[data-modal][open]]:overflow-hidden [&_:focus-visible:not([data-filter])]:outline-2 [&_:focus-visible:not([data-filter])]:outline-offset-4 [&_:focus-visible:not([data-filter])]:outline-accent">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
-    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.ico`} />
+    <link rel="icon" type="image/png" href={`${import.meta.env.BASE_URL}favicon.png`} />
+    <link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL}apple-touch-icon.png`} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    {Object.keys(languages).map((code) => (
+      <link rel="alternate" hreflang={code} href={getAbsoluteLocaleUrl(code, path)} />
+    ))}
     <title>{title}</title>
   </head>
   <body class="min-h-dvh overflow-x-clip bg-paper text-ink in-[html:has(dialog[data-modal][open])]:pe-[var(--modal-scrollbar-width,0px)]">

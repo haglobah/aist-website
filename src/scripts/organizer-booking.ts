@@ -1,5 +1,6 @@
 import type { Organizer } from '../data/organizers'
 import { bookingTarget } from './booking-target'
+import type { ui } from '../i18n'
 
 type EmbedCommand = (command: string, options?: Record<string, unknown>) => void
 declare global {
@@ -49,6 +50,7 @@ class OrganizerBooking extends HTMLElement {
     const status = this.querySelector<HTMLElement>('[data-booking-status]')!
     const link = this.querySelector<HTMLAnchorElement>('[data-booking-link]')!
     const embed = this.querySelector<HTMLElement>('[data-booking-embed]')!
+    const strings: typeof ui.en = JSON.parse(this.dataset.strings!)
     let version = 0
 
     const reset = () => {
@@ -57,8 +59,8 @@ class OrganizerBooking extends HTMLElement {
       link.hidden = true
       link.removeAttribute('href')
       buttons.forEach(button => button.setAttribute('aria-pressed', 'false'))
-      heading.textContent = 'Make time for a conversation'
-      status.textContent = 'Select someone to see their booking availability.'
+      heading.textContent = strings.bookingHeading
+      status.textContent = strings.bookingSelect
     }
     // The picker can move between an inline section and a dialog on resize.
     document.addEventListener('close', (event) => {
@@ -70,24 +72,24 @@ class OrganizerBooking extends HTMLElement {
       reset()
       const selection = version
       button.setAttribute('aria-pressed', 'true')
-      heading.textContent = `Book with ${organizer.name}`
+      heading.textContent = strings.bookingWith.replace('{name}', organizer.name)
       try {
         const target = bookingTarget(organizer.booking, window.location.host)
         if (target.kind === 'pending') {
-          status.textContent = 'Booking link coming soon. Please check back later.'
+          status.textContent = strings.bookingPending
           return
         }
         if (organizer.booking.provider === 'pending') return
         link.href = organizer.booking.url
         link.hidden = false
         if (target.kind === 'link') {
-          status.textContent = 'Use the booking page to choose a time.'
+          status.textContent = strings.bookingUseLink
           return
         }
-        status.textContent = 'Choose a time below. If the form does not appear, open the booking page in a new tab.'
+        status.textContent = strings.bookingChoose
         if (target.kind === 'iframe') {
           const iframe = document.createElement('iframe')
-          iframe.title = `Book a call with ${organizer.name}`
+          iframe.title = strings.bookingIframe.replace('{name}', organizer.name)
           iframe.src = target.url
           embed.append(iframe)
           return
@@ -115,7 +117,7 @@ class OrganizerBooking extends HTMLElement {
         console.error('Booking form could not be opened', error)
         if (selection !== version) return
         embed.replaceChildren()
-        status.textContent = 'The booking form could not load. Please use the booking page or try again.'
+        status.textContent = strings.bookingFailed
       }
     }))
   }

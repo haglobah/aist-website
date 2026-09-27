@@ -1,0 +1,144 @@
+// Languages and interface strings. Page content lives in src/data/.
+
+export const languages = { en: 'English', de: 'Deutsch' } as const
+export type Lang = keyof typeof languages
+export const defaultLang: Lang = 'en'
+
+// Proper names stay plain strings; everything else carries both languages.
+export type Localized = string | Record<Lang, string>
+
+export function l(value: Localized, lang: Lang) {
+  return typeof value === 'string' ? value : value[lang]
+}
+
+export function isLang(value: string | undefined): value is Lang {
+  return !!value && value in languages
+}
+
+export const ui = {
+  en: {
+    mainNavigation: 'Main navigation',
+    menu: 'Menu',
+    legalNotice: 'Legal notice',
+    privacyPolicy: 'Privacy policy',
+    switchLanguage: 'Auf Deutsch lesen',
+    linkComingSoon: 'link coming soon',
+    eventTypes: 'Event types',
+    filterHint: 'Filter the calendar; select again to show all events',
+    archiveLink: 'Archive: papers we covered & photos',
+    register: 'Register',
+    registrationSoon: 'Registration opens soon',
+    archiveTitle: 'Archive',
+    archiveIntro: 'Papers we have discussed, talks we have hosted and socials we have enjoyed so far.',
+    backHome: 'Back to the home page',
+    photos: 'Photos',
+    pastEvents: 'Past events',
+    noEvents: 'No events of this type are currently scheduled.',
+    close: 'Close {title}',
+    aboutUs: 'About us',
+    aboutUsIntro: 'Meet the people behind AI Safety Tübingen',
+    organizer: 'Organizer',
+    supportedBy: 'Supported by',
+    resources: 'Resources',
+    resourcesIntro: 'There is a lot of content dedicated to AI Safety which might feel overwhelming. Here is an overview of solid starting points:',
+    fellowships: 'Fellowships',
+    fellowshipsIntro: 'Fellowships are a great way to try AI safety work, from technical research to policy and governance. There are full-time and part-time options. Applications can be very competitive, so don’t be discouraged if your first attempt doesn’t work out.',
+    fellowshipsHelp: 'Unsure which fellowship fits? We’re happy to help you find your way.',
+    askForAdvice: 'Ask us for advice',
+    careerHeading: 'Thinking about your career?',
+    careerText: 'Explore ways to make AI safety part of your work.',
+    bookOneOnOne: 'Book a 1:1',
+    bookingIntro: 'Choose an organizer to chat with. You can switch between people and book a separate call with each.',
+    bookingWho: 'Who would you like to meet?',
+    booking: 'Booking',
+    bookingHeading: 'Make time for a conversation',
+    bookingSelect: 'Select someone to see their booking availability.',
+    bookingOpenLink: 'Open booking page in a new tab ↗',
+    bookingWith: 'Book with {name}',
+    bookingPending: 'Booking link coming soon. Please check back later.',
+    bookingUseLink: 'Use the booking page to choose a time.',
+    bookingChoose: 'Choose a time below. If the form does not appear, open the booking page in a new tab.',
+    bookingIframe: 'Book a call with {name}',
+    bookingFailed: 'The booking form could not load. Please use the booking page or try again.',
+    contactHeading: 'Tell us everything!',
+    contactText: 'We want to know your guest speaker, paper or restaurant suggestions, your feedback and anything else that is on your mind. You want to collab, you want to found your own AI Safety group – please, get in touch!',
+    contactButton: 'Write to us',
+    coffeeHeading: '1:1 coffee chats',
+    coffeeText: 'You are considering small or big changes in your studies or career in general that are related to AI Safety? You do not know how your next steps should look like or are not sure about how the field works? Let us buy you a drink and chat!',
+    coffeeButton: 'Ask for a coffee chat',
+    messageLabel: 'What do you want us to know?',
+    feedback: 'Feedback',
+    message: 'Message',
+    name: 'Name',
+    email: 'Email',
+    optional: '(optional)',
+    sendMessage: 'Send message',
+    sendingUnavailable: 'Sending is not available yet.',
+  },
+  de: {
+    mainNavigation: 'Hauptnavigation',
+    menu: 'Menü',
+    legalNotice: 'Impressum',
+    privacyPolicy: 'Datenschutz',
+    switchLanguage: 'Read in English',
+    linkComingSoon: 'Link folgt',
+    eventTypes: 'Veranstaltungsarten',
+    filterHint: 'Kalender filtern; erneut auswählen, um alle Termine zu zeigen',
+    archiveLink: 'Archiv: bisherige Paper & Fotos',
+    register: 'Anmelden',
+    registrationSoon: 'Anmeldung folgt',
+    archiveTitle: 'Archiv',
+    archiveIntro: 'Paper, die wir diskutiert haben, Vorträge, die wir organisiert haben, und Socials, die wir genossen haben.',
+    backHome: 'Zurück zur Startseite',
+    photos: 'Fotos',
+    pastEvents: 'Vergangene Events',
+    noEvents: 'Für diese Art sind gerade keine Termine geplant.',
+    close: '{title} schließen',
+    aboutUs: 'Über uns',
+    aboutUsIntro: 'Die Menschen hinter AI Safety Tübingen',
+    organizer: 'Organisation',
+    supportedBy: 'Unterstützt von',
+    resources: 'Ressourcen',
+    resourcesIntro: 'Es gibt überwältigend viel Content zu AI Safety. Hier ein paar Einstiegsmöglichkeiten:',
+    fellowships: 'Fellowships',
+    fellowshipsIntro: 'Fellowships sind eine gute Möglichkeit, Arbeit in der KI-Sicherheit auszuprobieren, von technischer Forschung bis zu Policy und Governance. Es gibt Vollzeit- und Teilzeitangebote. Die Bewerbungen sind oft sehr kompetitiv, lass dich also nicht entmutigen, wenn es beim ersten Mal nicht klappt.',
+    fellowshipsHelp: 'Unsicher, welches Fellowship passt? Wir helfen dir gern, deinen Weg zu finden.',
+    askForAdvice: 'Frag uns um Rat',
+    careerHeading: 'Denkst du über deine Karriere nach?',
+    careerText: 'Entdecke Wege, KI-Sicherheit zu einem Teil deiner Arbeit zu machen.',
+    bookOneOnOne: '1:1-Gespräch buchen',
+    bookingIntro: 'Wähle aus, mit wem aus dem Orga-Team du sprechen möchtest. Du kannst zwischen Personen wechseln und mit jeder ein eigenes Gespräch buchen.',
+    bookingWho: 'Wen möchtest du treffen?',
+    booking: 'Buchung',
+    bookingHeading: 'Nimm dir Zeit für ein Gespräch',
+    bookingSelect: 'Wähle jemanden aus, um freie Termine zu sehen.',
+    bookingOpenLink: 'Buchungsseite in neuem Tab öffnen ↗',
+    bookingWith: 'Termin mit {name}',
+    bookingPending: 'Der Buchungslink folgt bald. Schau später noch einmal vorbei.',
+    bookingUseLink: 'Wähle auf der Buchungsseite einen Termin.',
+    bookingChoose: 'Wähle unten einen Termin. Falls das Formular nicht erscheint, öffne die Buchungsseite in einem neuen Tab.',
+    bookingIframe: 'Gespräch mit {name} buchen',
+    bookingFailed: 'Das Buchungsformular konnte nicht geladen werden. Nutze die Buchungsseite oder versuche es erneut.',
+    contactHeading: 'Erzähl uns alles!',
+    contactText: 'Wir wollen Vorschläge zu Events, Papern und Restaurants und auch sonst alles Feedback, was wir kriegen können. Wir haben mega Lust, neuen Unigruppen zu helfen und mit bestehenden zu kooperieren, meldet euch!',
+    contactButton: 'Schreib uns',
+    coffeeHeading: '1:1-Coffee-Chats',
+    coffeeText: 'Du überlegst, kleine oder große Schritte in deinem Studium oder deiner Karriere hin zu mehr KI-Sicherheit vorzunehmen? Du bist dir nicht sicher, was deine nächsten Schritte sein sollten und wie das Feld funktioniert? Lass uns dich auf ein Getränk deiner Wahl einladen und quatschen!',
+    coffeeButton: 'Coffee-Chat anfragen',
+    messageLabel: 'Was sollen wir wissen?',
+    feedback: 'Feedback',
+    message: 'Nachricht',
+    name: 'Name',
+    email: 'E-Mail',
+    optional: '(optional)',
+    sendMessage: 'Nachricht senden',
+    sendingUnavailable: 'Senden ist noch nicht möglich.',
+  },
+} satisfies Record<Lang, Record<string, string>>
+
+export type UIKey = keyof typeof ui.en
+
+export function useTranslations(lang: Lang) {
+  return (key: UIKey, values: Record<string, string> = {}) =>
+    ui[lang][key].replace(/\{(\w+)\}/g, (_, name) => values[name] ?? `{${name}}`)
+}

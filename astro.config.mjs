@@ -7,6 +7,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://haglobah.github.io',
   base: '/aist-website/',
+  i18n: {
+    locales: ['en', 'de'],
+    defaultLocale: 'en',
+  },
   vite: {
     plugins: [tailwindcss()],
     server: {

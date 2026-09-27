@@ -1,14 +1,15 @@
 ---
 import OuterLink from './OuterLink.astro'
 import type { Resource } from '../data/resources'
-interface Props { links: Resource[] }
-const { links } = Astro.props
+import { l, type Lang } from '../i18n'
+interface Props { links: Resource[]; lang: Lang }
+const { links, lang } = Astro.props
 ---
 
-<ul role="list" class="divide-y divide-rule/60">
+<ul role="list">
   {links.map(link => (
     <li>
-      <OuterLink href={link.href} label={link.label} note={link.note} />
+      <OuterLink href={link.href} label={l(link.label, lang)} note={link.note && l(link.note, lang)} />
     </li>
   ))}
 </ul>
