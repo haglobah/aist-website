@@ -8,7 +8,7 @@ interface Props {
 }
 const { id, lang, emailRequired = false } = Astro.props
 const t = useTranslations(lang)
-const field = 'block w-full min-w-0 rounded-sm border border-rule bg-sheet px-3 py-2 font-sans text-base'
+const field = 'block w-full min-w-0 border border-rule bg-sheet px-3 py-2 font-sans text-base'
 ---
 
 <form id={`${id}-form`} aria-describedby={`${id}-status`}>
@@ -19,7 +19,7 @@ const field = 'block w-full min-w-0 rounded-sm border border-rule bg-sheet px-3 
   <label class="mt-4 mb-2 block text-sm font-bold" for={`${id}-message`}>{t('messageLabel')}</label>
   <textarea class={`${field} min-h-32 resize-y`} id={`${id}-message`} name="message" rows="6" required></textarea>
   <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
-    <button class="min-h-11 cursor-not-allowed rounded-sm border border-rule bg-surface px-4 py-2 text-muted" type="submit" disabled>{t('sendMessage')}</button>
+    <button class="min-h-11 cursor-not-allowed border border-rule bg-surface px-4 py-2 text-muted" type="submit" disabled>{t('sendMessage')}</button>
     <p class="text-pretty text-sm" id={`${id}-status`}>{t('sendingUnavailable')}</p>
   </div>
 </form>

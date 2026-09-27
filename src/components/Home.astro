@@ -18,8 +18,8 @@ interface Props { lang: Lang }
 const { lang } = Astro.props
 const t = useTranslations(lang)
 
-const pillButton = 'mt-4 inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full border border-ink px-5 py-2 text-base text-ink hover:bg-ink/5'
-const disclosureSummary = 'action -mx-3 flex cursor-pointer list-none items-center justify-between gap-4 rounded-lg px-3 py-3 hover:bg-surface [&::-webkit-details-marker]:hidden'
+const pillButton = 'mt-4 inline-flex min-h-11 cursor-pointer items-center justify-center border border-ink px-5 py-2 text-base text-ink hover:bg-ink/5'
+const disclosureSummary = 'action -mx-3 flex cursor-pointer list-none items-center justify-between gap-4 px-3 py-3 hover:bg-surface [&::-webkit-details-marker]:hidden'
 const accentLink = 'text-accent underline decoration-accent/40 underline-offset-4 hover:text-ink hover:decoration-accent'
 ---
 
@@ -65,8 +65,8 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
             <span><Emphasis text={l(hangout.stayUpToDate, lang)} /></span>
             <span class="flex gap-2">
               {socials.map((social) => social.href
-                ? <a href={social.href} target="_blank" rel="noopener noreferrer" aria-label={social.label} title={social.label} class="action grid size-11 place-items-center rounded-full border border-rule text-2xl text-ink hover:border-accent hover:text-accent"><SocialIcon id={social.id} /></a>
-                : <span role="img" aria-label={`${social.label} (${t('linkComingSoon')})`} title={`${social.label} (${t('linkComingSoon')})`} class="grid size-11 place-items-center rounded-full border border-dashed border-rule text-2xl text-muted/60"><SocialIcon id={social.id} /></span>)}
+                ? <a href={social.href} target="_blank" rel="noopener noreferrer" aria-label={social.label} title={social.label} class="action grid size-11 place-items-center border border-rule text-2xl text-ink hover:border-accent hover:text-accent"><SocialIcon id={social.id} /></a>
+                : <span role="img" aria-label={`${social.label} (${t('linkComingSoon')})`} title={`${social.label} (${t('linkComingSoon')})`} class="grid size-11 place-items-center border border-dashed border-rule text-2xl text-muted/60"><SocialIcon id={social.id} /></span>)}
             </span>
           </div>
           <details name="hangout" class="group flex flex-1 flex-col justify-center py-3">
@@ -136,7 +136,7 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
                   {e.registerUrl
                     ? <a href={e.registerUrl} target="_blank" rel="noopener noreferrer" class={`${accentLink} inline-flex min-h-10 items-center gap-2`}>{t('register')} <Arrow direction="up-right" /></a>
                     : <p class="text-base text-muted">{t('registrationSoon')}</p>}
-                  <div id={`calendar-details-${e.index}`} class="mt-2 hidden text-base leading-relaxed group-hover:block group-has-[[aria-expanded=true]]:block">
+                  <div id={`calendar-details-${e.index}`} class="reveal mt-2 hidden text-base leading-relaxed group-hover:block group-has-[[aria-expanded=true]]:block">
                     <p class="text-pretty">{l(e.description, lang)}</p>
                   </div>
                 </div>

@@ -36,7 +36,7 @@ function formatDate(iso: string) {
           <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {photos.map((photo) => (
               <figure>
-                <img src={`${import.meta.env.BASE_URL}${photo.src}`} alt={l(photo.alt, lang)} loading="lazy" class="aspect-[4/3] w-full rounded-lg object-cover" />
+                <img src={`${import.meta.env.BASE_URL}${photo.src}`} alt={l(photo.alt, lang)} loading="lazy" class="aspect-[4/3] w-full object-cover" />
                 {photo.caption && <figcaption class="mt-2 text-sm text-muted">{l(photo.caption, lang)}</figcaption>}
               </figure>
             ))}

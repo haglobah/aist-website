@@ -13,9 +13,3 @@ const { href, label, note } = Astro.props
     {note && <span class="mt-0.5 block text-sm text-muted">{note}</span>}
   </span>
 </a>
-
-<style>
-  @media (prefers-reduced-motion: no-preference) {
-    .link-label { transition: text-decoration-color 160ms ease-out; }
-  }
-</style>

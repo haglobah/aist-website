@@ -7,7 +7,7 @@ interface Props { lang: Lang }
 const { lang } = Astro.props
 const t = useTranslations(lang)
 
-const groupClass = 'relative isolate p-4 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:bg-paper before:opacity-0 before:blur-[8px] before:content-[\'\'] hover:before:opacity-100 motion-safe:before:transition-opacity motion-safe:before:duration-160 motion-safe:before:ease-out'
+const groupClass = 'relative isolate p-4 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:bg-paper before:opacity-0 before:blur-[8px] before:content-[\'\'] hover:before:opacity-100 motion-safe:before:transition-opacity'
 const groupGrid = 'mt-6 -mx-4 grid gap-x-10 gap-y-2 sm:grid-cols-2 lg:grid-cols-3'
 ---
 
