@@ -1,0 +1,14 @@
+---
+import Modal from './Modal.astro'
+import ContactForm from './ContactForm.astro'
+import { useTranslations, type Lang } from '../i18n'
+
+interface Props { lang: Lang }
+const { lang } = Astro.props
+const t = useTranslations(lang)
+---
+
+<!-- Opened by any [data-modal-open="coffee-modal"] trigger, e.g. in the “Call us maybe!” block. -->
+<Modal class="w-[min(40rem,calc(100%-2rem))]" id="coffee-modal" title={t('coffeeHeading')} closeLabel={t('close', { title: t('coffeeHeading') })}>
+  <ContactForm id="coffee" lang={lang} emailRequired />
+</Modal>

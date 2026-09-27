@@ -1,70 +1,26 @@
 ---
 import Modal from './Modal.astro'
+import ContactForm from './ContactForm.astro'
+import { useTranslations, type Lang } from '../i18n'
+
+interface Props { lang: Lang }
+const { lang } = Astro.props
+const t = useTranslations(lang)
 ---
 
-<section class="scroll-mt-6 border-t border-rule pt-8" id="feedback" aria-labelledby="feedback-heading">
-  <h2 id="feedback-heading" class="text-balance mb-5 font-serif text-2xl">Contact us / Give feedback</h2>
-  <form id="feedback-form" aria-label="Feedback" aria-describedby="feedback-status">
-    <label class="mb-2 block text-sm font-bold" for="feedback-message">Message</label>
-    <textarea class="block w-full min-w-0 rounded-sm border border-rule bg-sheet px-3 py-2 font-sans text-base min-h-32 resize-y" id="feedback-message" name="message" rows="6" required></textarea>
-    <div class="mt-4 grid grid-cols-2 gap-4">
-      <div class="min-w-0">
-        <label class="mb-2 block text-sm font-bold" for="feedback-name">Name <span class="text-sm font-normal text-muted">(optional)</span></label>
-        <input class="block w-full min-w-0 rounded-sm border border-rule bg-sheet px-3 py-2 font-sans text-base" id="feedback-name" name="name" autocomplete="name" />
-      </div>
-      <div class="min-w-0">
-        <label class="mb-2 block text-sm font-bold" for="feedback-email">Email <span class="text-sm font-normal text-muted">(optional)</span></label>
-        <input class="block w-full min-w-0 rounded-sm border border-rule bg-sheet px-3 py-2 font-sans text-base" id="feedback-email" name="email" type="email" autocomplete="email" />
-      </div>
-    </div>
-    <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
-      <button class="min-h-11 cursor-not-allowed rounded-sm border border-rule bg-surface px-4 py-2 text-muted" type="submit" disabled>Send message</button>
-      <p class="text-pretty text-sm" id="feedback-status">Sending is not available yet.</p>
-    </div>
-  </form>
-</section>
-<Modal class="w-[min(40rem,calc(100%-2rem))]" id="feedback-modal" title="Contact us / Give feedback">
-  <div data-feedback-slot></div>
+<!-- Opened by any [data-feedback-open] trigger, e.g. in the “Call us maybe!” block. -->
+<Modal class="w-[min(40rem,calc(100%-2rem))]" id="feedback-modal" title={t('contactHeading')} closeLabel={t('close', { title: t('contactHeading') })}>
+  <ContactForm id="feedback" lang={lang} />
 </Modal>
 
 <script>
-  const section = document.querySelector<HTMLElement>('#feedback')!
-  const form = document.querySelector<HTMLFormElement>('#feedback-form')!
   const dialog = document.querySelector<HTMLDialogElement>('#feedback-modal')!
-  const slot = dialog.querySelector<HTMLElement>('[data-feedback-slot]')!
-  const desktop = window.matchMedia('(min-width: 48rem)')
-  const triggers = document.querySelectorAll<HTMLElement>('[data-feedback-open]')
-  const message = form.querySelector<HTMLTextAreaElement>('#feedback-message')!
-  let prefilledHeading = ''
+  const message = dialog.querySelector<HTMLTextAreaElement>('#feedback-message')!
 
-  // Move the same form to preserve drafts when the viewport changes.
-  function updateLayout() {
-    if (!desktop.matches && dialog.open) dialog.close()
-    ;(desktop.matches ? slot : section).append(form)
-    section.hidden = desktop.matches
-    triggers.forEach(trigger => {
-      trigger.setAttribute('aria-controls', desktop.matches ? dialog.id : section.id)
-      if (desktop.matches) trigger.setAttribute('aria-haspopup', 'dialog')
-      else trigger.removeAttribute('aria-haspopup')
-    })
-  }
-  updateLayout()
-  desktop.addEventListener('change', updateLayout)
-  triggers.forEach(trigger => trigger.addEventListener('click', event => {
+  document.querySelectorAll<HTMLElement>('[data-feedback-open]').forEach(trigger => trigger.addEventListener('click', event => {
     event.preventDefault()
-    const eventType = trigger.dataset.feedbackType
-    if (eventType) {
-      const draft = prefilledHeading && message.value.startsWith(prefilledHeading)
-        ? message.value.slice(prefilledHeading.length)
-        : message.value
-      prefilledHeading = `${eventType}:\n`
-      message.value = prefilledHeading + draft
-    }
-    if (desktop.matches) dialog.showModal()
-    else section.scrollIntoView({ block: 'start' })
-    message.focus({ preventScroll: !desktop.matches })
+    dialog.showModal()
+    message.focus()
     message.setSelectionRange(message.value.length, message.value.length)
   }))
-  // No navigation or transmission, including implicit submission via Enter.
-  form.addEventListener('submit', event => event.preventDefault())
 </script>

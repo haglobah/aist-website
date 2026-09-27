@@ -1,0 +1,30 @@
+---
+import { useTranslations, type Lang } from '../i18n'
+
+interface Props {
+  id: string
+  lang: Lang
+  emailRequired?: boolean
+}
+const { id, lang, emailRequired = false } = Astro.props
+const t = useTranslations(lang)
+const field = 'block w-full min-w-0 rounded-sm border border-rule bg-sheet px-3 py-2 font-sans text-base'
+---
+
+<form id={`${id}-form`} aria-describedby={`${id}-status`}>
+  <label class="mb-2 block text-sm font-bold" for={`${id}-email`}>
+    {t('email')} {!emailRequired && <span class="text-sm font-normal text-muted">{t('optional')}</span>}
+  </label>
+  <input class={field} id={`${id}-email`} name="email" type="email" autocomplete="email" required={emailRequired} />
+  <label class="mt-4 mb-2 block text-sm font-bold" for={`${id}-message`}>{t('messageLabel')}</label>
+  <textarea class={`${field} min-h-32 resize-y`} id={`${id}-message`} name="message" rows="6" required></textarea>
+  <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
+    <button class="min-h-11 cursor-not-allowed rounded-sm border border-rule bg-surface px-4 py-2 text-muted" type="submit" disabled>{t('sendMessage')}</button>
+    <p class="text-pretty text-sm" id={`${id}-status`}>{t('sendingUnavailable')}</p>
+  </div>
+</form>
+
+<script>
+  // No navigation or transmission, including implicit submission via Enter.
+  document.querySelectorAll('form').forEach(form => form.addEventListener('submit', event => event.preventDefault()))
+</script>
