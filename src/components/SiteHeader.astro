@@ -16,23 +16,24 @@ const navLink = 'inline-flex min-h-10 items-center text-ink underline decoration
 
 <header class="flex items-center justify-between gap-x-4 border-b border-rule py-4 sm:gap-x-8 sm:py-5">
   <a class="block shrink-0" href={home}>
-    <img class="block h-14 w-auto sm:h-18 dark:invert" src={`${import.meta.env.BASE_URL}logo.webp`} width="720" height="510" alt={site.name} />
+    <!-- The logo has a white background; blending drops it on the tinted paper, and in dark mode after inverting. -->
+    <img class="block h-14 w-auto mix-blend-multiply sm:h-18 dark:mix-blend-screen dark:invert" src={`${import.meta.env.BASE_URL}logo.svg`} width="802" height="444" alt={site.name} />
   </a>
   <div class="flex items-center gap-4 sm:gap-6">
-    <nav aria-label={t('mainNavigation')} class="hidden gap-6 text-base lg:flex">
+    <nav aria-label={t('mainNavigation')} class="hidden gap-5 text-base md:flex lg:gap-6">
       {links.map((link) => <a class={navLink} href={`${home}${link.href}`}>{l(link.label, lang)}</a>)}
     </nav>
     <LanguageSwitch lang={lang} path={path} />
     <!-- Narrow screens fold the navigation into a menu. -->
-    <details class="group relative lg:hidden" data-nav-menu>
-      <summary class="grid size-11 cursor-pointer list-none place-items-center rounded-full hover:bg-surface [&::-webkit-details-marker]:hidden" aria-label={t('menu')}>
+    <details class="group relative md:hidden" data-nav-menu>
+      <summary class="grid size-11 cursor-pointer list-none place-items-center hover:bg-surface [&::-webkit-details-marker]:hidden" aria-label={t('menu')}>
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
           <path class="group-open:hidden" d="M4 7h16M4 12h16M4 17h16" />
           <path class="hidden group-open:block" d="m6 6 12 12M18 6 6 18" />
         </svg>
       </summary>
-      <nav aria-label={t('mainNavigation')} class="absolute top-full right-0 z-20 mt-2 flex w-56 flex-col rounded-xl border border-rule bg-sheet p-2 shadow-lg">
-        {links.map((link) => <a class="rounded-lg px-4 py-3 text-ink hover:bg-surface" href={`${home}${link.href}`}>{l(link.label, lang)}</a>)}
+      <nav aria-label={t('mainNavigation')} class="absolute top-full right-0 z-20 mt-2 flex w-56 flex-col border border-rule bg-sheet p-2 shadow-lg">
+        {links.map((link) => <a class="px-4 py-3 text-ink hover:bg-surface" href={`${home}${link.href}`}>{l(link.label, lang)}</a>)}
       </nav>
     </details>
   </div>
