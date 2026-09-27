@@ -1,0 +1,74 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n'
+import Base from '../layouts/Base.astro'
+import SiteHeader from './SiteHeader.astro'
+import Arrow from './Arrow.astro'
+import SiteFooter from './SiteFooter.astro'
+import { kindLabels, pastEvents, photos } from '../data/archive'
+import { parts, site } from '../data/site'
+import { l, useTranslations, type Lang } from '../i18n'
+
+interface Props { lang: Lang }
+const { lang } = Astro.props
+const t = useTranslations(lang)
+const path = 'archive/'
+
+function formatDate(iso: string) {
+  const d = parts(iso, lang)
+  return lang === 'de' ? `${d.day}. ${d.month} ${d.year}` : `${d.day} ${d.month} ${d.year}`
+}
+---
+
+<Base title={`${t('archiveTitle')} · ${site.name}`} lang={lang} path={path} description={t('archiveIntro')}>
+  <div class="mx-auto max-w-6xl px-5 pb-16 sm:px-8 lg:px-10">
+    <SiteHeader lang={lang} path={path} />
+
+    <main class="pt-10 md:pt-14">
+      <a href={getRelativeLocaleUrl(lang)} class="inline-flex min-h-10 items-center gap-2 text-accent underline decoration-accent/40 underline-offset-4 hover:text-ink">
+        <Arrow direction="left" /> {t('backHome')}
+      </a>
+      <h1 class="mt-4 text-balance font-serif text-4xl font-bold md:text-5xl">{t('archiveTitle')}</h1>
+      <p class="mt-4 max-w-2xl text-pretty text-lg">{t('archiveIntro')}</p>
+
+      {photos.length > 0 && (
+        <section aria-labelledby="photos-heading" class="section-rule">
+          <h2 id="photos-heading" class="font-serif text-3xl">{t('photos')}</h2>
+          <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {photos.map((photo) => (
+              <figure>
+                <img src={`${import.meta.env.BASE_URL}${photo.src}`} alt={l(photo.alt, lang)} loading="lazy" class="aspect-[4/3] w-full rounded-lg object-cover" />
+                {photo.caption && <figcaption class="mt-2 text-sm text-muted">{l(photo.caption, lang)}</figcaption>}
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section aria-labelledby="past-events-heading" class="section-rule">
+        <h2 id="past-events-heading" class="font-serif text-3xl">{t('pastEvents')}</h2>
+        <ol role="list" class="mt-6 divide-y divide-rule">
+          {pastEvents.map((event) => (
+            <li class="grid gap-1 py-4 sm:grid-cols-[11rem_1fr] sm:gap-6">
+              <p class="text-base text-muted tabular-nums">
+                <time datetime={event.date}>{formatDate(event.date)}</time>
+                <span class="block text-sm">{l(kindLabels[event.kind], lang)}</span>
+              </p>
+              <div>
+                <p class="text-pretty font-serif text-lg leading-snug">{event.title}</p>
+                {event.by && <p class="mt-1 text-muted">{event.by}</p>}
+                {event.links && (
+                  <p class="mt-1 flex flex-wrap gap-x-5">
+                    {event.links.map((link) => (
+                      <a href={link.href} class="inline-flex min-h-10 items-center gap-1.5 text-accent underline decoration-accent/40 underline-offset-4 hover:text-ink">{link.label} <Arrow direction="up-right" /></a>
+                    ))}
+                  </p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+    </main>
+    <SiteFooter lang={lang} />
+  </div>
+</Base>
