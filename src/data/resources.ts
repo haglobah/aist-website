@@ -1,10 +1,12 @@
 // Adapted from https://aisafetytuebingen.com/resources/
-export interface Resource { label: string; href: string; note?: string }
-export interface ResourceGroup { title: string; links: Resource[]; note?: string }
+import type { Localized } from '../i18n'
+
+export interface Resource { label: Localized; href: string; note?: Localized }
+export interface ResourceGroup { title: Localized; links: Resource[]; note?: Localized }
 
 export const resourceGroups: ResourceGroup[] = [
   {
-    "title": "Introduction & overview",
+    "title": { "en": "Introduction & overview", "de": "Einführung & Überblick" },
     "links": [
       {
         "label": "AI Safety Map",
@@ -25,7 +27,7 @@ export const resourceGroups: ResourceGroup[] = [
     ]
   },
   {
-    "title": "Courses",
+    "title": { "en": "Courses", "de": "Kurse" },
     "links": [
       {
         "label": "BlueDot Impact",
@@ -38,7 +40,7 @@ export const resourceGroups: ResourceGroup[] = [
     ]
   },
   {
-    "title": "Forums & discussion",
+    "title": { "en": "Forums & discussion", "de": "Foren & Diskussion" },
     "links": [
       {
         "label": "LessWrong",
@@ -83,7 +85,7 @@ export const resourceGroups: ResourceGroup[] = [
         "href": "https://blog.redwoodresearch.org/"
       }
     ],
-    "note": "Many AI safety organizations and researchers also publish their own blogs and writing."
+    "note": { "en": "Many AI safety organizations and researchers also publish their own blogs and writing.", "de": "Viele Organisationen und Forschende im Bereich KI-Sicherheit veröffentlichen auch eigene Blogs und Texte." }
   },
   {
     "title": "YouTube",
@@ -106,7 +108,7 @@ export const resourceGroups: ResourceGroup[] = [
 
 export const fellowshipGroups: ResourceGroup[] = [
   {
-    "title": "Full-time",
+    "title": { "en": "Full-time", "de": "Vollzeit" },
     "links": [
       {
         "label": "MATS",
@@ -133,10 +135,10 @@ export const fellowshipGroups: ResourceGroup[] = [
         "href": "https://alignment.anthropic.com/2024/anthropic-fellows-program/"
       }
     ],
-    "note": "Typically 12 weeks"
+    "note": { "en": "Typically 12 weeks", "de": "Meist 12 Wochen" }
   },
   {
-    "title": "Part-time",
+    "title": { "en": "Part-time", "de": "Teilzeit" },
     "links": [
       {
         "label": "SPAR",
@@ -153,12 +155,12 @@ export const fellowshipGroups: ResourceGroup[] = [
       {
         "label": "Athena",
         "href": "https://researchathena.org/",
-        "note": "For women and non-binary people"
+        "note": { "en": "For women and non-binary people", "de": "Für Frauen und nicht-binäre Personen" }
       }
     ]
   },
   {
-    "title": "Upskilling programs",
+    "title": { "en": "Upskilling programs", "de": "Weiterbildungsprogramme" },
     "links": [
       {
         "label": "ARENA",
@@ -192,17 +194,17 @@ export const fellowshipGroups: ResourceGroup[] = [
     ]
   },
   {
-    "title": "More opportunities",
+    "title": { "en": "More opportunities", "de": "Weitere Möglichkeiten" },
     "links": [
       {
         "label": "Apart",
         "href": "https://apartresearch.com/fellowships",
-        "note": "Fellowships & hackathons"
+        "note": { "en": "Fellowships & hackathons", "de": "Fellowships & Hackathons" }
       },
       {
         "label": "Tarbell",
         "href": "https://www.tarbellcenter.org/",
-        "note": "Journalism"
+        "note": { "en": "Journalism", "de": "Journalismus" }
       },
       {
         "label": "Global Challenges Project",
@@ -219,10 +221,10 @@ export const fellowshipGroups: ResourceGroup[] = [
       {
         "label": "EA conferences",
         "href": "https://www.effectivealtruism.org/ea-global/events",
-        "note": "AI safety talks, collaborators & community"
+        "note": { "en": "AI safety talks, collaborators & community", "de": "Vorträge zu KI-Sicherheit, Mitstreiter*innen & Community" }
       }
     ]
   }
 ]
 
-export const careerAdvice: Resource = {"label": "80,000 hours career advice", "href": "https://80000hours.org/speak-with-us/"}
+export const careerAdvice: Resource = {"label": { "en": "80,000 hours career advice", "de": "Karriereberatung von 80,000 Hours" }, "href": "https://80000hours.org/speak-with-us/"}
