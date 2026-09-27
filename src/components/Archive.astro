@@ -59,7 +59,7 @@ function formatDate(iso: string) {
                 {event.links && (
                   <p class="mt-1 flex flex-wrap gap-x-5">
                     {event.links.map((link) => (
-                      <a href={link.href} class="inline-flex min-h-10 items-center gap-1.5 text-accent underline decoration-accent/40 underline-offset-4 hover:text-ink">{link.label} <Arrow direction="up-right" /></a>
+                      <a href={link.href} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-10 items-center gap-1.5 text-accent underline decoration-accent/40 underline-offset-4 hover:text-ink">{link.label} <Arrow direction="up-right" /></a>
                     ))}
                   </p>
                 )}
