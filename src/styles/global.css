@@ -4,15 +4,44 @@
   --font-serif: 'PT Serif', Georgia, serif;
   --font-sans: 'PT Sans', 'Helvetica Neue', Arial, sans-serif;
   --default-font-family: var(--font-sans);
-  /* Neutral grey paper, black ink, a whiter sheet for content surfaces, one mid-blue accent. */
-  --color-paper: #efefed;
-  --color-sheet: #fbfbfa;
-  --color-surface: #e4e4e1;
+  /* Light blue-tinted paper, black ink, a whiter sheet for content surfaces, one mid-blue accent. */
+  --color-paper: #f3f6fb;
+  --color-sheet: #fcfdff;
+  --color-surface: #e2e9f4;
   --color-ink: #1d1d1b;
-  --color-muted: #5c5d59;
-  --color-rule: #cbcbc7;
+  --color-muted: #55595f;
+  --color-rule: #c9d3e1;
   --color-accent: #2864b4;
   --color-highlight: color-mix(in srgb, var(--color-accent) 10%, var(--color-sheet));
+}
+
+/* Dark mode follows the system setting: deep blue-grey paper, light ink, a brighter accent. */
+@layer base {
+  :root { color-scheme: light dark; }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-paper: #11161e;
+      --color-sheet: #171d27;
+      --color-surface: #232c3a;
+      --color-ink: #e6e9ee;
+      --color-muted: #9ba5b3;
+      --color-rule: #323c4b;
+      --color-accent: #7eaef0;
+      --color-highlight: color-mix(in srgb, var(--color-accent) 16%, var(--color-sheet));
+    }
+  }
+}
+
+/* Top-level page sections: a heavier rule and generous space so they read as separate blocks. */
+@utility section-rule {
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 2px solid color-mix(in srgb, var(--color-ink) 28%, transparent);
+  scroll-margin-top: 1rem;
+  @variant md {
+    margin-top: 5rem;
+    padding-top: 3.5rem;
+  }
 }
 
 .activity-filter:enabled:active { scale: none; }

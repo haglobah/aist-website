@@ -1,0 +1,18 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n'
+import { site } from '../data/site'
+import { useTranslations, type Lang } from '../i18n'
+
+interface Props { lang: Lang }
+const { lang } = Astro.props
+const t = useTranslations(lang)
+const link = 'inline-flex min-h-10 items-center underline decoration-rule underline-offset-4 hover:text-ink hover:decoration-ink'
+---
+
+<footer class="section-rule flex flex-wrap items-center justify-between gap-x-8 gap-y-2 text-sm text-muted">
+  <p>© {new Date().getFullYear()} {site.name}</p>
+  <nav aria-label={`${t('legalNotice')} / ${t('privacyPolicy')}`} class="flex gap-6">
+    <a class={link} href={getRelativeLocaleUrl(lang, 'impressum/')}>{t('legalNotice')}</a>
+    <a class={link} href={getRelativeLocaleUrl(lang, 'datenschutz/')}>{t('privacyPolicy')}</a>
+  </nav>
+</footer>

@@ -1,0 +1,55 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n'
+import LanguageSwitch from './LanguageSwitch.astro'
+import { links, site } from '../data/site'
+import { l, useTranslations, type Lang } from '../i18n'
+
+interface Props {
+  lang: Lang
+  path?: string // page path without the language prefix, e.g. 'archive/'
+}
+const { lang, path = '' } = Astro.props
+const t = useTranslations(lang)
+const home = getRelativeLocaleUrl(lang)
+const navLink = 'inline-flex min-h-10 items-center text-ink underline decoration-rule underline-offset-4 hover:decoration-ink'
+---
+
+<header class="flex items-center justify-between gap-x-4 border-b border-rule py-4 sm:gap-x-8 sm:py-5">
+  <a class="block shrink-0" href={home}>
+    <img class="block h-14 w-auto sm:h-18 dark:invert" src={`${import.meta.env.BASE_URL}logo.webp`} width="720" height="510" alt={site.name} />
+  </a>
+  <div class="flex items-center gap-4 sm:gap-6">
+    <nav aria-label={t('mainNavigation')} class="hidden gap-6 text-base lg:flex">
+      {links.map((link) => <a class={navLink} href={`${home}${link.href}`}>{l(link.label, lang)}</a>)}
+    </nav>
+    <LanguageSwitch lang={lang} path={path} />
+    <!-- Narrow screens fold the navigation into a menu. -->
+    <details class="group relative lg:hidden" data-nav-menu>
+      <summary class="grid size-11 cursor-pointer list-none place-items-center rounded-full hover:bg-surface [&::-webkit-details-marker]:hidden" aria-label={t('menu')}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <path class="group-open:hidden" d="M4 7h16M4 12h16M4 17h16" />
+          <path class="hidden group-open:block" d="m6 6 12 12M18 6 6 18" />
+        </svg>
+      </summary>
+      <nav aria-label={t('mainNavigation')} class="absolute top-full right-0 z-20 mt-2 flex w-56 flex-col rounded-xl border border-rule bg-sheet p-2 shadow-lg">
+        {links.map((link) => <a class="rounded-lg px-4 py-3 text-ink hover:bg-surface" href={`${home}${link.href}`}>{l(link.label, lang)}</a>)}
+      </nav>
+    </details>
+  </div>
+</header>
+
+<script>
+  // Close the menu after choosing a link, on Escape, or when clicking elsewhere.
+  document.querySelectorAll<HTMLDetailsElement>('[data-nav-menu]').forEach(menu => {
+    menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => { menu.open = false }))
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && menu.open) {
+        menu.open = false
+        menu.querySelector('summary')?.focus()
+      }
+    })
+    document.addEventListener('click', event => {
+      if (menu.open && !menu.contains(event.target as Node)) menu.open = false
+    })
+  })
+</script>

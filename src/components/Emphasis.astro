@@ -1,0 +1,7 @@
+---
+// Renders **key words** in bold.
+interface Props { text: string }
+const parts = Astro.props.text.split('**')
+---
+
+{parts.map((part, i) => i % 2 ? <strong class="font-bold">{part}</strong> : part)}

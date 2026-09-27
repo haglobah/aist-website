@@ -1,80 +1,81 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n'
 import Base from '../layouts/Base.astro'
-import TypeIcon from './TypeIcon.astro'
+import Arrow from './Arrow.astro'
 import CoffeeChat from './CoffeeChat.astro'
 import Feedback from './Feedback.astro'
 import AboutUs from './AboutUs.astro'
 import Resources from './Resources.astro'
-import LanguageSwitch from './LanguageSwitch.astro'
-import { resolveCalendar, eventTypes, hangout, hero, links, parts, site, typeById } from '../data/site'
+import SiteHeader from './SiteHeader.astro'
+import SiteFooter from './SiteFooter.astro'
+import Emphasis from './Emphasis.astro'
+import SocialIcon from './SocialIcon.astro'
+import { resolveCalendar, eventTypes, hangout, hero, parts, site, socials } from '../data/site'
 import { l, useTranslations, type Lang } from '../i18n'
 
 interface Props { lang: Lang }
 const { lang } = Astro.props
 const t = useTranslations(lang)
 
+const pillButton = 'mt-4 inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full border border-ink px-5 py-2 text-base text-ink hover:bg-ink/5'
+const disclosureSummary = 'action -mx-3 flex cursor-pointer list-none items-center justify-between gap-4 rounded-lg px-3 py-3 hover:bg-surface [&::-webkit-details-marker]:hidden'
 const accentLink = 'text-accent underline decoration-accent/40 underline-offset-4 hover:text-ink hover:decoration-accent'
 ---
 
 <Base title={site.name} lang={lang}>
   <div class="pointer-events-none fixed inset-0 -z-10 grid place-items-center" aria-hidden="true">
-    <img class="w-[min(88vw,64rem)] opacity-10" src={`${import.meta.env.BASE_URL}stocherkahn.webp`} width="1400" height="933" alt="" />
+    <img class="w-[min(88vw,64rem)] opacity-10 dark:opacity-[0.07] dark:invert" src={`${import.meta.env.BASE_URL}stocherkahn.webp`} width="1400" height="933" alt="" />
   </div>
   <div class="mx-auto max-w-6xl px-5 pb-16 sm:px-8 lg:px-10">
-    <header class="flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-b border-rule py-4 sm:py-5">
-      <a class="block" href={getRelativeLocaleUrl(lang)}>
-        <img class="block h-14 w-auto sm:h-18" src={`${import.meta.env.BASE_URL}logo.webp`} width="720" height="510" alt={site.name} />
-      </a>
-      <div class="flex items-center gap-6">
-        <nav aria-label={t('mainNavigation')} class="flex gap-6 text-base">
-          {links.map((link) => (
-            <a class="inline-flex min-h-10 items-center text-ink underline decoration-rule underline-offset-4 hover:decoration-ink" href={link.href}>{l(link.label, lang)}</a>
-          ))}
-        </nav>
-        <LanguageSwitch lang={lang} />
-      </div>
-    </header>
+    <SiteHeader lang={lang} />
 
-    <section class="grid gap-12 pt-10 pb-12 md:grid-cols-2 md:gap-x-16 md:pt-14 md:pb-16">
-      <h1 class="text-balance max-w-4xl font-serif text-4xl font-bold md:col-span-2 md:text-5xl">{l(hero.heading, lang)}</h1>
+    <section class="grid gap-12 pt-10 md:grid-cols-2 md:gap-x-16 md:pt-14">
+      <h1 class="text-balance max-w-4xl font-serif text-4xl leading-tight font-bold md:col-span-2 md:text-5xl md:leading-tight">{l(hero.heading, lang)}</h1>
       <div id="about" class="max-w-xl text-lg leading-relaxed text-ink">
         <p class="text-pretty">{l(hero.text, lang)}</p>
         <p class="text-pretty mt-5">{l(hero.listIntro, lang)}</p>
         <ul class="mt-2 list-disc space-y-1 pl-6 marker:text-accent">
-          {hero.points.map((point) => <li class="text-pretty">{l(point, lang)}</li>)}
+          {hero.points.map((point) => <li class="text-pretty"><Emphasis text={l(point, lang)} /></li>)}
         </ul>
         <p class="text-pretty mt-5">{l(hero.closing, lang)}</p>
       </div>
-      <aside class="border-l-2 border-rule pl-6">
-        <h2 class="text-balance mb-3 font-serif text-2xl font-normal">{l(hangout.heading, lang)}</h2>
-        <p class="text-pretty max-w-xl text-base leading-relaxed">{l(hangout.text, lang)}</p>
-        <p class="text-pretty mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
-          {hangout.actions.map((a) => (
-            a.href === '#coffee-chats' ? <button
-              type="button"
-              data-modal-open="coffee-modal"
-              aria-haspopup="dialog"
-              aria-controls="coffee-modal"
-              class="action inline-flex min-h-11 cursor-pointer items-center justify-center px-4 py-2 text-base font-normal border border-ink text-ink hover:bg-surface"
-            >{l(a.label, lang)}</button> : a.href === '#feedback' ? <button
-              type="button"
-              data-feedback-open
-              aria-haspopup="dialog"
-              aria-controls="feedback-modal"
-              class="action inline-flex min-h-11 cursor-pointer items-center justify-center px-4 py-2 text-base font-normal border border-ink text-ink hover:bg-surface"
-            >{l(a.label, lang)}</button> : <a
-              class="action inline-flex min-h-11 cursor-pointer items-center justify-center px-4 py-2 text-base font-normal bg-accent text-sheet hover:bg-ink"
-              href={a.href}
-            >
-              {l(a.label, lang)}
-            </a>
-          ))}
-        </p>
+      <aside id="contact" aria-labelledby="hangout-heading" class="flex scroll-mt-4 flex-col border-t border-rule pt-8 md:border-t-0 md:border-l md:pt-0 md:pl-8">
+        <h2 id="hangout-heading" class="text-balance font-serif text-2xl">{l(hangout.heading, lang)}</h2>
+        <!-- Rows share the column height so the block lines up with the introduction; the arrows fold out details. -->
+        <div class="mt-3 flex flex-1 flex-col divide-y divide-rule text-lg leading-snug">
+          <details name="hangout" class="group flex flex-1 flex-col justify-center py-3">
+            <summary class={disclosureSummary}>
+              <span class="text-pretty"><Emphasis text={l(hangout.contact, lang)} /></span>
+              <Arrow direction="down" class="text-xl text-accent group-open:-rotate-90 motion-safe:transition-transform" />
+            </summary>
+            <div class="pt-2 pb-3 text-base leading-relaxed">
+              <p class="text-pretty">{t('contactText')}</p>
+              <button type="button" data-feedback-open aria-haspopup="dialog" aria-controls="feedback-modal" class={pillButton}>{t('contactButton')}</button>
+            </div>
+          </details>
+          <div class="flex flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-3 py-3">
+            <span><Emphasis text={l(hangout.stayUpToDate, lang)} /></span>
+            <span class="flex gap-2">
+              {socials.map((social) => social.href
+                ? <a href={social.href} aria-label={social.label} title={social.label} class="action grid size-11 place-items-center rounded-full border border-rule text-2xl text-ink hover:border-accent hover:text-accent"><SocialIcon id={social.id} /></a>
+                : <span role="img" aria-label={`${social.label} (${t('linkComingSoon')})`} title={`${social.label} (${t('linkComingSoon')})`} class="grid size-11 place-items-center rounded-full border border-dashed border-rule text-2xl text-muted/60"><SocialIcon id={social.id} /></span>)}
+            </span>
+          </div>
+          <details name="hangout" class="group flex flex-1 flex-col justify-center py-3">
+            <summary class={disclosureSummary}>
+              <span class="text-pretty"><Emphasis text={l(hangout.coffee, lang)} /></span>
+              <Arrow direction="down" class="text-xl text-accent group-open:-rotate-90 motion-safe:transition-transform" />
+            </summary>
+            <div class="pt-2 pb-3 text-base leading-relaxed">
+              <p class="text-pretty">{t('coffeeText')}</p>
+              <button type="button" data-modal-open="coffee-modal" aria-haspopup="dialog" aria-controls="coffee-modal" class={pillButton}>{t('coffeeButton')}</button>
+            </div>
+          </details>
+        </div>
       </aside>
     </section>
 
-    <section class="grid items-start gap-10 border-t border-rule pt-10 md:grid-cols-2 md:gap-x-12">
+    <section id="events" class="section-rule grid items-start gap-10 md:grid-cols-2 md:gap-x-12">
       <div>
         <h2 class="text-balance sr-only">{t('eventTypes')}</h2>
         <ul role="list" data-filter-group class="divide-y divide-rule">
@@ -92,20 +93,18 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
                   aria-controls="calendar-events"
                   title={t('filterHint')}
                 >
-                  <span class="flex size-8 shrink-0 items-center justify-center text-2xl text-ink">
-                    <TypeIcon type={type.id} />
-                  </span>
                   <span class="activity-title font-serif text-xl">{l(type.name, lang)}</span>
                 </button>
               </h3>
-              <div class="mt-2 px-11 text-base leading-relaxed">
-                {type.schedule && <p class="text-pretty mb-2 text-base text-muted">{l(type.schedule.dayLabel, lang)}, {type.schedule.time}, {l(type.schedule.place, lang)}</p>}
+              <div class="mt-2 text-base leading-relaxed">
+                {type.schedule && <p class="text-pretty mb-2 text-base text-muted">{l(type.schedule.dayLabel, lang)} {type.schedule.time} | {l(type.schedule.place, lang)} | {l(type.schedule.language, lang)}</p>}
                 {type.info && <p class="text-pretty mb-2 text-base text-muted">{l(type.info, lang)}</p>}
                 <p class="text-pretty">{l(type.description, lang)}</p>
-                <p class="text-pretty mt-2 flex flex-wrap gap-x-5 text-base">
-                  <a class={`${accentLink} inline-flex min-h-10 items-center`} href={type.foodUrl}>{t('voteOnFood')}</a>
-                  <a class={`${accentLink} inline-flex min-h-10 items-center`} href="#feedback" data-feedback-open data-feedback-type={l(type.name, lang)}>{t('giveFeedback')}</a>
-                </p>
+                {type.archive && (
+                  <p class="mt-2 text-base">
+                    <a class={`${accentLink} inline-flex min-h-10 items-center gap-2`} href={getRelativeLocaleUrl(lang, 'archive/')}>{t('archiveLink')} <Arrow direction="right" /></a>
+                  </p>
+                )}
               </div>
             </li>
           ))}
@@ -117,14 +116,21 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
           {resolveCalendar().map((e) => {
             const d = parts(e.date, lang)
             return (
-              <li class="calendar-event data-[highlighted=true]:bg-highlight grid grid-cols-5 gap-3 py-4 px-7 hover:bg-accent/5" data-event-type={e.type} data-calendar-index={e.index}>
+              <li class="calendar-event group data-[highlighted=true]:bg-highlight grid grid-cols-5 gap-3 py-4 px-7 hover:bg-accent/5" data-event-type={e.type} data-calendar-index={e.index}>
                 <time class="col-span-1 text-base leading-relaxed text-muted tabular-nums" datetime={e.date}>
                   <b class="block font-bold text-ink">{d.weekday} {d.day}</b> <span data-calendar-month>{d.monthShort}</span>
                   <span class="block" data-calendar-time>{e.time}</span>
                 </time>
                 <div class="col-span-4">
-                  <span class="block font-serif text-lg leading-snug">{l(e.title, lang)}</span>
-                  <span class="mt-1 block text-base leading-relaxed text-muted">{l(typeById(e.type).name, lang)}, {l(e.place, lang)}</span>
+                  <!-- The description opens on hover, or on click/tap via the title. -->
+                  <button type="button" data-calendar-toggle aria-expanded="false" aria-controls={`calendar-details-${e.index}`} class="block w-full cursor-pointer text-left font-serif text-lg leading-snug hover:text-accent aria-expanded:text-accent">{l(e.title, lang)}</button>
+                  {e.registerUrl
+                    ? <a href={e.registerUrl} class={`${accentLink} mt-1 inline-flex min-h-10 items-center gap-2`}>{t('register')} <Arrow direction="up-right" /></a>
+                    : <p class="mt-1 text-base text-muted">{t('registrationSoon')}</p>}
+                  <div id={`calendar-details-${e.index}`} class="mt-2 hidden text-base leading-relaxed group-hover:block group-has-[[aria-expanded=true]]:block">
+                    <p class="text-pretty">{l(e.description, lang)}</p>
+                    <p class="mt-1 text-muted">{l(e.place, lang)}</p>
+                  </div>
                 </div>
               </li>
             )
@@ -139,10 +145,9 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
     <AboutUs lang={lang} />
     <Resources lang={lang} />
 
-    <div class="mt-12 grid gap-10 border-t border-rule pt-10 md:mt-16 md:grid-cols-2 md:gap-x-12">
-      <Feedback lang={lang} />
-      <CoffeeChat lang={lang} />
-    </div>
+    <SiteFooter lang={lang} />
+    <Feedback lang={lang} />
+    <CoffeeChat lang={lang} />
   </div>
 </Base>
 
