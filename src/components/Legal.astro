@@ -1,0 +1,107 @@
+---
+// Legal notice (Impressum) and privacy policy. Text in [square brackets] is a placeholder
+// that must be replaced with real details before publishing; have both pages checked.
+import { getRelativeLocaleUrl } from 'astro:i18n'
+import Base from '../layouts/Base.astro'
+import SiteHeader from './SiteHeader.astro'
+import SiteFooter from './SiteFooter.astro'
+import Arrow from './Arrow.astro'
+import { site } from '../data/site'
+import { useTranslations, type Lang } from '../i18n'
+
+interface Props {
+  lang: Lang
+  page: 'impressum' | 'datenschutz'
+}
+const { lang, page } = Astro.props
+const t = useTranslations(lang)
+const path = `${page}/`
+const title = page === 'impressum' ? t('legalNotice') : t('privacyPolicy')
+const de = lang === 'de'
+---
+
+<Base title={`${title} · ${site.name}`} lang={lang} path={path}>
+  <div class="mx-auto max-w-6xl px-5 pb-16 sm:px-8 lg:px-10">
+    <SiteHeader lang={lang} path={path} />
+    <main class="max-w-3xl pt-10 md:pt-14 [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:font-serif [&_h2]:text-2xl [&_p]:mt-3 [&_p]:text-pretty [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_a]:text-accent [&_a]:underline [&_a]:decoration-accent/40 [&_a]:underline-offset-4">
+      <a href={getRelativeLocaleUrl(lang)} class="inline-flex min-h-10 items-center gap-2">
+        <Arrow direction="left" /> {t('backHome')}
+      </a>
+      <h1 class="mt-4 font-serif text-4xl font-bold md:text-5xl">{title}</h1>
+
+      {page === 'impressum' && (de ? (
+        <>
+          <h2>Angaben gemäß § 5 DDG</h2>
+          <p>[Vor- und Nachname]<br />[Straße und Hausnummer]<br />[PLZ] Tübingen</p>
+          <h2>Kontakt</h2>
+          <p>E-Mail: [E-Mail-Adresse]</p>
+          <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+          <p>[Vor- und Nachname, Anschrift wie oben]</p>
+          <h2>Haftung für Links</h2>
+          <p>Diese Website enthält Links zu externen Websites, auf deren Inhalte wir keinen Einfluss haben. Für diese Inhalte ist der jeweilige Anbieter verantwortlich. Werden uns Rechtsverletzungen bekannt, entfernen wir die betreffenden Links umgehend.</p>
+        </>
+      ) : (
+        <>
+          <p>This page is required by German law; the German version is authoritative.</p>
+          <h2>Information according to § 5 DDG</h2>
+          <p>[First and last name]<br />[Street and number]<br />[Postcode] Tübingen, Germany</p>
+          <h2>Contact</h2>
+          <p>Email: [email address]</p>
+          <h2>Responsible for content according to § 18 (2) MStV</h2>
+          <p>[First and last name, address as above]</p>
+          <h2>Liability for links</h2>
+          <p>This website links to external websites whose content we cannot control. Their providers are responsible for that content. If we become aware of any legal violations, we will remove the links immediately.</p>
+        </>
+      ))}
+
+      {page === 'datenschutz' && (de ? (
+        <>
+          <h2>Verantwortliche Stelle</h2>
+          <p>[Vor- und Nachname]<br />[Straße und Hausnummer]<br />[PLZ] Tübingen<br />E-Mail: [E-Mail-Adresse]</p>
+          <h2>Hosting</h2>
+          <p>Diese Website wird über GitHub Pages bereitgestellt, einen Dienst der GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA. Beim Aufruf der Seite verarbeitet GitHub technisch notwendige Daten wie deine IP-Adresse, Datum und Uhrzeit des Zugriffs sowie Browserinformationen in Server-Logfiles, um die Website auszuliefern und abzusichern. Rechtsgrundlage ist unser berechtigtes Interesse an einer sicheren und stabilen Bereitstellung (Art. 6 Abs. 1 lit. f DSGVO). Dabei können Daten in die USA übertragen werden. Näheres steht in der <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement">Datenschutzerklärung von GitHub</a>.</p>
+          <h2>Cookies, Tracking und Schriftarten</h2>
+          <p>Wir setzen keine Cookies und keine Analyse- oder Tracking-Werkzeuge ein. Die Schriftarten sind lokal eingebunden, es werden also keine Daten an Schriftanbieter übertragen.</p>
+          <h2>Kontaktformulare</h2>
+          <p>Die Formulare „Erzähl uns alles“ und „Coffee-Chat“ versenden derzeit keine Daten. [Sobald sie aktiviert sind, hier ergänzen: welcher Dienst die Nachrichten empfängt, welche Daten gespeichert werden und wie lange.]</p>
+          <h2>Externe Links</h2>
+          <p>Links zu WhatsApp, LinkedIn und anderen Angeboten führen zu externen Websites. Erst wenn du einen solchen Link anklickst, werden Daten an den jeweiligen Anbieter übertragen; dafür gelten dessen Datenschutzbestimmungen.</p>
+          <h2>Deine Rechte</h2>
+          <p>Du hast das Recht auf:</p>
+          <ul>
+            <li>Auskunft über deine gespeicherten Daten (Art. 15 DSGVO)</li>
+            <li>Berichtigung (Art. 16 DSGVO) und Löschung (Art. 17 DSGVO)</li>
+            <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+            <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
+            <li>Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
+          </ul>
+          <p>Außerdem kannst du dich bei einer Datenschutz-Aufsichtsbehörde beschweren, zum Beispiel beim Landesbeauftragten für den Datenschutz und die Informationsfreiheit Baden-Württemberg.</p>
+        </>
+      ) : (
+        <>
+          <h2>Controller</h2>
+          <p>[First and last name]<br />[Street and number]<br />[Postcode] Tübingen, Germany<br />Email: [email address]</p>
+          <h2>Hosting</h2>
+          <p>This website is served by GitHub Pages, a service of GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA. When you visit, GitHub processes technically necessary data such as your IP address, the time of access and browser information in server log files to deliver and secure the website. The legal basis is our legitimate interest in providing the site securely and reliably (Art. 6(1)(f) GDPR). Data may be transferred to the USA. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub’s privacy statement</a> for details.</p>
+          <h2>Cookies, tracking and fonts</h2>
+          <p>We use no cookies and no analytics or tracking tools. Fonts are served from this website, so no data is sent to font providers.</p>
+          <h2>Contact forms</h2>
+          <p>The “Tell us everything” and coffee chat forms do not send any data yet. [Once they are enabled, add here: which service receives the messages, what is stored and for how long.]</p>
+          <h2>External links</h2>
+          <p>Links to WhatsApp, LinkedIn and other services lead to external websites. Data is only sent to those providers when you follow such a link, and their privacy policies apply.</p>
+          <h2>Your rights</h2>
+          <p>You have the right to:</p>
+          <ul>
+            <li>access your stored data (Art. 15 GDPR)</li>
+            <li>rectification (Art. 16 GDPR) and erasure (Art. 17 GDPR)</li>
+            <li>restriction of processing (Art. 18 GDPR)</li>
+            <li>data portability (Art. 20 GDPR)</li>
+            <li>object to processing (Art. 21 GDPR)</li>
+          </ul>
+          <p>You can also lodge a complaint with a data protection authority, for example the State Commissioner for Data Protection and Freedom of Information of Baden-Württemberg.</p>
+        </>
+      ))}
+    </main>
+    <SiteFooter lang={lang} />
+  </div>
+</Base>
