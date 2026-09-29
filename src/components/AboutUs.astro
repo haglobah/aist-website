@@ -35,13 +35,14 @@ const initials = (name: string) => name.split(' ').map(part => part[0]).join('')
       </article>
     ))}
   </div>
-  <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-2 text-sm text-muted">
+  <!-- Both logos have transparent backgrounds; in dark mode Pathfinder's dark lettering is inverted to light. -->
+  <div class="mt-8 flex flex-wrap items-center gap-x-10 gap-y-3 text-sm text-muted">
     <span class="basis-full sm:basis-auto">{t('supportedBy')}</span>
     <a href="https://pathfinder.kairos-project.org/" target="_blank" rel="noopener noreferrer" class="block hover:opacity-80">
-      <img src={`${import.meta.env.BASE_URL}pathfinder.webp`} alt="Pathfinder" width="400" height="209" loading="lazy" class="h-auto w-40 mix-blend-multiply sm:w-56 dark:bg-white dark:p-2 dark:mix-blend-normal" />
+      <img src={`${import.meta.env.BASE_URL}pathfinder-logo.webp`} alt="Pathfinder" width="265" height="49" loading="lazy" class="h-7 w-auto sm:h-8 dark:invert dark:hue-rotate-180" />
     </a>
     <a href="https://safeaigermany.org/" target="_blank" rel="noopener noreferrer" class="block hover:opacity-80">
-      <img src={`${import.meta.env.BASE_URL}saige.webp`} alt="Safe AI Germany (SAIGE)" width="600" height="212" loading="lazy" class="h-auto w-32 mix-blend-multiply sm:w-40 dark:bg-white dark:p-2 dark:mix-blend-normal" />
+      <img src={`${import.meta.env.BASE_URL}saige.webp`} alt="Safe AI Germany (SAIGE)" width="600" height="212" loading="lazy" class="h-11 w-auto sm:h-12 dark:brightness-125" />
     </a>
   </div>
 </section>

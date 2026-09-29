@@ -2,8 +2,6 @@
 import { getRelativeLocaleUrl } from 'astro:i18n'
 import Base from '../layouts/Base.astro'
 import Arrow from './Arrow.astro'
-import CoffeeChat from './CoffeeChat.astro'
-import Feedback from './Feedback.astro'
 import ContactForm from './ContactForm.astro'
 import AboutUs from './AboutUs.astro'
 import Gallery from './Gallery.astro'
@@ -58,8 +56,8 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
               <Arrow direction="down" class="text-xl text-accent group-open:-rotate-90 motion-safe:transition-transform" />
             </summary>
             <div class="pt-2 pb-3 text-base leading-relaxed">
-              <p class="text-pretty">{t('contactText')}</p>
-              <button type="button" data-feedback-open aria-haspopup="dialog" aria-controls="feedback-modal" class={pillButton}>{t('contactButton')}</button>
+              <p class="mb-4 text-pretty">{t('contactText')}</p>
+              <ContactForm id="feedback" lang={lang} />
             </div>
           </details>
           <div class="flex flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-3 py-3">
@@ -76,17 +74,8 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
               <Arrow direction="down" class="text-xl text-accent group-open:-rotate-90 motion-safe:transition-transform" />
             </summary>
             <div class="pt-2 pb-3 text-base leading-relaxed">
-              <p class="text-pretty">{t('coffeeText')}</p>
-              <button type="button" data-modal-open="coffee-modal" aria-haspopup="dialog" aria-controls="coffee-modal" class={pillButton}>{t('coffeeButton')}</button>
-            </div>
-          </details>
-          <details name="hangout" class="group flex flex-1 flex-col justify-center py-3">
-            <summary class={disclosureSummary}>
-              <span class="text-pretty"><Emphasis text={l(hangout.other, lang)} /></span>
-              <Arrow direction="down" class="text-xl text-accent group-open:-rotate-90 motion-safe:transition-transform" />
-            </summary>
-            <div class="pt-2 pb-3 text-base leading-relaxed">
-              <ContactForm id="other" lang={lang} />
+              <p class="mb-4 text-pretty">{t('coffeeText')}</p>
+              <ContactForm id="coffee" lang={lang} emailRequired />
             </div>
           </details>
         </div>
@@ -165,8 +154,6 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
     <Resources lang={lang} />
 
     <SiteFooter lang={lang} />
-    <Feedback lang={lang} />
-    <CoffeeChat lang={lang} />
   </div>
 </Base>
 

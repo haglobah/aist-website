@@ -1,5 +1,6 @@
 ---
 import { Image, getImage } from 'astro:assets'
+import Arrow from './Arrow.astro'
 import { gallery } from '../data/gallery'
 import { l, useTranslations, type Lang } from '../i18n'
 
@@ -7,12 +8,13 @@ interface Props { lang: Lang }
 const { lang } = Astro.props
 const t = useTranslations(lang)
 
-// Square tiles in the grid; each opens a larger version of the photo.
+// Square tiles in the grid; each opens a preview that steps through all photos.
 // The first photo spans two tiles so that seven photos fill the grid.
 const photos = await Promise.all(gallery.map(async photo => ({
   ...photo,
   full: await getImage({ src: photo.src, width: 1600, format: 'webp' }),
 })))
+const navButton = 'grid size-12 shrink-0 cursor-pointer place-items-center text-2xl text-white hover:bg-white/15'
 ---
 
 <section id="gallery" aria-labelledby="gallery-heading" class="section-rule">
@@ -21,7 +23,8 @@ const photos = await Promise.all(gallery.map(async photo => ({
   <ul role="list" class="mt-8 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
     {photos.map((photo, index) => (
       <li class:list={[index === 0 && 'col-span-2']}>
-        <a href={photo.full.src} target="_blank" rel="noopener" class="group relative block h-full overflow-hidden outline-1 -outline-offset-1 outline-ink/10">
+        <!-- Without JavaScript the link still opens the large photo. -->
+        <a href={photo.full.src} data-gallery-open={index} data-full={photo.full.src} aria-haspopup="dialog" class="group relative block h-full cursor-zoom-in overflow-hidden outline-1 -outline-offset-1 outline-ink/10">
           <Image
             src={photo.src}
             alt={l(photo.alt, lang)}
@@ -38,4 +41,70 @@ const photos = await Promise.all(gallery.map(async photo => ({
       </li>
     ))}
   </ul>
+
+  <dialog data-gallery-dialog data-modal aria-label={t('gallery')} class="m-0 h-dvh max-h-none w-dvw max-w-none border-0 bg-black p-0 text-white backdrop:bg-black open:flex open:flex-col">
+    <div class="flex items-center justify-between gap-4 px-3 py-2 sm:px-5">
+      <p class="text-sm tabular-nums" aria-live="polite" data-gallery-count></p>
+      <button type="button" data-gallery-close class={navButton} aria-label={t('close', { title: t('gallery') })}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+      </button>
+    </div>
+    <!-- On phones the arrows sit over the photo so it can use the full width. -->
+    <div class="relative flex min-h-0 flex-1 items-center sm:gap-3 sm:px-3">
+      <button type="button" data-gallery-step="-1" class:list={[navButton, 'absolute left-1 z-10 bg-black/50 sm:static sm:bg-transparent']} aria-label={t('previousPhoto')}><Arrow direction="left" /></button>
+      <figure class="flex h-full min-w-0 flex-1 flex-col items-center justify-center gap-3" data-gallery-stage>
+        <img data-gallery-image alt="" class="min-h-0 max-w-full flex-1 object-contain select-none" />
+        <figcaption class="max-w-2xl px-2 pb-4 text-center text-sm text-white/80 text-pretty" data-gallery-caption></figcaption>
+      </figure>
+      <button type="button" data-gallery-step="1" class:list={[navButton, 'absolute right-1 z-10 bg-black/50 sm:static sm:bg-transparent']} aria-label={t('nextPhoto')}><Arrow direction="right" /></button>
+    </div>
+  </dialog>
 </section>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-gallery-dialog]')!
+  const image = dialog.querySelector<HTMLImageElement>('[data-gallery-image]')!
+  const caption = dialog.querySelector<HTMLElement>('[data-gallery-caption]')!
+  const count = dialog.querySelector<HTMLElement>('[data-gallery-count]')!
+  const tiles = [...document.querySelectorAll<HTMLAnchorElement>('[data-gallery-open]')]
+  const photos = tiles.map(tile => ({ src: tile.dataset.full!, alt: tile.querySelector('img')?.alt ?? '' }))
+  let current = 0
+
+  function show(index: number) {
+    current = (index + photos.length) % photos.length
+    image.src = photos[current].src
+    image.alt = photos[current].alt
+    caption.textContent = photos[current].alt
+    count.textContent = `${current + 1} / ${photos.length}`
+    // Load the neighbours ahead so stepping through feels instant.
+    for (const next of [current + 1, current - 1]) new Image().src = photos[(next + photos.length) % photos.length].src
+  }
+
+  tiles.forEach((tile, index) => tile.addEventListener('click', event => {
+    event.preventDefault()
+    show(index)
+    dialog.showModal()
+  }))
+  dialog.querySelectorAll<HTMLButtonElement>('[data-gallery-step]').forEach(button =>
+    button.addEventListener('click', () => show(current + Number(button.dataset.galleryStep))))
+  dialog.querySelector('[data-gallery-close]')!.addEventListener('click', () => dialog.close())
+  dialog.addEventListener('close', () => tiles[current]?.focus())
+  dialog.addEventListener('keydown', event => {
+    if (event.key === 'ArrowLeft') show(current - 1)
+    if (event.key === 'ArrowRight') show(current + 1)
+  })
+  // Clicking the dark area around the photo closes the preview.
+  dialog.addEventListener('click', event => {
+    const target = event.target as HTMLElement
+    if (target === dialog || target.matches('[data-gallery-stage]')) dialog.close()
+  })
+  // Swipe sideways on touch screens.
+  let startX: number | undefined
+  dialog.addEventListener('pointerdown', event => { startX = event.pointerType === 'touch' ? event.clientX : undefined })
+  dialog.addEventListener('pointerup', event => {
+    if (startX === undefined) return
+    const distance = event.clientX - startX
+    if (Math.abs(distance) > 50) show(current + (distance < 0 ? 1 : -1))
+    startX = undefined
+  })
+</script>

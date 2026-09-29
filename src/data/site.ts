@@ -71,15 +71,14 @@ export const links = [
 export const hangout = {
   heading: { en: 'Contact form', de: 'Kontaktformular' },
   contact: {
-    en: '**Contact us** for suggestions, feedback, collabs and everything else',
-    de: '**Vorschläge** für Essen und Themen, **Feedback**, **Collabs**, …',
+    en: '**Feedback**, **event suggestions**, **food suggestions**, **collaborations**!',
+    de: '**Feedback**, **Event-Vorschläge**, **Essensvorschläge**, **Kollaborationen**!',
   },
   stayUpToDate: { en: '**Stay up to date:**', de: '**Sei up to date:**' },
   coffee: {
     en: '**Book a 1:1** to chat about career planning',
     de: '**Buche ein 1:1** für Career Planning',
   },
-  other: { en: '**Other requests**', de: '**Sonstige Anliegen**' },
 }
 
 export type SocialId = 'whatsapp' | 'linkedin' | 'instagram'

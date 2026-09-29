@@ -13,9 +13,6 @@
   --color-rule: #c9d3e1;
   --color-accent: #2864b4;
   --color-highlight: color-mix(in srgb, var(--color-accent) 10%, var(--color-sheet));
-  /* Section dividers: dark blue and orange. */
-  --color-navy: #1b3a6b;
-  --color-orange: #e8772e;
   /* One timing for every animation on the site. */
   --default-transition-duration: 160ms;
   --default-transition-timing-function: ease-out;
@@ -38,13 +35,11 @@
       --color-rule: #323c4b;
       --color-accent: #7eaef0;
       --color-highlight: color-mix(in srgb, var(--color-accent) 16%, var(--color-sheet));
-      --color-navy: #7eaef0;
-      --color-orange: #f0914f;
     }
   }
 }
 
-/* Top-level page sections open with a dark blue and orange double rule with the boat from the tab icon
+/* Top-level page sections open with a rule in the text colour and the boat from the tab icon
    sailing on it. Further down the page the boat sits further to the right (see --boat-x below).
    The scroll margin keeps headings clear of the sticky header, which is taller on narrow screens. */
 @utility section-rule {
@@ -61,10 +56,10 @@
     content: '';
     position: absolute;
     inset: 0 0 auto;
-    height: 9px;
-    background: linear-gradient(var(--color-navy) 0 4px, transparent 4px 6px, var(--color-orange) 6px 9px);
+    height: 4px;
+    background: var(--color-ink);
   }
-  /* The boat's water line lies 334 of the drawing's 406 units below its top; place it on the blue rule. */
+  /* The boat's water line lies 334 of the drawing's 406 units below its top; place it on the rule. */
   &::after {
     content: '';
     position: absolute;
@@ -72,7 +67,7 @@
     left: calc(var(--boat-x, 0) * (100% - 6rem));
     width: 6rem;
     height: calc(6rem * 406 / 724);
-    background: var(--color-navy);
+    background: var(--color-ink);
     mask: var(--boat) center / contain no-repeat;
   }
 }
