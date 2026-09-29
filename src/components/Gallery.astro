@@ -1,0 +1,41 @@
+---
+import { Image, getImage } from 'astro:assets'
+import { gallery } from '../data/gallery'
+import { l, useTranslations, type Lang } from '../i18n'
+
+interface Props { lang: Lang }
+const { lang } = Astro.props
+const t = useTranslations(lang)
+
+// Square tiles in the grid; each opens a larger version of the photo.
+// The first photo spans two tiles so that seven photos fill the grid.
+const photos = await Promise.all(gallery.map(async photo => ({
+  ...photo,
+  full: await getImage({ src: photo.src, width: 1600, format: 'webp' }),
+})))
+---
+
+<section id="gallery" aria-labelledby="gallery-heading" class="section-rule">
+  <h2 id="gallery-heading" class="font-serif text-4xl md:text-5xl text-balance">{t('gallery')}</h2>
+  <p class="mt-3 text-muted">{t('galleryIntro')}</p>
+  <ul role="list" class="mt-8 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
+    {photos.map((photo, index) => (
+      <li class:list={[index === 0 && 'col-span-2']}>
+        <a href={photo.full.src} target="_blank" rel="noopener" class="group relative block h-full overflow-hidden outline-1 -outline-offset-1 outline-ink/10">
+          <Image
+            src={photo.src}
+            alt={l(photo.alt, lang)}
+            widths={index === 0 ? [800, 1600] : [400, 800]}
+            sizes={index === 0 ? '(min-width: 1024px) 36rem, 100vw' : '(min-width: 1024px) 18rem, 50vw'}
+            loading="lazy"
+            class:list={[
+              'w-full object-cover motion-safe:transition-transform motion-safe:duration-300 group-hover:scale-105',
+              // On wide screens the row height comes from the square tiles beside it.
+              index === 0 ? 'aspect-[2/1] lg:absolute lg:inset-0 lg:aspect-auto lg:h-full' : 'aspect-square',
+            ]}
+          />
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>

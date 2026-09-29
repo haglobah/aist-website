@@ -32,7 +32,7 @@ function formatDate(iso: string) {
 
       {photos.length > 0 && (
         <section aria-labelledby="photos-heading" class="section-rule">
-          <h2 id="photos-heading" class="font-serif text-3xl">{t('photos')}</h2>
+          <h2 id="photos-heading" class="font-serif text-4xl md:text-5xl">{t('photos')}</h2>
           <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {photos.map((photo) => (
               <figure>
@@ -45,7 +45,7 @@ function formatDate(iso: string) {
       )}
 
       <section aria-labelledby="past-events-heading" class="section-rule">
-        <h2 id="past-events-heading" class="font-serif text-3xl">{t('pastEvents')}</h2>
+        <h2 id="past-events-heading" class="font-serif text-4xl md:text-5xl">{t('pastEvents')}</h2>
         <ol role="list" class="mt-6 divide-y divide-rule">
           {pastEvents.map((event) => (
             <li class="grid gap-1 py-4 sm:grid-cols-[11rem_1fr] sm:gap-6">

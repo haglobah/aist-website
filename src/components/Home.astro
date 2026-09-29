@@ -5,6 +5,7 @@ import Arrow from './Arrow.astro'
 import CoffeeChat from './CoffeeChat.astro'
 import Feedback from './Feedback.astro'
 import AboutUs from './AboutUs.astro'
+import Gallery from './Gallery.astro'
 import Resources from './Resources.astro'
 import SiteHeader from './SiteHeader.astro'
 import SiteFooter from './SiteFooter.astro'
@@ -24,9 +25,6 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
 ---
 
 <Base title={site.name} lang={lang}>
-  <div class="pointer-events-none fixed inset-0 -z-10 grid place-items-center" aria-hidden="true">
-    <img class="w-[min(88vw,64rem)] opacity-10 dark:opacity-[0.07] dark:invert" src={`${import.meta.env.BASE_URL}stocherkahn.webp`} width="1400" height="933" alt="" />
-  </div>
   <div class="mx-auto max-w-6xl px-5 pb-16 sm:px-8 lg:px-10">
     <SiteHeader lang={lang} />
 
@@ -40,7 +38,7 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
         </ul>
         <p class="text-pretty mt-5">{l(hero.closing, lang)}</p>
       </div>
-      <aside id="contact" aria-labelledby="hangout-heading" class="flex scroll-mt-4 flex-col border-t border-rule pt-8 md:border-t-0 md:border-l md:pt-0 md:pl-8">
+      <aside id="contact" aria-labelledby="hangout-heading" class="flex scroll-mt-24 flex-col border-t border-rule pt-8 md:border-t-0 md:border-l md:pt-0 md:pl-8">
         <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
           <h2 id="hangout-heading" class="text-balance font-serif text-2xl">{l(hangout.heading, lang)}</h2>
           <a href="#about-us" class="flex -space-x-2 rounded-full" title={people.map(person => person.name).join(', ')}>
@@ -83,10 +81,10 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
       </aside>
     </section>
 
-    <section id="events" class="section-rule grid items-start gap-10 md:grid-cols-2 md:gap-x-12">
+    <section id="events" aria-labelledby="events-heading" class="section-rule grid items-start gap-10 md:grid-cols-2 md:gap-x-12">
+      <h2 id="events-heading" class="font-serif text-4xl text-balance md:col-span-2 md:text-5xl">{t('nextEvents')}</h2>
       <div>
-        <h2 class="text-balance sr-only">{t('eventTypes')}</h2>
-        <ul role="list" data-filter-group class="divide-y divide-rule">
+        <ul role="list" aria-label={t('eventTypes')} data-filter-group class="divide-y divide-rule">
           {eventTypes.map((type) => (
             <li
               class="activity relative isolate py-3 px-6 data-[highlighted=true]:bg-highlight [&_a]:relative [&_a]:z-1"
@@ -150,6 +148,7 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
       </aside>
     </section>
 
+    <Gallery lang={lang} />
     <AboutUs lang={lang} />
     <Resources lang={lang} />
 

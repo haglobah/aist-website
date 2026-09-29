@@ -21,8 +21,8 @@ const { title, lang, path = '', description = hero.text[lang] } = Astro.props
 <html lang={lang} class="leading-relaxed antialiased has-[dialog[data-modal][open]]:overflow-hidden [&_:focus-visible:not([data-filter])]:outline-2 [&_:focus-visible:not([data-filter])]:outline-offset-4 [&_:focus-visible:not([data-filter])]:outline-accent">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href={`${import.meta.env.BASE_URL}favicon.png`} />
-    <link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL}apple-touch-icon.png`} />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg?v=2`} />
+    <link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL}apple-touch-icon.png?v=2`} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />

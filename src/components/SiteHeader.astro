@@ -11,18 +11,21 @@ interface Props {
 const { lang, path = '' } = Astro.props
 const t = useTranslations(lang)
 const home = getRelativeLocaleUrl(lang)
-const navLink = 'inline-flex min-h-10 items-center text-ink underline decoration-rule underline-offset-4 hover:decoration-ink'
+const navLink = 'inline-flex min-h-10 items-center text-ink underline decoration-rule underline-offset-4 hover:decoration-ink aria-[current=location]:text-accent aria-[current=location]:decoration-orange aria-[current=location]:decoration-2'
 ---
 
-<header class="flex items-center justify-between gap-x-4 border-b border-rule py-4 sm:gap-x-8 sm:py-5">
+<!-- Stays at the top while scrolling; the paper background extends to the window edges. -->
+<header data-site-header class="group/header sticky top-0 z-30 flex items-center justify-between gap-x-4 border-b border-rule bg-paper py-3 shadow-[0_0_0_100vmax_var(--color-paper)] [clip-path:inset(0_-100vmax)] sm:gap-x-8 sm:py-4">
   <a class="block shrink-0" href={home}>
     <!-- The logo has a white background; blending drops it on the tinted paper, and in dark mode after inverting. -->
-    <img class="block h-14 w-auto mix-blend-multiply sm:h-18 dark:mix-blend-screen dark:invert" src={`${import.meta.env.BASE_URL}logo.svg`} width="802" height="444" alt={site.name} />
+    <img class="block h-14 w-auto mix-blend-multiply sm:h-18 group-data-[scrolled=true]/header:h-10 sm:group-data-[scrolled=true]/header:h-12 motion-safe:transition-[height] dark:mix-blend-screen dark:invert" src={`${import.meta.env.BASE_URL}logo.svg`} width="1264" height="588" alt={site.name} />
   </a>
-  <div class="flex items-center gap-4 sm:gap-6">
+  <div class="flex min-w-0 items-center gap-4 sm:gap-6">
     <nav aria-label={t('mainNavigation')} class="hidden gap-5 text-base md:flex lg:gap-6">
-      {links.map((link) => <a class={navLink} href={`${home}${link.href}`}>{l(link.label, lang)}</a>)}
+      {links.map((link) => <a class={navLink} href={`${home}${link.href}`} data-nav-link={link.href}>{l(link.label, lang)}</a>)}
     </nav>
+    <!-- On narrow screens the menu is folded away, so name the current section here. -->
+    <span data-nav-current class="truncate font-serif text-accent md:hidden"></span>
     <LanguageSwitch lang={lang} path={path} />
     <!-- Narrow screens fold the navigation into a menu. -->
     <details class="group relative md:hidden" data-nav-menu>
@@ -33,7 +36,7 @@ const navLink = 'inline-flex min-h-10 items-center text-ink underline decoration
         </svg>
       </summary>
       <nav aria-label={t('mainNavigation')} class="absolute top-full right-0 z-20 mt-2 flex w-56 flex-col border border-rule bg-sheet p-2 shadow-lg">
-        {links.map((link) => <a class="px-4 py-3 text-ink hover:bg-surface" href={`${home}${link.href}`}>{l(link.label, lang)}</a>)}
+        {links.map((link) => <a class="px-4 py-3 text-ink hover:bg-surface aria-[current=location]:text-accent aria-[current=location]:shadow-[inset_3px_0_var(--color-orange)]" href={`${home}${link.href}`} data-nav-link={link.href}>{l(link.label, lang)}</a>)}
       </nav>
     </details>
   </div>
@@ -53,4 +56,35 @@ const navLink = 'inline-flex min-h-10 items-center text-ink underline decoration
       if (menu.open && !menu.contains(event.target as Node)) menu.open = false
     })
   })
+
+  // Mark the section being read in the navigation, and shrink the logo once the page scrolls.
+  const header = document.querySelector<HTMLElement>('[data-site-header]')
+  const current = document.querySelector<HTMLElement>('[data-nav-current]')
+  const navLinks = [...document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]')]
+  const sections = [...new Set(navLinks.map(link => link.dataset.navLink!))]
+    .map(hash => ({ hash, element: document.getElementById(hash.slice(1)) }))
+    .filter((section): section is { hash: string; element: HTMLElement } => !!section.element)
+    .sort((a, b) => a.element.offsetTop - b.element.offsetTop)
+
+  let frame = 0
+  function update() {
+    frame = 0
+    if (header) header.dataset.scrolled = String(window.scrollY > 8)
+    if (!sections.length) return
+    // A section counts as current once its top passes the upper third of the window.
+    const line = window.innerHeight / 3
+    const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2
+    const active = atBottom
+      ? sections[sections.length - 1]
+      : sections.findLast(section => section.element.getBoundingClientRect().top <= line)
+    navLinks.forEach(link => {
+      if (link.dataset.navLink === active?.hash) link.setAttribute('aria-current', 'location')
+      else link.removeAttribute('aria-current')
+    })
+    if (current) current.textContent = navLinks.find(link => link.dataset.navLink === active?.hash)?.textContent ?? ''
+  }
+  const schedule = () => { frame ||= requestAnimationFrame(update) }
+  window.addEventListener('scroll', schedule, { passive: true })
+  window.addEventListener('resize', schedule)
+  update()
 </script>

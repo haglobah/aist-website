@@ -63,6 +63,7 @@ export const hero = {
 export const links = [
   { label: { en: 'Contact', de: 'Kontakt' }, href: '#contact' },
   { label: 'Events', href: '#events' },
+  { label: { en: 'Gallery', de: 'Galerie' }, href: '#gallery' },
   { label: { en: 'About us', de: 'Über uns' }, href: '#about-us' },
   { label: { en: 'Resources', de: 'Ressourcen' }, href: '#resources' },
   { label: 'Fellowships', href: '#fellowships' },
