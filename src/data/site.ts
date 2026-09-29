@@ -9,7 +9,6 @@ export interface EventType {
   schedule?: { weekday: number; dayLabel: Localized; time: string; place: Localized; language: Localized }
   info?: Localized // shown instead of the schedule while it is not fixed
   description: Localized
-  archive?: boolean // links to the archive of past papers and photos
 }
 
 export interface CalendarEntry {
@@ -70,16 +69,17 @@ export const links = [
 ]
 
 export const hangout = {
-  heading: 'Call us maybe!',
+  heading: { en: 'Contact form', de: 'Kontaktformular' },
   contact: {
     en: '**Contact us** for suggestions, feedback, collabs and everything else',
     de: '**Vorschläge** für Essen und Themen, **Feedback**, **Collabs**, …',
   },
   stayUpToDate: { en: '**Stay up to date:**', de: '**Sei up to date:**' },
   coffee: {
-    en: '**Book a 1:1** to chat about career planning and other important stuff',
-    de: '**Buch ein 1:1** für Career Planning',
+    en: '**Book a 1:1** to chat about career planning',
+    de: '**Buche ein 1:1** für Career Planning',
   },
+  other: { en: '**Other requests**', de: '**Sonstige Anliegen**' },
 }
 
 export type SocialId = 'whatsapp' | 'linkedin' | 'instagram'
@@ -94,15 +94,14 @@ export const socials: { id: SocialId; label: string; href?: string }[] = [
 export const eventTypes: EventType[] = [
   {
     id: 'technical-ai-safety',
-    archive: true,
-    name: { en: 'Weekly technical reading group', de: 'Wöchentliche technische Lesegruppe' },
+    name: { en: 'Technical reading group', de: 'Technische Lesegruppe' },
     schedule: {
       weekday: 1, dayLabel: { en: 'Mondays', de: 'Montags' }, time: '18:00', place: 'Maria-von-Linden-Str. 1',
       language: { en: 'in English', de: 'auf Englisch' },
     },
     description: {
-      en: 'Join us as we grab dinner and chat about a recently published paper. Some papers require you to have an understanding of […], others do not. Check the paper beforehand. When in doubt – reach out to us or be brave and just come by!',
-      de: 'Komm vorbei auf die Besprechung eines aktuellen Papers bei leckerem Abendessen. Manche Paper erfordern Vorkenntnisse in […], andere nicht: Schau dir das konkrete Paper vorher an und wenn du nicht sicher bist – schreib uns an oder sei mutig und komm so rum!',
+      en: 'Join us as we grab dinner and chat about a recently published paper. Some papers require you to have an understanding of machine learning, others do not. Check the paper beforehand. When in doubt – reach out to us or be brave and just come by!',
+      de: 'Komm vorbei auf die Besprechung eines aktuellen Papers bei leckerem Abendessen. Manche Paper erfordern Vorkenntnisse in Machine Learning, andere nicht: Schau dir das konkrete Paper vorher an und wenn du nicht sicher bist – schreib uns an oder sei mutig und komm so rum!',
     },
   },
   {

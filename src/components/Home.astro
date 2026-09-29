@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro'
 import Arrow from './Arrow.astro'
 import CoffeeChat from './CoffeeChat.astro'
 import Feedback from './Feedback.astro'
+import ContactForm from './ContactForm.astro'
 import AboutUs from './AboutUs.astro'
 import Gallery from './Gallery.astro'
 import Resources from './Resources.astro'
@@ -21,6 +22,7 @@ const t = useTranslations(lang)
 
 const pillButton = 'mt-4 inline-flex min-h-11 cursor-pointer items-center justify-center border border-ink px-5 py-2 text-base text-ink hover:bg-ink/5'
 const disclosureSummary = 'action -mx-3 flex cursor-pointer list-none items-center justify-between gap-4 px-3 py-3 hover:bg-surface [&::-webkit-details-marker]:hidden'
+const subheading = 'mb-4 font-serif text-2xl text-balance'
 const accentLink = 'text-accent underline decoration-accent/40 underline-offset-4 hover:text-ink hover:decoration-accent'
 ---
 
@@ -28,9 +30,10 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
   <div class="mx-auto max-w-6xl px-5 pb-16 sm:px-8 lg:px-10">
     <SiteHeader lang={lang} />
 
-    <section class="grid gap-12 pt-10 md:grid-cols-2 md:gap-x-16 md:pt-14">
-      <h1 class="text-balance max-w-4xl font-serif text-4xl leading-tight font-bold md:col-span-2 md:text-5xl md:leading-tight">{l(hero.heading, lang)}</h1>
-      <div id="about" class="max-w-xl text-lg leading-relaxed text-ink">
+    <!-- The introduction takes three fifths of the width, the contact block two fifths. -->
+    <section class="grid gap-12 pt-10 md:grid-cols-5 md:gap-x-16 md:pt-14">
+      <h1 class="text-balance max-w-4xl font-serif text-4xl leading-tight font-bold md:col-span-5 md:text-5xl md:leading-tight">{l(hero.heading, lang)}</h1>
+      <div id="about" class="text-lg leading-relaxed text-ink md:col-span-3">
         <p class="text-pretty">{l(hero.text, lang)}</p>
         <p class="text-pretty mt-5">{l(hero.listIntro, lang)}</p>
         <ul class="mt-2 list-disc space-y-1 pl-6 marker:text-accent">
@@ -38,9 +41,9 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
         </ul>
         <p class="text-pretty mt-5">{l(hero.closing, lang)}</p>
       </div>
-      <aside id="contact" aria-labelledby="hangout-heading" class="flex scroll-mt-24 flex-col border-t border-rule pt-8 md:border-t-0 md:border-l md:pt-0 md:pl-8">
+      <aside id="contact" aria-labelledby="hangout-heading" class="flex scroll-mt-40 flex-col border-t border-rule pt-8 md:col-span-2 md:scroll-mt-28 md:border-t-0 md:border-l md:pt-0 md:pl-8">
         <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
-          <h2 id="hangout-heading" class="text-balance font-serif text-2xl">{l(hangout.heading, lang)}</h2>
+          <h2 id="hangout-heading" class="text-balance font-serif text-3xl md:text-4xl">{l(hangout.heading, lang)}</h2>
           <a href="#about-us" class="flex -space-x-2 rounded-full" title={people.map(person => person.name).join(', ')}>
             {people.filter(person => person.image).map(person => (
               <img src={person.image} alt={person.name} width="40" height="40" loading="lazy" class="size-10 rounded-full object-cover ring-2 ring-paper" />
@@ -77,6 +80,15 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
               <button type="button" data-modal-open="coffee-modal" aria-haspopup="dialog" aria-controls="coffee-modal" class={pillButton}>{t('coffeeButton')}</button>
             </div>
           </details>
+          <details name="hangout" class="group flex flex-1 flex-col justify-center py-3">
+            <summary class={disclosureSummary}>
+              <span class="text-pretty"><Emphasis text={l(hangout.other, lang)} /></span>
+              <Arrow direction="down" class="text-xl text-accent group-open:-rotate-90 motion-safe:transition-transform" />
+            </summary>
+            <div class="pt-2 pb-3 text-base leading-relaxed">
+              <ContactForm id="other" lang={lang} />
+            </div>
+          </details>
         </div>
       </aside>
     </section>
@@ -84,13 +96,14 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
     <section id="events" aria-labelledby="events-heading" class="section-rule grid items-start gap-10 md:grid-cols-2 md:gap-x-12">
       <h2 id="events-heading" class="font-serif text-4xl text-balance md:col-span-2 md:text-5xl">{t('nextEvents')}</h2>
       <div>
-        <ul role="list" aria-label={t('eventTypes')} data-filter-group class="divide-y divide-rule">
+        <h3 class={subheading}>{t('eventTypes')}</h3>
+        <ul role="list" data-filter-group class="divide-y divide-rule">
           {eventTypes.map((type) => (
             <li
               class="activity relative isolate py-3 px-6 data-[highlighted=true]:bg-highlight [&_a]:relative [&_a]:z-1"
               data-filter-card={type.id}
             >
-              <h3 class="text-balance">
+              <h4 class="text-balance">
                 <button
                   type="button"
                   class="activity-filter after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-3 focus-visible:after:outline-accent flex min-h-11 w-full cursor-pointer items-center gap-3 text-left aria-pressed:text-accent"
@@ -101,22 +114,19 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
                 >
                   <span class="activity-title font-serif text-xl">{l(type.name, lang)}</span>
                 </button>
-              </h3>
+              </h4>
               <div class="mt-2 text-base leading-relaxed">
                 {type.schedule && <p class="text-pretty mb-2 text-base text-muted">{l(type.schedule.dayLabel, lang)} {type.schedule.time} | {l(type.schedule.place, lang)} | {l(type.schedule.language, lang)}</p>}
                 {type.info && <p class="text-pretty mb-2 text-base text-muted">{l(type.info, lang)}</p>}
                 <p class="text-pretty">{l(type.description, lang)}</p>
-                {type.archive && (
-                  <p class="mt-2 text-base">
-                    <a class={`${accentLink} inline-flex min-h-10 items-center gap-2`} href={getRelativeLocaleUrl(lang, 'archive/')}>{t('archiveLink')} <Arrow direction="right" /></a>
-                  </p>
-                )}
               </div>
             </li>
           ))}
         </ul>
       </div>
 
+      <div>
+      <h3 class={subheading}>{t('calendar')}</h3>
       <aside class="border border-rule bg-sheet" id="calendar">
         <ol role="list" id="calendar-events" data-filter-target aria-live="polite">
           {resolveCalendar().map((e) => {
@@ -146,6 +156,8 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
           {t('noEvents')}
         </p>
       </aside>
+      <a href={getRelativeLocaleUrl(lang, 'archive/')} class={`${pillButton} gap-2`}>{t('pastEvents')} <Arrow direction="right" /></a>
+      </div>
     </section>
 
     <Gallery lang={lang} />

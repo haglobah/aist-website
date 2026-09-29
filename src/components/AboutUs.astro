@@ -6,6 +6,7 @@ interface Props { lang: Lang }
 const { lang } = Astro.props
 const t = useTranslations(lang)
 
+// A photo opens the same profile as the name; that link is hidden from assistive tech to avoid a duplicate.
 const initials = (name: string) => name.split(' ').map(part => part[0]).join('')
 ---
 
@@ -15,7 +16,11 @@ const initials = (name: string) => name.split(' ').map(part => part[0]).join('')
   <div class="mt-8 grid gap-10 md:grid-cols-2 md:gap-12 lg:grid-cols-3 lg:gap-10">
     {people.map(person => (
       <article class="grid grid-cols-[6rem_1fr] items-start gap-5 sm:grid-cols-[8rem_1fr] sm:gap-6 lg:grid-cols-[6rem_1fr] lg:gap-5">
-        {person.image
+        {person.image && person.href
+          ? <a href={person.href} target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true" class="block hover:opacity-85">
+              <img src={person.image} alt="" width="400" height="400" loading="lazy" class="aspect-square w-full object-cover outline-1 -outline-offset-1 outline-ink/10" />
+            </a>
+          : person.image
           ? <img src={person.image} alt={person.name} width="400" height="400" loading="lazy" class="aspect-square w-full object-cover outline-1 -outline-offset-1 outline-ink/10" />
           : <div aria-hidden="true" class="grid aspect-square w-full place-items-center bg-surface font-serif text-2xl text-muted outline-1 -outline-offset-1 outline-ink/10">{initials(person.name)}</div>}
         <div>
@@ -30,13 +35,13 @@ const initials = (name: string) => name.split(' ').map(part => part[0]).join('')
       </article>
     ))}
   </div>
-  <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4 text-sm text-muted">
-    <span>{t('supportedBy')}</span>
+  <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-2 text-sm text-muted">
+    <span class="basis-full sm:basis-auto">{t('supportedBy')}</span>
     <a href="https://pathfinder.kairos-project.org/" target="_blank" rel="noopener noreferrer" class="block hover:opacity-80">
-      <img src={`${import.meta.env.BASE_URL}pathfinder.webp`} alt="Pathfinder" width="400" height="209" loading="lazy" class="h-auto w-56 mix-blend-multiply dark:bg-white dark:p-2 dark:mix-blend-normal" />
+      <img src={`${import.meta.env.BASE_URL}pathfinder.webp`} alt="Pathfinder" width="400" height="209" loading="lazy" class="h-auto w-40 mix-blend-multiply sm:w-56 dark:bg-white dark:p-2 dark:mix-blend-normal" />
     </a>
     <a href="https://safeaigermany.org/" target="_blank" rel="noopener noreferrer" class="block hover:opacity-80">
-      <img src={`${import.meta.env.BASE_URL}saige.webp`} alt="Safe AI Germany (SAIGE)" width="600" height="212" loading="lazy" class="h-auto w-40 mix-blend-multiply dark:bg-white dark:p-2 dark:mix-blend-normal" />
+      <img src={`${import.meta.env.BASE_URL}saige.webp`} alt="Safe AI Germany (SAIGE)" width="600" height="212" loading="lazy" class="h-auto w-32 mix-blend-multiply sm:w-40 dark:bg-white dark:p-2 dark:mix-blend-normal" />
     </a>
   </div>
 </section>

@@ -25,7 +25,8 @@
 @layer base {
   :root {
     color-scheme: light dark;
-    --diamonds: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 28'%3E%3Cpath fill='%231b3a6b' d='M12 8l6 6-6 6-6-6zM68 8l6 6-6 6-6-6z'/%3E%3Cpath fill='%23e8772e' stroke='%231b3a6b' stroke-width='2.5' d='M40 2.5l11.5 11.5L40 25.5 28.5 14z'/%3E%3C/svg%3E");
+    /* The boat from the tab icon, drawn in the divider colour through a mask. */
+    --boat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='150 320 724 406'%3E%3Cpath fill-rule='evenodd' d='M170.48 470.02Q246.82 533.53 353.93 533.53L414.68 533.53L483.14 322.82L516.81 426.45L556.42 426.45L524.43 327.99L542.54 327.99L670.45 721.66L652.34 721.66L562.02 443.68L522.41 443.68L551.6 533.53L579.44 533.53L585.04 550.75L353.93 550.75Q256.11 550.75 182.28 500.47Q199.53 542.17 231.09 569.55Q273.77 606.59 331.26 606.59L603.18 606.59L608.78 623.81L331.26 623.81Q267.34 623.81 219.8 582.56Q174.93 543.62 156.69 478.97L153.6 468.02L168.09 468.02ZM644.83 606.59L692.74 606.59Q750.23 606.59 792.91 569.55Q824.47 542.17 841.72 500.47Q767.89 550.75 670.07 550.75L626.69 550.75L621.09 533.53L670.07 533.53Q777.18 533.53 853.52 470.02L855.91 468.02L870.4 468.02L867.31 478.97Q849.07 543.62 804.2 582.56Q756.66 623.81 692.74 623.81L650.43 623.81ZM533.15 533.53L504.15 443.68L462.13 443.68L433.13 533.53ZM278.35 654.05L618.6 654.05L624.2 671.27L278.35 671.27ZM665.85 671.27L660.25 654.05L745.65 654.05L745.65 671.27ZM498.6 426.45L483.14 378.55L467.68 426.45Z'/%3E%3C/svg%3E");
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -39,22 +40,22 @@
       --color-highlight: color-mix(in srgb, var(--color-accent) 16%, var(--color-sheet));
       --color-navy: #7eaef0;
       --color-orange: #f0914f;
-      --diamonds: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 28'%3E%3Cpath fill='%237eaef0' d='M12 8l6 6-6 6-6-6zM68 8l6 6-6 6-6-6z'/%3E%3Cpath fill='%23f0914f' stroke='%237eaef0' stroke-width='2.5' d='M40 2.5l11.5 11.5L40 25.5 28.5 14z'/%3E%3C/svg%3E");
     }
   }
 }
 
-/* Top-level page sections open with a dark blue and orange double rule, broken by three diamonds,
-   so that each new section stands out. The scroll margin keeps headings clear of the sticky header. */
+/* Top-level page sections open with a dark blue and orange double rule with the boat from the tab icon
+   sailing on it. Further down the page the boat sits further to the right (see --boat-x below).
+   The scroll margin keeps headings clear of the sticky header, which is taller on narrow screens. */
 @utility section-rule {
   position: relative;
-  margin-top: 4.5rem;
+  margin-top: 5.5rem;
   padding-top: 3.5rem;
-  scroll-margin-top: 5.5rem;
+  scroll-margin-top: 9.5rem;
   @variant md {
-    margin-top: 6rem;
+    margin-top: 7rem;
     padding-top: 4rem;
-    scroll-margin-top: 6.5rem;
+    scroll-margin-top: 9rem;
   }
   &::before {
     content: '';
@@ -63,17 +64,25 @@
     height: 9px;
     background: linear-gradient(var(--color-navy) 0 4px, transparent 4px 6px, var(--color-orange) 6px 9px);
   }
+  /* The boat's water line lies 334 of the drawing's 406 units below its top; place it on the blue rule. */
   &::after {
     content: '';
     position: absolute;
-    top: 4.5px;
-    left: 50%;
-    width: 7rem;
-    height: 1.75rem;
-    translate: -50% -50%;
-    background: var(--color-paper) var(--diamonds) center / 5rem 1.75rem no-repeat;
+    top: calc(-6rem * 334 / 724);
+    left: calc(var(--boat-x, 0) * (100% - 6rem));
+    width: 6rem;
+    height: calc(6rem * 406 / 724);
+    background: var(--color-navy);
+    mask: var(--boat) center / contain no-repeat;
   }
 }
+
+/* Home page sections, top to bottom: the boat moves from left to right. */
+#events { --boat-x: 0; }
+#gallery { --boat-x: 0.25; }
+#about-us { --boat-x: 0.5; }
+#resources { --boat-x: 0.75; }
+#fellowships { --boat-x: 1; }
 
 .activity-filter:enabled:active { scale: none; }
 
