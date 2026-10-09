@@ -1,17 +1,33 @@
 ---
+import { contactEmail } from '../data/site'
 import { useTranslations, type Lang } from '../i18n'
 
 interface Props {
   id: string
   lang: Lang
+  subject: string // subject line of the email we receive
   emailRequired?: boolean
 }
-const { id, lang, emailRequired = false } = Astro.props
+const { id, lang, subject, emailRequired = false } = Astro.props
 const t = useTranslations(lang)
 const field = 'block w-full min-w-0 border border-rule bg-sheet px-3 py-2 font-sans text-base'
 ---
 
-<form id={`${id}-form`} aria-describedby={`${id}-status`}>
+<!-- FormSubmit forwards messages to our inbox; without JavaScript the form posts to it directly. -->
+<form
+  id={`${id}-form`}
+  action={`https://formsubmit.co/${contactEmail}`}
+  method="POST"
+  aria-describedby={`${id}-status`}
+  data-contact-form
+  data-sending={t('sending')}
+  data-sent={t('messageSent')}
+  data-failed={t('sendFailed', { email: contactEmail })}
+>
+  <input type="hidden" name="_subject" value={subject} />
+  <input type="hidden" name="_template" value="table" />
+  <!-- Spam trap: people leave it empty. -->
+  <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden" />
   <label class="mb-2 block text-sm font-bold" for={`${id}-email`}>
     {t('email')} {!emailRequired && <span class="text-sm font-normal text-muted">{t('optional')}</span>}
   </label>
@@ -19,12 +35,33 @@ const field = 'block w-full min-w-0 border border-rule bg-sheet px-3 py-2 font-s
   <label class="mt-4 mb-2 block text-sm font-bold" for={`${id}-message`}>{t('messageLabel')}</label>
   <textarea class={`${field} min-h-32 resize-y`} id={`${id}-message`} name="message" rows="6" required></textarea>
   <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
-    <button class="min-h-11 cursor-not-allowed border border-rule bg-surface px-4 py-2 text-muted" type="submit" disabled>{t('sendMessage')}</button>
-    <p class="text-pretty text-sm" id={`${id}-status`}>{t('sendingUnavailable')}</p>
+    <button class="action min-h-11 cursor-pointer border border-ink px-4 py-2 text-ink hover:bg-ink/5 disabled:cursor-wait disabled:opacity-60" type="submit">{t('sendMessage')}</button>
+    <p class="text-pretty text-sm" id={`${id}-status`} role="status"></p>
   </div>
 </form>
 
 <script>
-  // No navigation or transmission, including implicit submission via Enter.
-  document.querySelectorAll('form').forEach(form => form.addEventListener('submit', event => event.preventDefault()))
+  // Send in the background so visitors stay on the page.
+  document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach(form => form.addEventListener('submit', async event => {
+    event.preventDefault()
+    const button = form.querySelector('button')!
+    const status = document.getElementById(form.getAttribute('aria-describedby')!)!
+    button.disabled = true
+    status.textContent = form.dataset.sending!
+    try {
+      const response = await fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: new FormData(form),
+      })
+      const result = await response.json().catch(() => ({}))
+      if (!response.ok || String(result.success) !== 'true') throw new Error(result.message ?? response.statusText)
+      form.reset()
+      status.textContent = form.dataset.sent!
+    } catch {
+      status.textContent = form.dataset.failed!
+    } finally {
+      button.disabled = false
+    }
+  }))
 </script>

@@ -11,16 +11,6 @@ export interface Person {
 
 export const people: Person[] = [
   {
-    name: 'Johannes Koch',
-    role: 'Co-founder & Advisor',
-    image: `${import.meta.env.BASE_URL}people/johannes-koch.jpg`,
-    href: 'https://www.linkedin.com/in/johannes-koch-5b4620259/?locale=en_US',
-    bio: {
-      en: 'Fellowship Manager at Safe AI Germany. Previously co-founded and led the AI Safety Tübingen student group, while studying Machine Learning.',
-      de: 'Fellowship Manager bei Safe AI Germany. Hat zuvor neben dem Machine-Learning-Studium die Studierendengruppe AI Safety Tübingen mitgegründet und geleitet.',
-    },
-  },
-  {
     name: 'Katharina Deckenbach',
     role: 'Co-founder & Director',
     image: `${import.meta.env.BASE_URL}people/katharina-deckenbach.jpg`,
@@ -40,4 +30,23 @@ export const people: Person[] = [
       de: 'Forscht als SPAR Fellow an middle-power AISIs und arbeitet am Cambridge Commentary of the AI Act beim Institute for Law and AI. Hat zuvor Rechtswissenschaften studiert.',
     },
   },
+  {
+    name: 'Johannes Koch',
+    role: 'Co-founder & Advisor',
+    image: `${import.meta.env.BASE_URL}people/johannes-koch.jpg`,
+    href: 'https://www.linkedin.com/in/johannes-koch-5b4620259/?locale=en_US',
+    bio: {
+      en: 'Fellowship Manager at Safe AI Germany. Previously co-founded and led the AI Safety Tübingen student group, while studying Machine Learning.',
+      de: 'Fellowship Manager bei Safe AI Germany. Hat zuvor neben dem Machine-Learning-Studium die Studierendengruppe AI Safety Tübingen mitgegründet und geleitet.',
+    },
+  },
 ]
+
+// Listed under About us below the organizers.
+export const advisors: { name: string; href?: string }[] = [
+  { name: 'Sahar Abdelnabi', href: 'https://institute-tue.ellis.eu/person/sabdelnabi' },
+  { name: 'Maksym Andriushchenko', href: 'https://institute-tue.ellis.eu/de/person/99998303' },
+]
+
+// Until names are added, the list says TBA.
+export const volunteers: { name: string; href?: string }[] = []

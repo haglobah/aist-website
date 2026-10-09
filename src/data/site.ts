@@ -11,16 +11,6 @@ export interface EventType {
   description: Localized
 }
 
-export interface CalendarEntry {
-  date?: string // ISO date override; otherwise use the next regular occurrence
-  time?: string
-  type: EventTypeId
-  title: Localized
-  place: Localized
-  description: Localized // revealed on hover or click
-  registerUrl?: string // until set, the entry says registration opens soon
-}
-
 export const site = {
   name: 'AI Safety Tübingen',
   url: 'https://aisafetytuebingen.com',
@@ -67,6 +57,12 @@ export const links = [
   { label: { en: 'Resources', de: 'Ressourcen' }, href: '#resources' },
   { label: 'Fellowships', href: '#fellowships' },
 ]
+
+// Event registration, linked above the calendar.
+export const registerUrl = 'https://luma.com/aistuebingen'
+
+// Messages from the contact forms are delivered to this address via FormSubmit.
+export const contactEmail = 'aistuebingen@gmail.com'
 
 export const hangout = {
   heading: { en: 'Contact form', de: 'Kontaktformular' },
@@ -137,41 +133,6 @@ export const eventTypes: EventType[] = [
   },
 ]
 
-const tba = { en: 'Location TBA', de: 'Ort folgt' }
-const socialMeetup = {
-  title: { en: 'Social meetup', de: 'Gemeinsames Treffen' },
-  description: {
-    en: 'Food, drinks and good conversations. New faces are always welcome.',
-    de: 'Essen, Getränke und gute Gespräche. Neue Gesichter sind immer willkommen.',
-  },
-}
-
-export const calendar: CalendarEntry[] = [
-  {
-    type: 'technical-ai-safety', title: 'Sleeper Agents (Hubinger et al.)', place: tba,
-    description: {
-      en: 'We discuss how language models can keep deceptive behaviour hidden through safety training, and what that means for AI safety.',
-      de: 'Wir besprechen, wie Sprachmodelle täuschendes Verhalten trotz Sicherheitstraining verborgen halten können und was das für KI-Sicherheit bedeutet.',
-    },
-  },
-  { date: '2026-09-29', time: '18:30', type: 'events', place: tba, ...socialMeetup },
-  {
-    type: 'technical-ai-safety', title: { en: 'Scalable Oversight, Part 1', de: 'Scalable Oversight, Teil 1' }, place: tba,
-    description: {
-      en: 'How can humans supervise AI systems that outperform them at a task? We start with debate and recursive reward modelling.',
-      de: 'Wie können Menschen KI-Systeme beaufsichtigen, die bei einer Aufgabe besser sind als sie? Wir beginnen mit Debate und Recursive Reward Modelling.',
-    },
-  },
-  { date: '2026-10-27', time: '18:30', type: 'events', place: tba, ...socialMeetup },
-  {
-    type: 'technical-ai-safety', title: { en: 'Scalable Oversight, Part 2', de: 'Scalable Oversight, Teil 2' }, place: tba,
-    description: {
-      en: 'We continue with weak-to-strong generalisation and recent empirical results.',
-      de: 'Weiter geht es mit Weak-to-Strong Generalisation und aktuellen empirischen Ergebnissen.',
-    },
-  },
-]
-
 // Helpers
 
 const weekdays: Record<Lang, string[]> = {
@@ -204,36 +165,4 @@ export function parts(iso: string, lang: Lang = 'en') {
 
 export function typeById(id: EventTypeId): EventType {
   return eventTypes.find((t) => t.id === id)!
-}
-
-// Resolve in local calendar time so daylight-saving changes preserve the meeting hour.
-export function resolveCalendar(entries: CalendarEntry[] = calendar, now = new Date()) {
-  const local = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
-  }).formatToParts(now).map(part => [part.type, part.value]))
-  const today = `${local.year}-${local.month}-${local.day}`
-  const currentTime = `${local.hour}:${local.minute}:${local.second}`
-  const previous = new Map<EventTypeId, string>()
-
-  return entries.map((entry, index) => {
-    const schedule = typeById(entry.type).schedule
-    const time = entry.time ?? schedule?.time
-    if (!time || (!entry.date && !schedule)) {
-      throw new Error(`Event "${JSON.stringify(entry.title)}" needs an explicit date and time without a regular schedule`)
-    }
-    let date = entry.date
-    if (!date && schedule) {
-      const candidate = new Date(`${today}T00:00:00Z`)
-      candidate.setUTCDate(candidate.getUTCDate() + (schedule.weekday - candidate.getUTCDay() + 7) % 7)
-      date = candidate.toISOString().slice(0, 10)
-      while ((date === today && `${time}:00` < currentTime) || date <= (previous.get(entry.type) ?? '')) {
-        candidate.setUTCDate(candidate.getUTCDate() + 7)
-        date = candidate.toISOString().slice(0, 10)
-      }
-    }
-    if (!date) throw new Error(`Missing date for "${JSON.stringify(entry.title)}"`)
-    previous.set(entry.type, date > (previous.get(entry.type) ?? '') ? date : previous.get(entry.type)!)
-    return { ...entry, date, time, index }
-  }).sort((a, b) => `${a.date}T${a.time}`.localeCompare(`${b.date}T${b.time}`))
 }

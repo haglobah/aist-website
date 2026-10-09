@@ -14,13 +14,14 @@
 function setup(group: HTMLElement) {
   const buttons = Array.from(group.querySelectorAll<HTMLButtonElement>('[data-filter]'))
   const cards = Array.from(group.querySelectorAll<HTMLElement>('[data-filter-card]'))
-  const targets = Array.from(document.querySelectorAll<HTMLElement>('[data-filter-target] [data-event-type]'))
+  // Looked up on use, since ended events are removed from the calendar while the page is open.
+  const targets = () => Array.from(document.querySelectorAll<HTMLElement>('[data-filter-target] [data-event-type]'))
   const empties = Array.from(document.querySelectorAll<HTMLElement>('[data-filter-empty]'))
 
   function apply(value: string) {
     for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.filter === value))
     let visible = 0
-    for (const t of targets) {
+    for (const t of targets()) {
       const show = value === 'all' || t.dataset.eventType === value
       t.hidden = !show
       if (show) visible++
@@ -34,7 +35,7 @@ function setup(group: HTMLElement) {
   function highlight() {
     const highlighted = (type: string | undefined) => type === hoveredCard?.dataset.filterCard || type === group.dataset.active
     for (const card of cards) card.dataset.highlighted = String(highlighted(card.dataset.filterCard))
-    for (const target of targets) target.dataset.highlighted = String(highlighted(target.dataset.eventType))
+    for (const target of targets())target.dataset.highlighted = String(highlighted(target.dataset.eventType))
   }
 
   for (const card of cards) {

@@ -3,6 +3,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # Rebuild daily so the event calendar picks up changes in the Google Calendar.
+  schedule:
+    - cron: '0 3 * * *'
   workflow_dispatch:
 
 permissions:

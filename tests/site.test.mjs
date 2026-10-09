@@ -1,43 +1,74 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { calendar, eventTypes, typeById } from '../src/data/site.ts'
+import { eventType, parseCalendar, sanitizeDescription } from '../src/data/calendar.ts'
+import { eventTypes, typeById } from '../src/data/site.ts'
 
-test('every calendar entry resolves to a displayed event category', () => {
-  for (const entry of calendar) {
-    const category = typeById(entry.type)
-    assert.ok(category, `Missing category for ${entry.title}: ${entry.type}`)
-    assert.ok(eventTypes.includes(category))
-  }
+const ics = (...events) => [
+  'BEGIN:VCALENDAR', 'VERSION:2.0',
+  'BEGIN:VTIMEZONE', 'TZID:Europe/Berlin',
+  'BEGIN:DAYLIGHT', 'TZOFFSETFROM:+0100', 'TZOFFSETTO:+0200', 'DTSTART:19700329T020000', 'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU', 'END:DAYLIGHT',
+  'BEGIN:STANDARD', 'TZOFFSETFROM:+0200', 'TZOFFSETTO:+0100', 'DTSTART:19701025T030000', 'RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU', 'END:STANDARD',
+  'END:VTIMEZONE',
+  ...events.flatMap(lines => ['BEGIN:VEVENT', ...lines, 'END:VEVENT']),
+  'END:VCALENDAR',
+].join('\r\n')
+
+const now = new Date('2026-10-09T12:00:00Z')
+
+test('lists upcoming events in Berlin time with the calendar fields', () => {
+  const [event, ...rest] = parseCalendar(ics(
+    ['UID:past', 'DTSTART:20261001T160000Z', 'DTEND:20261001T180000Z', 'SUMMARY:Past'],
+    ['UID:next', 'DTSTART;TZID=Europe/Berlin:20261012T180000', 'DTEND;TZID=Europe/Berlin:20261012T200000',
+      'SUMMARY:Paper reading group', 'LOCATION:Maria-von-Linden-Str. 1',
+      'DESCRIPTION:Sign up: <a href="https://luma.com/abc">here</a>'],
+  ), now)
+  assert.equal(rest.length, 0)
+  assert.equal(event.date, '2026-10-12')
+  assert.equal(event.time, '18:00')
+  assert.equal(event.title, 'Paper reading group')
+  assert.equal(event.place, 'Maria-von-Linden-Str. 1')
+  assert.equal(event.type, 'technical-ai-safety')
+  assert.equal(event.registerUrl, 'https://luma.com/abc')
+  assert.match(event.description, /<a href="https:\/\/luma.com\/abc" target="_blank"/)
 })
 
-const { resolveCalendar } = await import('../src/data/site.ts')
-const regular = { type: 'technical-ai-safety', title: 'Discussion', place: 'Location TBA' }
+test('events without description or place keep those fields empty', () => {
+  const [event] = parseCalendar(ics(['UID:a', 'DTSTART:20261020T160000Z', 'DTEND:20261020T170000Z', 'SUMMARY:Social']), now)
+  assert.equal(event.description, '')
+  assert.equal(event.place, '')
+  assert.equal(event.registerUrl, undefined)
+  assert.equal(event.type, 'events')
+})
 
-test('regular entries use consecutive Mondays at 18:00, sorted with dated events', () => {
-  const entries = resolveCalendar([regular, { ...regular, title: 'Next' }, {
-    ...regular, type: 'events', date: '2026-09-23', time: '12:00',
-  }], new Date('2026-09-20T12:00:00Z'))
-  assert.deepEqual(entries.map(e => [e.date, e.time]), [
-    ['2026-09-21', '18:00'], ['2026-09-23', '12:00'], ['2026-09-28', '18:00'],
+test('repeating events are expanded, keeping moved and dropping cancelled occurrences', () => {
+  const events = parseCalendar(ics(
+    ['UID:weekly', 'DTSTART;TZID=Europe/Berlin:20261005T180000', 'DTEND;TZID=Europe/Berlin:20261005T200000',
+      'RRULE:FREQ=WEEKLY;COUNT=5', 'EXDATE;TZID=Europe/Berlin:20261019T180000', 'SUMMARY:Weekly'],
+    ['UID:weekly', 'RECURRENCE-ID;TZID=Europe/Berlin:20261026T180000',
+      'DTSTART;TZID=Europe/Berlin:20261027T190000', 'DTEND;TZID=Europe/Berlin:20261027T210000', 'SUMMARY:Weekly (moved)'],
+    ['UID:weekly', 'RECURRENCE-ID;TZID=Europe/Berlin:20261102T180000', 'STATUS:CANCELLED',
+      'DTSTART;TZID=Europe/Berlin:20261102T180000', 'DTEND;TZID=Europe/Berlin:20261102T200000', 'SUMMARY:Weekly'],
+  ), now)
+  // 27 Oct is after the switch to winter time and still shows 19:00.
+  assert.deepEqual(events.map(e => [e.date, e.time, e.title]), [
+    ['2026-10-12', '18:00', 'Weekly'],
+    ['2026-10-27', '19:00', 'Weekly (moved)'],
   ])
 })
 
-test('next occurrence uses Berlin time and rolls forward after the start', () => {
-  assert.equal(resolveCalendar([regular], new Date('2026-09-21T15:59:00Z'))[0].date, '2026-09-21')
-  assert.equal(resolveCalendar([regular], new Date('2026-09-21T16:01:00Z'))[0].date, '2026-09-28')
-  assert.equal(resolveCalendar([regular], new Date('2026-10-26T16:59:00Z'))[0].date, '2026-10-26')
-  assert.equal(resolveCalendar([regular], new Date('2026-10-26T17:01:00Z'))[0].date, '2026-11-02')
+test('all-day events have a date but no time', () => {
+  const [event] = parseCalendar(ics(['UID:day', 'DTSTART;VALUE=DATE:20261015', 'DTEND;VALUE=DATE:20261016', 'SUMMARY:Conference']), now)
+  assert.equal(event.date, '2026-10-15')
+  assert.equal(event.time, undefined)
 })
 
-test('date and time overrides take precedence independently', () => {
-  const now = new Date('2026-09-21T16:30:00Z')
-  assert.equal(resolveCalendar([{ ...regular, time: '19:00' }], now)[0].date, '2026-09-21')
-  const [entry] = resolveCalendar([{ ...regular, date: '2026-09-25' }], now)
-  assert.equal(entry.date, '2026-09-25')
-  assert.equal(entry.time, '18:00')
-  assert.equal(resolveCalendar([{ ...regular, date: '2026-09-25', time: '20:00' }], now)[0].time, '20:00')
+test('descriptions keep simple formatting and links only', () => {
+  assert.equal(sanitizeDescription('<b>Hi</b><img src=x onerror=alert(1)><script>bad()</script><a href="javascript:x">y</a>'), '<b>Hi</b><a>y</a>')
+  assert.equal(sanitizeDescription('Line 1\nSee https://example.org <ok>'), 'Line 1<br>See <a href="https://example.org" target="_blank" rel="noopener noreferrer">https://example.org</a> &lt;ok&gt;')
 })
 
-test('events without a regular schedule require an explicit date and time', () => {
-  assert.throws(() => resolveCalendar([{ ...regular, type: 'events' }]), /date and time/)
+test('every inferred event type is a displayed category', () => {
+  for (const title of ['AI Governance Group', 'Intro course, part 1', 'Technical reading group', 'Social']) {
+    assert.ok(eventTypes.includes(typeById(eventType(title))))
+  }
 })

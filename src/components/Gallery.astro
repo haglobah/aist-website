@@ -2,7 +2,7 @@
 import { Image, getImage } from 'astro:assets'
 import Arrow from './Arrow.astro'
 import { gallery } from '../data/gallery'
-import { l, useTranslations, type Lang } from '../i18n'
+import { useTranslations, type Lang } from '../i18n'
 
 interface Props { lang: Lang }
 const { lang } = Astro.props
@@ -10,9 +10,9 @@ const t = useTranslations(lang)
 
 // Square tiles in the grid; each opens a preview that steps through all photos.
 // The first photo spans two tiles so that seven photos fill the grid.
-const photos = await Promise.all(gallery.map(async photo => ({
-  ...photo,
-  full: await getImage({ src: photo.src, width: 1600, format: 'webp' }),
+const photos = await Promise.all(gallery.map(async src => ({
+  src,
+  full: await getImage({ src, width: 1600, format: 'webp' }),
 })))
 const navButton = 'grid size-12 shrink-0 cursor-pointer place-items-center text-2xl text-white hover:bg-white/15'
 ---
@@ -24,10 +24,10 @@ const navButton = 'grid size-12 shrink-0 cursor-pointer place-items-center text-
     {photos.map((photo, index) => (
       <li class:list={[index === 0 && 'col-span-2']}>
         <!-- Without JavaScript the link still opens the large photo. -->
-        <a href={photo.full.src} data-gallery-open={index} data-full={photo.full.src} aria-haspopup="dialog" class="group relative block h-full cursor-zoom-in overflow-hidden outline-1 -outline-offset-1 outline-ink/10">
+        <a href={photo.full.src} data-gallery-open={index} data-full={photo.full.src} aria-haspopup="dialog" aria-label={t('openPhoto', { number: String(index + 1), total: String(photos.length) })} class="group relative block h-full cursor-zoom-in overflow-hidden outline-1 -outline-offset-1 outline-ink/10">
           <Image
             src={photo.src}
-            alt={l(photo.alt, lang)}
+            alt=""
             widths={index === 0 ? [800, 1600] : [400, 800]}
             sizes={index === 0 ? '(min-width: 1024px) 36rem, 100vw' : '(min-width: 1024px) 18rem, 50vw'}
             loading="lazy"
@@ -54,7 +54,6 @@ const navButton = 'grid size-12 shrink-0 cursor-pointer place-items-center text-
       <button type="button" data-gallery-step="-1" class:list={[navButton, 'absolute left-1 z-10 bg-black/50 sm:static sm:bg-transparent']} aria-label={t('previousPhoto')}><Arrow direction="left" /></button>
       <figure class="flex h-full min-w-0 flex-1 flex-col items-center justify-center gap-3" data-gallery-stage>
         <img data-gallery-image alt="" class="min-h-0 max-w-full flex-1 object-contain select-none" />
-        <figcaption class="max-w-2xl px-2 pb-4 text-center text-sm text-white/80 text-pretty" data-gallery-caption></figcaption>
       </figure>
       <button type="button" data-gallery-step="1" class:list={[navButton, 'absolute right-1 z-10 bg-black/50 sm:static sm:bg-transparent']} aria-label={t('nextPhoto')}><Arrow direction="right" /></button>
     </div>
@@ -64,20 +63,17 @@ const navButton = 'grid size-12 shrink-0 cursor-pointer place-items-center text-
 <script>
   const dialog = document.querySelector<HTMLDialogElement>('[data-gallery-dialog]')!
   const image = dialog.querySelector<HTMLImageElement>('[data-gallery-image]')!
-  const caption = dialog.querySelector<HTMLElement>('[data-gallery-caption]')!
   const count = dialog.querySelector<HTMLElement>('[data-gallery-count]')!
   const tiles = [...document.querySelectorAll<HTMLAnchorElement>('[data-gallery-open]')]
-  const photos = tiles.map(tile => ({ src: tile.dataset.full!, alt: tile.querySelector('img')?.alt ?? '' }))
+  const photos = tiles.map(tile => tile.dataset.full!)
   let current = 0
 
   function show(index: number) {
     current = (index + photos.length) % photos.length
-    image.src = photos[current].src
-    image.alt = photos[current].alt
-    caption.textContent = photos[current].alt
+    image.src = photos[current]
     count.textContent = `${current + 1} / ${photos.length}`
     // Load the neighbours ahead so stepping through feels instant.
-    for (const next of [current + 1, current - 1]) new Image().src = photos[(next + photos.length) % photos.length].src
+    for (const next of [current + 1, current - 1]) new Image().src = photos[(next + photos.length) % photos.length]
   }
 
   tiles.forEach((tile, index) => tile.addEventListener('click', event => {

@@ -10,6 +10,7 @@ function fixture() {
     dataset: { filter },
     attributes: { 'aria-pressed': 'false' },
     setAttribute(key, value) { this.attributes[key] = value },
+    focus() {},
     addEventListener(event, handler) { this[event] = handler },
   }))
   const cards = types.map(filterCard => ({

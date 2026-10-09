@@ -10,13 +10,15 @@ import SiteHeader from './SiteHeader.astro'
 import SiteFooter from './SiteFooter.astro'
 import Emphasis from './Emphasis.astro'
 import SocialIcon from './SocialIcon.astro'
-import { resolveCalendar, eventTypes, hangout, hero, parts, site, socials } from '../data/site'
+import { eventTypes, hangout, hero, parts, registerUrl, site, socials } from '../data/site'
+import { loadCalendar } from '../data/calendar'
 import { people } from '../data/people'
 import { l, useTranslations, type Lang } from '../i18n'
 
 interface Props { lang: Lang }
 const { lang } = Astro.props
 const t = useTranslations(lang)
+const events = await loadCalendar()
 
 const pillButton = 'mt-4 inline-flex min-h-11 cursor-pointer items-center justify-center border border-ink px-5 py-2 text-base text-ink hover:bg-ink/5'
 const disclosureSummary = 'action -mx-3 flex cursor-pointer list-none items-center justify-between gap-4 px-3 py-3 hover:bg-surface [&::-webkit-details-marker]:hidden'
@@ -57,7 +59,7 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
             </summary>
             <div class="pt-2 pb-3 text-base leading-relaxed">
               <p class="mb-4 text-pretty">{t('contactText')}</p>
-              <ContactForm id="feedback" lang={lang} />
+              <ContactForm id="feedback" lang={lang} subject="Website: feedback / suggestion" />
             </div>
           </details>
           <div class="flex flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-3 py-3">
@@ -75,7 +77,7 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
             </summary>
             <div class="pt-2 pb-3 text-base leading-relaxed">
               <p class="mb-4 text-pretty">{t('coffeeText')}</p>
-              <ContactForm id="coffee" lang={lang} emailRequired />
+              <ContactForm id="coffee" lang={lang} subject="Website: 1:1 career chat request" emailRequired />
             </div>
           </details>
         </div>
@@ -115,33 +117,35 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
       </div>
 
       <div>
-      <h3 class={subheading}>{t('calendar')}</h3>
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h3 class="font-serif text-2xl text-balance">{t('calendar')}</h3>
+        <a href={registerUrl} target="_blank" rel="noopener noreferrer" class="action inline-flex min-h-11 items-center gap-2 border border-accent bg-accent px-5 py-2 text-base text-paper hover:border-ink hover:bg-ink">{t('registerForEvents')} <Arrow direction="up-right" /></a>
+      </div>
       <aside class="border border-rule bg-sheet" id="calendar">
+        <!-- Filled from the Google Calendar at build time; past events are removed in the browser. -->
         <ol role="list" id="calendar-events" data-filter-target aria-live="polite">
-          {resolveCalendar().map((e) => {
+          {events.map((e, index) => {
             const d = parts(e.date, lang)
             return (
-              <li class="calendar-event group data-[highlighted=true]:bg-highlight grid grid-cols-5 gap-3 py-4 px-7 hover:bg-accent/5" data-event-type={e.type} data-calendar-index={e.index}>
+              <li class="calendar-event group data-[highlighted=true]:bg-highlight grid grid-cols-5 gap-3 py-4 px-7 hover:bg-accent/5" data-event-type={e.type} data-calendar-end={e.end}>
                 <time class="col-span-1 text-base leading-relaxed text-muted tabular-nums" datetime={e.date}>
-                  <b class="block font-bold text-ink">{d.weekday} {d.day}</b> <span data-calendar-month>{d.monthShort}</span>
-                  <span class="block" data-calendar-time>{e.time}</span>
+                  <b class="block font-bold text-ink">{d.weekday} {d.day}</b> {d.monthShort}
+                  {e.time && <span class="block">{e.time}</span>}
                 </time>
                 <div class="col-span-4">
                   <!-- The description opens on hover, or on click/tap via the title. -->
-                  <button type="button" data-calendar-toggle aria-expanded="false" aria-controls={`calendar-details-${e.index}`} class="block w-full cursor-pointer text-left font-serif text-lg leading-snug hover:text-accent aria-expanded:text-accent">{l(e.title, lang)}</button>
-                  <p class="mt-1 text-base text-muted">{l(e.place, lang)}</p>
-                  {e.registerUrl
-                    ? <a href={e.registerUrl} target="_blank" rel="noopener noreferrer" class={`${accentLink} inline-flex min-h-10 items-center gap-2`}>{t('register')} <Arrow direction="up-right" /></a>
-                    : <p class="text-base text-muted">{t('registrationSoon')}</p>}
-                  <div id={`calendar-details-${e.index}`} class="reveal mt-2 hidden text-base leading-relaxed group-hover:block group-has-[[aria-expanded=true]]:block">
-                    <p class="text-pretty">{l(e.description, lang)}</p>
+                  <button type="button" data-calendar-toggle aria-expanded="false" aria-controls={`calendar-details-${index}`} class="block w-full cursor-pointer text-left font-serif text-lg leading-snug hover:text-accent aria-expanded:text-accent">{e.title}</button>
+                  {e.place && <p class="mt-1 text-base text-muted">{e.place}</p>}
+                  {e.registerUrl && <a href={e.registerUrl} target="_blank" rel="noopener noreferrer" class={`${accentLink} inline-flex min-h-10 items-center gap-2`}>{t('register')} <Arrow direction="up-right" /></a>}
+                  <div id={`calendar-details-${index}`} class="reveal mt-2 hidden text-base leading-relaxed group-hover:block group-has-[[aria-expanded=true]]:block [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ul]:list-disc [&_ul]:pl-6">
+                    <div class="text-pretty" set:html={e.description} />
                   </div>
                 </div>
               </li>
             )
           })}
         </ol>
-        <p class="text-pretty py-6 text-muted" data-filter-empty hidden>
+        <p class="text-pretty px-7 py-6 text-muted" data-filter-empty hidden={events.length > 0}>
           {t('noEvents')}
         </p>
       </aside>
