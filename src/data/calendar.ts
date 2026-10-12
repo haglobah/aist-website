@@ -1,9 +1,11 @@
-// Upcoming events, read from the public Google Calendar of aistuebingen@gmail.com at build time.
+// Upcoming events, read at build time from the public Google Calendar of aistuebingen@gmail.com
+// and the Luma calendar at https://luma.com/aistuebingen.
 // The deploy workflow rebuilds the site daily, so new calendar entries appear within a day.
 import ICAL from 'ical.js'
 import type { EventTypeId } from './site'
 
 export const calendarFeed = 'https://calendar.google.com/calendar/ical/aistuebingen%40gmail.com/public/basic.ics'
+export const lumaFeed = 'https://api.lu.ma/ics/get?entity=calendar&id=cal-0kHYwsmTHS1ymml'
 
 export interface CalendarEvent {
   start: string // ISO instant
@@ -116,15 +118,28 @@ export function parseCalendar(ics: string, now = new Date(), horizonDays = 365):
     .sort((a, b) => a.start.localeCompare(b.start))
 }
 
+// An event listed in both calendars shows once, as written in the Google Calendar.
+// Luma descriptions only repeat the event link and address, so they are dropped.
+export function mergeCalendars(google: CalendarEvent[], luma: CalendarEvent[]): CalendarEvent[] {
+  const listed = (e: CalendarEvent) => google.some(g => (e.registerUrl && g.registerUrl === e.registerUrl)
+    || (g.start === e.start && g.title === e.title))
+  return [...google, ...luma.filter(e => !listed(e)).map(e => ({ ...e, description: '' }))]
+    .sort((a, b) => a.start.localeCompare(b.start))
+}
+
+async function fetchCalendar(url: string) {
+  const response = await fetch(url)
+  if (!response.ok) throw new Error(`Could not load the event calendar ${url} (${response.status} ${response.statusText})`)
+  return parseCalendar(await response.text())
+}
+
 // Fetched once per build; the dev server refetches every few minutes.
 let cached: { at: number; events: Promise<CalendarEvent[]> } | undefined
 
 export function loadCalendar(): Promise<CalendarEvent[]> {
   if (!cached || Date.now() - cached.at > 5 * 60_000) {
-    const events = fetch(calendarFeed).then(async response => {
-      if (!response.ok) throw new Error(`Could not load the event calendar (${response.status} ${response.statusText})`)
-      return parseCalendar(await response.text())
-    })
+    const events = Promise.all([fetchCalendar(calendarFeed), fetchCalendar(lumaFeed)])
+      .then(([google, luma]) => mergeCalendars(google, luma))
     cached = { at: Date.now(), events }
     events.catch(() => { cached = undefined })
   }

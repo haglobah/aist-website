@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { eventType, parseCalendar, sanitizeDescription } from '../src/data/calendar.ts'
+import { eventType, mergeCalendars, parseCalendar, sanitizeDescription } from '../src/data/calendar.ts'
 import { eventTypes, typeById } from '../src/data/site.ts'
 
 const ics = (...events) => [
@@ -71,4 +71,23 @@ test('every inferred event type is a displayed category', () => {
   for (const title of ['AI Governance Group', 'Intro course, part 1', 'Technical reading group', 'Social']) {
     assert.ok(eventTypes.includes(typeById(eventType(title))))
   }
+})
+
+test('Luma events join the Google Calendar once, sorted by start', () => {
+  const google = parseCalendar(ics(
+    ['UID:g1', 'DTSTART:20261026T170000Z', 'DTEND:20261026T183000Z', 'SUMMARY:Panel',
+      'DESCRIPTION:Register at https://luma.com/panel'],
+    ['UID:g2', 'DTSTART:20261030T170000Z', 'DTEND:20261030T180000Z', 'SUMMARY:Social'],
+  ), now)
+  const luma = parseCalendar(ics(
+    ['UID:l1', 'DTSTART:20261022T160000Z', 'DTEND:20261022T173000Z', 'SUMMARY:Intro Talk',
+      'DESCRIPTION:Get up-to-date information at: https://luma.com/intro'],
+    ['UID:l2', 'DTSTART:20261026T170000Z', 'DTEND:20261026T183000Z', 'SUMMARY:Panel + Q&A',
+      'DESCRIPTION:Get up-to-date information at: https://luma.com/panel'],
+    ['UID:l3', 'DTSTART:20261030T170000Z', 'DTEND:20261030T180000Z', 'SUMMARY:Social'],
+  ), now)
+  const merged = mergeCalendars(google, luma)
+  assert.deepEqual(merged.map(e => e.title), ['Intro Talk', 'Panel', 'Social'])
+  assert.equal(merged[0].registerUrl, 'https://luma.com/intro')
+  assert.equal(merged[0].description, '', 'Luma descriptions only repeat the link and address')
 })
