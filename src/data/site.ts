@@ -18,8 +18,8 @@ export const site = {
 
 export const hero = {
   heading: {
-    en: 'How come you have never heard of AI Safety?',
-    de: 'Wie, du hast noch nicht von KI-Sicherheit gehört?',
+    en: 'Let’s talk about AI Safety!',
+    de: 'Let’s talk about AI Safety!',
   },
   text: {
     en: 'AI is the fastest developing technology humanity has ever built. Let us try to understand how it works, how it can affect our lives in order to implement safeguards and prevent harmful events from happening. Let’s do a better job than the guys who brought us the industrial revolution.',
@@ -39,8 +39,8 @@ export const hero = {
       de: 'die Menschen **vernetzen**, die ein **tiefes Verständnis** von KI-Sicherheit entwickeln wollen',
     },
     {
-      en: 'assist you in forwarding more **careers** into AI Safety.',
-      de: 'die unterstützen bei **Karriereplanung**, die einen Bezug zu KI-Sicherheit hat.',
+      en: 'provide assistance in case you consider pivoting your **career** to contribute to AI Safety.',
+      de: 'die dich unterstützen, falls du überlegst, mit deiner **Karriere** zu KI-Sicherheit beizutragen.',
     },
   ] satisfies Localized[],
   closing: {
@@ -91,7 +91,7 @@ export const eventTypes: EventType[] = [
     id: 'technical-ai-safety',
     name: { en: 'Technical reading group', de: 'Technische Lesegruppe' },
     schedule: {
-      weekday: 1, dayLabel: { en: 'Mondays', de: 'Montags' }, time: '18:00', place: 'Maria-von-Linden-Str. 1',
+      weekday: 1, dayLabel: { en: 'Mondays', de: 'Montags' }, time: '18:00', place: { en: 'Maria-von-Linden-Str. 1, room 4.01', de: 'Maria-von-Linden-Str. 1, Raum 4.01' },
       language: { en: 'in English', de: 'auf Englisch' },
     },
     description: {
@@ -115,8 +115,8 @@ export const eventTypes: EventType[] = [
     id: 'ai-governance',
     name: { en: 'Weekly AI Governance Group', de: 'Wöchentliche Governance-Lesegruppe' },
     info: {
-      en: 'Starting in the week of 23 November | date and place TBA | in German',
-      de: 'Ab der Woche vom 23. November | Zeit und Ort TBA | auf Deutsch',
+      en: 'Starting in the week of 23 November | Wilhelmstr. 22, room 1.01 | in German',
+      de: 'Ab der Woche vom 23. November | Wilhelmstr. 22, Raum 1.01 | auf Deutsch',
     },
     description: {
       en: 'Join us as we grab dinner and check out different proposals on how to govern AI – the position of middle powers – international treaties – legal challenges and so on. No previous knowledge required. The reading list is not set in stone – tell us what you would like to learn about!',

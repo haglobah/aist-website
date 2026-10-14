@@ -48,5 +48,12 @@ export const advisors: { name: string; href?: string }[] = [
   { name: 'Maksym Andriushchenko', href: 'https://institute-tue.ellis.eu/de/person/99998303' },
 ]
 
-// Until names are added, the list says TBA.
-export const volunteers: { name: string; href?: string }[] = []
+// Sorted by last name. When the list is empty, it says TBA.
+export const volunteers: { name: string; href?: string }[] = [
+  { name: 'Karuna Chandra' },
+  { name: 'Rashika Kukreja' },
+  { name: 'Siddharth Pandey' },
+  { name: 'Shubham Raheja' },
+  { name: 'Snehil Seenu' },
+  { name: 'Johannes Taraz' },
+]

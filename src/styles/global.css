@@ -79,6 +79,20 @@
 #resources { --boat-x: 0.75; }
 #fellowships { --boat-x: 1; }
 
+/* A slim rounded scrollbar without arrows or track, darker while the pointer is over the list.
+   Chrome and Safari take the -webkit- rules (which drop the arrow buttons); Firefox the standard ones. */
+@utility thin-scrollbar {
+  --thumb: var(--color-rule);
+  &:hover { --thumb: color-mix(in srgb, var(--color-muted) 70%, transparent); }
+  &::-webkit-scrollbar { width: 10px; }
+  &::-webkit-scrollbar-track { background: transparent; margin-block: 6px; }
+  &::-webkit-scrollbar-thumb { background: var(--thumb) padding-box; border: 3px solid transparent; border-radius: 999px; }
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--thumb) transparent;
+  }
+}
+
 .activity-filter:enabled:active { scale: none; }
 
 .activity-title {

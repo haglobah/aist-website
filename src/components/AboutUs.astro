@@ -7,9 +7,10 @@ interface Props { lang: Lang }
 const { lang } = Astro.props
 const t = useTranslations(lang)
 
+// On wide screens the lists share four equal columns: advisors take one, volunteers three, two names to a column.
 const groups = [
-  { title: t('academicAdvisors'), members: advisors },
-  { title: t('volunteers'), members: volunteers },
+  { title: t('academicAdvisors'), members: advisors, wide: false },
+  { title: t('volunteers'), members: volunteers, wide: true },
 ]
 const nameLink = 'underline decoration-rule underline-offset-4 hover:text-accent hover:decoration-accent'
 
@@ -45,12 +46,12 @@ const initials = (name: string) => name.split(' ').map(part => part[0]).join('')
       </article>
     ))}
   </div>
-  <div class="mt-10 grid gap-8 sm:grid-cols-2">
+  <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
     {groups.map(group => (
-      <div>
-        <h3 class="mb-2 font-serif text-xl text-balance">{group.title}</h3>
+      <div class:list={[group.wide && 'lg:col-span-3 lg:grid lg:grid-cols-subgrid lg:content-start']}>
+        <h3 class="mb-2 font-serif text-xl text-balance lg:col-span-full">{group.title}</h3>
         {group.members.length
-          ? <ul role="list" class="space-y-1">
+          ? <ul role="list" class:list={group.wide ? 'grid gap-y-1 sm:grid-flow-col sm:grid-rows-3 sm:gap-x-8 lg:col-span-full lg:grid-cols-subgrid lg:grid-rows-2' : 'space-y-1'}>
               {group.members.map(member => (
                 <li>{member.href
                   ? <a href={member.href} target="_blank" rel="noopener noreferrer" class={nameLink}>{member.name}</a>

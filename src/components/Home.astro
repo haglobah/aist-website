@@ -88,7 +88,7 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
       <h2 id="events-heading" class="font-serif text-4xl text-balance md:col-span-2 md:text-5xl">{t('nextEvents')}</h2>
       <div>
         <h3 class={subheading}>{t('eventTypes')}</h3>
-        <ul role="list" data-filter-group class="divide-y divide-rule">
+        <ul role="list" data-filter-group data-calendar-limit class="divide-y divide-rule">
           {eventTypes.map((type) => (
             <li
               class="activity relative isolate py-3 px-6 data-[highlighted=true]:bg-highlight [&_a]:relative [&_a]:z-1"
@@ -122,8 +122,9 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
         <a href={registerUrl} target="_blank" rel="noopener noreferrer" class="action inline-flex min-h-11 items-center gap-2 border border-accent bg-accent px-5 py-2 text-base text-paper hover:border-ink hover:bg-ink">{t('registerForEvents')} <Arrow direction="up-right" /></a>
       </div>
       <aside class="border border-rule bg-sheet" id="calendar">
-        <!-- Filled from the Google Calendar at build time; past events are removed in the browser. -->
-        <ol role="list" id="calendar-events" data-filter-target aria-live="polite">
+        <!-- Filled from the Google Calendar at build time; past events are removed in the browser.
+             The list scrolls once it is longer than ten events or than the event types beside it. -->
+        <ol role="list" id="calendar-events" data-filter-target aria-live="polite" class="thin-scrollbar overflow-y-auto overscroll-contain">
           {events.map((e, index) => {
             const d = parts(e.date, lang)
             return (

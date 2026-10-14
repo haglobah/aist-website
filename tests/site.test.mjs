@@ -67,6 +67,12 @@ test('descriptions keep simple formatting and links only', () => {
   assert.equal(sanitizeDescription('Line 1\nSee https://example.org <ok>'), 'Line 1<br>See <a href="https://example.org" target="_blank" rel="noopener noreferrer">https://example.org</a> &lt;ok&gt;')
 })
 
+test('only the intro course counts as the introductory course', () => {
+  assert.equal(eventType('Intro-Course Part 1'), 'introductory-course')
+  assert.equal(eventType('Intro Course: Part 2'), 'introductory-course')
+  assert.equal(eventType('Intro Talk: What is AI Safety?'), 'events')
+})
+
 test('every inferred event type is a displayed category', () => {
   for (const title of ['AI Governance Group', 'Intro course, part 1', 'Technical reading group', 'Social']) {
     assert.ok(eventTypes.includes(typeById(eventType(title))))

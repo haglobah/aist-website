@@ -1,11 +1,14 @@
-// Upcoming events, read at build time from the public Google Calendar of aistuebingen@gmail.com
+// Upcoming events, read at build time from the public "AIST Events" Google Calendar
 // and the Luma calendar at https://luma.com/aistuebingen.
 // The deploy workflow rebuilds the site daily, so new calendar entries appear within a day.
 import ICAL from 'ical.js'
 import type { EventTypeId } from './site'
 
-export const calendarFeed = 'https://calendar.google.com/calendar/ical/aistuebingen%40gmail.com/public/basic.ics'
+export const calendarFeed = 'https://calendar.google.com/calendar/ical/5a9089b3c0a61d751daf541202612343d23f637d8e78a107222de5dfceb49ef2%40group.calendar.google.com/public/basic.ics'
 export const lumaFeed = 'https://api.lu.ma/ics/get?entity=calendar&id=cal-0kHYwsmTHS1ymml'
+
+// The list shows events up to and including 6 Feb 2027 (end of the winter semester); move this on for the next semester.
+export const listUntil = new Date('2027-02-07T00:00:00+01:00')
 
 export interface CalendarEvent {
   start: string // ISO instant
@@ -22,7 +25,8 @@ export interface CalendarEvent {
 // The calendar has no categories, so the event type (for the filter) comes from the title.
 const typeKeywords: [EventTypeId, RegExp][] = [
   ['ai-governance', /governance/i],
-  ['introductory-course', /intro|einführung|course|kurs/i],
+  // Only the course itself; e.g. "Intro Talk" is a one-off event.
+  ['introductory-course', /einführung|course|kurs/i],
   ['technical-ai-safety', /reading group|lesegruppe|paper|technical|technisch/i],
 ]
 
@@ -67,8 +71,8 @@ function registerUrl(...sources: string[]) {
   return sources.join(' ').match(/https?:\/\/(?:www\.)?(?:luma\.com|lu\.ma)\/[^\s"'<>]+/i)?.[0]
 }
 
-// Lists events that have not ended yet, including occurrences of repeating events, sorted by start.
-export function parseCalendar(ics: string, now = new Date(), horizonDays = 365): CalendarEvent[] {
+// Lists events that have not ended yet and start before `until`, including occurrences of repeating events, sorted by start.
+export function parseCalendar(ics: string, now = new Date(), until = listUntil): CalendarEvent[] {
   const root = new ICAL.Component(ICAL.parse(ics))
   for (const zone of root.getAllSubcomponents('vtimezone')) ICAL.TimezoneService.register(zone)
 
@@ -81,7 +85,6 @@ export function parseCalendar(ics: string, now = new Date(), horizonDays = 365):
     else masters.push(exception)
   }
 
-  const horizon = new Date(now.getTime() + horizonDays * 86_400_000)
   const occurrences: { item: ICAL.Event; start: ICAL.Time; end: ICAL.Time }[] = []
   for (const event of masters) {
     if (!event.isRecurring()) {
@@ -89,14 +92,14 @@ export function parseCalendar(ics: string, now = new Date(), horizonDays = 365):
       continue
     }
     const iterator = event.iterator()
-    for (let next = iterator.next(); next && next.toJSDate() <= horizon; next = iterator.next()) {
+    for (let next = iterator.next(); next && next.toJSDate() < until; next = iterator.next()) {
       const details = event.getOccurrenceDetails(next)
       if (details.endDate.toJSDate() > now) occurrences.push({ item: details.item, start: details.startDate, end: details.endDate })
     }
   }
 
   return occurrences
-    .filter(({ item, start, end }) => (end ?? start).toJSDate() > now && start.toJSDate() <= horizon
+    .filter(({ item, start, end }) => (end ?? start).toJSDate() > now && start.toJSDate() < until
       && item.component.getFirstPropertyValue('status') !== 'CANCELLED')
     .map(({ item, start, end }) => {
       const begins = start.toJSDate()
