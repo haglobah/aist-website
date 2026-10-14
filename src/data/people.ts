@@ -46,6 +46,7 @@ export const people: Person[] = [
 export const advisors: { name: string; href?: string }[] = [
   { name: 'Sahar Abdelnabi', href: 'https://institute-tue.ellis.eu/person/sabdelnabi' },
   { name: 'Maksym Andriushchenko', href: 'https://institute-tue.ellis.eu/de/person/99998303' },
+  { name: 'Jonas Geiping', href: 'https://institute-tue.ellis.eu/en/people/jgeiping' },
 ]
 
 // Sorted by last name. When the list is empty, it says TBA.

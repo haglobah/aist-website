@@ -19,13 +19,13 @@ test('lists upcoming events in Berlin time with the calendar fields', () => {
   const [event, ...rest] = parseCalendar(ics(
     ['UID:past', 'DTSTART:20261001T160000Z', 'DTEND:20261001T180000Z', 'SUMMARY:Past'],
     ['UID:next', 'DTSTART;TZID=Europe/Berlin:20261012T180000', 'DTEND;TZID=Europe/Berlin:20261012T200000',
-      'SUMMARY:Paper reading group', 'LOCATION:Maria-von-Linden-Str. 1',
+      'SUMMARY:Paper discussion', 'LOCATION:Maria-von-Linden-Str. 1',
       'DESCRIPTION:Sign up: <a href="https://luma.com/abc">here</a>'],
   ), now)
   assert.equal(rest.length, 0)
   assert.equal(event.date, '2026-10-12')
   assert.equal(event.time, '18:00')
-  assert.equal(event.title, 'Paper reading group')
+  assert.equal(event.title, 'Paper discussion')
   assert.equal(event.place, 'Maria-von-Linden-Str. 1')
   assert.equal(event.type, 'technical-ai-safety')
   assert.equal(event.registerUrl, 'https://luma.com/abc')
@@ -38,6 +38,19 @@ test('events without description or place keep those fields empty', () => {
   assert.equal(event.place, '')
   assert.equal(event.registerUrl, undefined)
   assert.equal(event.type, 'events')
+})
+
+test('reading groups list no place and the introductory course lists its room as TBA', () => {
+  const [reading, governance, course, talk] = parseCalendar(ics(
+    ['UID:r', 'DTSTART:20261012T160000Z', 'DTEND:20261012T180000Z', 'SUMMARY:Technical Reading Group', 'LOCATION:Maria-von-Linden-Str. 1'],
+    ['UID:g', 'DTSTART:20261013T160000Z', 'DTEND:20261013T180000Z', 'SUMMARY:AI Governance Reading Group', 'LOCATION:Wilhelmstr. 22'],
+    ['UID:c', 'DTSTART:20261014T160000Z', 'DTEND:20261014T180000Z', 'SUMMARY:Intro Course: Part 1', 'LOCATION:Maria-von-Linden-Str. 1'],
+    ['UID:t', 'DTSTART:20261015T160000Z', 'DTEND:20261015T180000Z', 'SUMMARY:Intro Talk', 'LOCATION:Maria-von-Linden-Str. 1'],
+  ), now)
+  assert.equal(reading.place, '')
+  assert.equal(governance.place, '')
+  assert.equal(course.place, 'TBA')
+  assert.equal(talk.place, 'Maria-von-Linden-Str. 1')
 })
 
 test('repeating events are expanded, keeping moved and dropping cancelled occurrences', () => {

@@ -71,6 +71,13 @@ function registerUrl(...sources: string[]) {
   return sources.join(' ').match(/https?:\/\/(?:www\.)?(?:luma\.com|lu\.ma)\/[^\s"'<>]+/i)?.[0]
 }
 
+// The reading groups' address is given in their description above the calendar, and the course room is not decided yet.
+function eventPlace(title: string, type: EventTypeId, location: string) {
+  if (/reading group|lesegruppe/i.test(title)) return ''
+  if (type === 'introductory-course') return 'TBA'
+  return location
+}
+
 // Lists events that have not ended yet and start before `until`, including occurrences of repeating events, sorted by start.
 export function parseCalendar(ics: string, now = new Date(), until = listUntil): CalendarEvent[] {
   const root = new ICAL.Component(ICAL.parse(ics))
@@ -106,14 +113,16 @@ export function parseCalendar(ics: string, now = new Date(), until = listUntil):
       const local = berlinParts(begins)
       const description = String(item.description ?? '')
       const url = String(item.component.getFirstPropertyValue('url') ?? '')
+      const title = (item.summary ?? '').trim()
+      const type = eventType(title)
       return {
         start: begins.toISOString(),
         end: (end ?? start).toJSDate().toISOString(),
         date: start.isDate ? start.toString().slice(0, 10) : local.date,
         time: start.isDate ? undefined : local.time,
-        type: eventType(item.summary ?? ''),
-        title: (item.summary ?? '').trim(),
-        place: (item.location ?? '').trim(),
+        type,
+        title,
+        place: eventPlace(title, type, (item.location ?? '').trim()),
         description: sanitizeDescription(description),
         registerUrl: registerUrl(url, description),
       }
