@@ -83,7 +83,7 @@ export type SocialId = 'whatsapp' | 'linkedin' | 'instagram'
 export const socials: { id: SocialId; label: string; href?: string }[] = [
   { id: 'whatsapp', label: 'WhatsApp', href: 'https://chat.whatsapp.com/LDB5MYKqpsN17pzGBwrKwv' },
   { id: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/company/112304971/' },
-  { id: 'instagram', label: 'Instagram' },
+  { id: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/aistuebingen/' },
 ]
 
 export const eventTypes: EventType[] = [
