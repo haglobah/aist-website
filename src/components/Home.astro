@@ -19,6 +19,8 @@ interface Props { lang: Lang }
 const { lang } = Astro.props
 const t = useTranslations(lang)
 const events = await loadCalendar()
+const whatsapp = socials.find((s) => s.id === 'whatsapp')?.href
+const [noteBefore, noteAfter = ''] = t('whatsappNote').split('{link}')
 
 const pillButton = 'mt-4 inline-flex min-h-11 cursor-pointer items-center justify-center border border-ink px-5 py-2 text-base text-ink hover:bg-ink/5'
 const disclosureSummary = 'action -mx-3 flex cursor-pointer list-none items-center justify-between gap-4 px-3 py-3 hover:bg-surface [&::-webkit-details-marker]:hidden'
@@ -86,6 +88,11 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
 
     <section id="events" aria-labelledby="events-heading" class="section-rule grid items-start gap-10 md:grid-cols-2 md:gap-x-12">
       <h2 id="events-heading" class="font-serif text-4xl text-balance md:col-span-2 md:text-5xl">{t('nextEvents')}</h2>
+      {whatsapp && (
+        <p class="text-pretty border-l-4 border-accent bg-highlight px-5 py-4 text-lg leading-relaxed md:col-span-2">
+          {noteBefore}<a href={whatsapp} target="_blank" rel="noopener noreferrer" class={`${accentLink} font-bold`}>{t('whatsappLink')}</a>{noteAfter}
+        </p>
+      )}
       <div>
         <h3 class={subheading}>{t('eventTypes')}</h3>
         <ul role="list" data-filter-group data-calendar-limit class="divide-y divide-rule">
@@ -165,3 +172,4 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
 <script src="../scripts/filter.ts"></script>
 
 <script src="../scripts/calendar.ts"></script>
+<script src="../scripts/event-toggle.ts"></script>

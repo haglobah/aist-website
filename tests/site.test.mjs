@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { eventType, mergeCalendars, parseCalendar, sanitizeDescription } from '../src/data/calendar.ts'
+import { eventKind, eventType, mergeCalendars, parseCalendar, sanitizeDescription } from '../src/data/calendar.ts'
 import { eventTypes, typeById } from '../src/data/site.ts'
 
 const ics = (...events) => [
@@ -40,7 +40,7 @@ test('events without description or place keep those fields empty', () => {
   assert.equal(event.type, 'events')
 })
 
-test('reading groups list no place and the introductory course lists its room as TBA', () => {
+test('reading groups list no place and the introductory course always lists its room', () => {
   const [reading, governance, course, talk] = parseCalendar(ics(
     ['UID:r', 'DTSTART:20261012T160000Z', 'DTEND:20261012T180000Z', 'SUMMARY:Technical Reading Group', 'LOCATION:Maria-von-Linden-Str. 1'],
     ['UID:g', 'DTSTART:20261013T160000Z', 'DTEND:20261013T180000Z', 'SUMMARY:AI Governance Reading Group', 'LOCATION:Wilhelmstr. 22'],
@@ -49,7 +49,7 @@ test('reading groups list no place and the introductory course lists its room as
   ), now)
   assert.equal(reading.place, '')
   assert.equal(governance.place, '')
-  assert.equal(course.place, 'TBA')
+  assert.equal(course.place, 'Wilhelmstraße 22, Raum 106')
   assert.equal(talk.place, 'Maria-von-Linden-Str. 1')
 })
 
@@ -106,7 +106,52 @@ test('Luma events join the Google Calendar once, sorted by start', () => {
     ['UID:l3', 'DTSTART:20261030T170000Z', 'DTEND:20261030T180000Z', 'SUMMARY:Social'],
   ), now)
   const merged = mergeCalendars(google, luma)
-  assert.deepEqual(merged.map(e => e.title), ['Intro Talk', 'Panel', 'Social'])
+  assert.deepEqual(merged.map(e => e.title), ['Intro Talk', 'Panel + Q&A', 'Social'])
   assert.equal(merged[0].registerUrl, 'https://luma.com/intro')
   assert.equal(merged[0].description, '', 'Luma descriptions only repeat the link and address')
+})
+
+test('past mode lists ended events newest first, dropping upcoming and cancelled ones', () => {
+  const text = ics(
+    ['UID:old', 'DTSTART:20260901T160000Z', 'DTEND:20260901T170000Z', 'SUMMARY:Old talk'],
+    ['UID:older', 'DTSTART:20260801T160000Z', 'DTEND:20260801T170000Z', 'SUMMARY:Older talk'],
+    ['UID:gone', 'DTSTART:20260905T160000Z', 'DTEND:20260905T170000Z', 'SUMMARY:Cancelled', 'STATUS:CANCELLED'],
+    ['UID:next', 'DTSTART:20261020T160000Z', 'DTEND:20261020T170000Z', 'SUMMARY:Upcoming'],
+  )
+  const options = { past: true }
+  assert.deepEqual(parseCalendar(text, now, undefined, options).map(e => e.title), ['Old talk', 'Older talk'])
+  assert.deepEqual(parseCalendar(text, now).map(e => e.title), ['Upcoming'])
+})
+
+test('past mode only lists repeating occurrences that have ended', () => {
+  const events = parseCalendar(ics(
+    ['UID:rep', 'DTSTART:20260928T160000Z', 'DTEND:20260928T170000Z', 'SUMMARY:Reading group', 'RRULE:FREQ=WEEKLY;COUNT=4'],
+  ), now, undefined, { past: true })
+  assert.deepEqual(events.map(e => e.date), ['2026-10-05', '2026-09-28'])
+})
+
+test('a Luma event with the same start as a Google event takes over its title and link, keeping the Google description', () => {
+  const google = parseCalendar(ics(
+    ['UID:g', 'DTSTART:20261026T170000Z', 'DTEND:20261026T183000Z', 'SUMMARY:Panel', 'DESCRIPTION:Our panel on governance'],
+    ['UID:g2', 'DTSTART:20261030T170000Z', 'DTEND:20261030T180000Z', 'SUMMARY:Social'],
+  ), now)
+  const luma = parseCalendar(ics(
+    ['UID:l', 'DTSTART:20261026T170000Z', 'DTEND:20261026T183000Z', 'SUMMARY:Panel + Q&A', 'DESCRIPTION:https://luma.com/panel'],
+    ['UID:l2', 'DTSTART:20261030T170000Z', 'DTEND:20261030T180000Z', 'SUMMARY:Pub quiz', 'DESCRIPTION:https://luma.com/quiz'],
+  ), now)
+  const merged = mergeCalendars(google, luma)
+  assert.deepEqual(merged.map(e => e.title), ['Panel + Q&A', 'Pub quiz'])
+  assert.equal(merged[0].registerUrl, 'https://luma.com/panel')
+  assert.match(merged[0].description, /Our panel/)
+  assert.equal(merged[1].description, '')
+})
+
+test('event kinds come from the title prefix, falling back to the event type', () => {
+  const kind = title => eventKind(title, eventType(title))
+  assert.equal(kind('[Talk] Compute Governance, Yannick Mühlhäuser'), 'talk')
+  assert.equal(kind('[Social] AI Safety Pub Quiz'), 'social')
+  assert.equal(kind('[Paper Discussion] Activation Oracles'), 'paper')
+  assert.equal(kind('Intro Talk: What is AI Safety?'), 'talk')
+  assert.equal(kind('AI Governance Reading Group'), 'governance')
+  assert.equal(kind('Dies Universitatis'), 'other')
 })

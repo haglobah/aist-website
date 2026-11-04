@@ -10,12 +10,16 @@ export const lumaFeed = 'https://api.lu.ma/ics/get?entity=calendar&id=cal-0kHYws
 // The list shows events up to and including 6 Feb 2027 (end of the winter semester); move this on for the next semester.
 export const listUntil = new Date('2027-02-07T00:00:00+01:00')
 
+// What an event is, for the archive's label. Calendar titles are often prefixed, e.g. "[Talk] ..." or "[Social] ...".
+export type EventKind = 'paper' | 'talk' | 'social' | 'course' | 'governance' | 'other'
+
 export interface CalendarEvent {
   start: string // ISO instant
   end: string // ISO instant; the event leaves the list once it has ended
   date: string // YYYY-MM-DD in Berlin time
   time?: string // HH:MM in Berlin time; missing for all-day events
   type: EventTypeId
+  kind: EventKind // worked out from the Google title, which survives merging with Luma
   title: string
   place: string
   description: string // sanitised HTML, empty when the calendar entry has none
@@ -32,6 +36,15 @@ const typeKeywords: [EventTypeId, RegExp][] = [
 
 export function eventType(title: string): EventTypeId {
   return typeKeywords.find(([, pattern]) => pattern.test(title))?.[0] ?? 'events'
+}
+
+export function eventKind(title: string, type: EventTypeId): EventKind {
+  if (/^\[talk\]|\btalk\b/i.test(title)) return 'talk'
+  if (/^\[social\]|social|pub quiz|watch party|dinner/i.test(title)) return 'social'
+  if (/^\[(paper discussion|technical reading group)\]/i.test(title) || type === 'technical-ai-safety') return 'paper'
+  if (type === 'introductory-course') return 'course'
+  if (type === 'ai-governance') return 'governance'
+  return 'other'
 }
 
 const berlin = new Intl.DateTimeFormat('en-GB', {
@@ -71,15 +84,16 @@ function registerUrl(...sources: string[]) {
   return sources.join(' ').match(/https?:\/\/(?:www\.)?(?:luma\.com|lu\.ma)\/[^\s"'<>]+/i)?.[0]
 }
 
-// The reading groups' address is given in their description above the calendar, and the course room is not decided yet.
+// The reading groups' address is given in their description above the calendar; the course always meets in the same room.
 function eventPlace(title: string, type: EventTypeId, location: string) {
   if (/reading group|lesegruppe/i.test(title)) return ''
-  if (type === 'introductory-course') return 'TBA'
+  if (type === 'introductory-course') return 'Wilhelmstraße 22, Raum 106'
   return location
 }
 
 // Lists events that have not ended yet and start before `until`, including occurrences of repeating events, sorted by start.
-export function parseCalendar(ics: string, now = new Date(), until = listUntil): CalendarEvent[] {
+// With `past`, lists the events that have already ended instead, newest first.
+export function parseCalendar(ics: string, now = new Date(), until = listUntil, { past = false } = {}): CalendarEvent[] {
   const root = new ICAL.Component(ICAL.parse(ics))
   for (const zone of root.getAllSubcomponents('vtimezone')) ICAL.TimezoneService.register(zone)
 
@@ -99,15 +113,18 @@ export function parseCalendar(ics: string, now = new Date(), until = listUntil):
       continue
     }
     const iterator = event.iterator()
-    for (let next = iterator.next(); next && next.toJSDate() < until; next = iterator.next()) {
+    const limit = past ? now : until
+    for (let next = iterator.next(); next && next.toJSDate() < limit; next = iterator.next()) {
       const details = event.getOccurrenceDetails(next)
-      if (details.endDate.toJSDate() > now) occurrences.push({ item: details.item, start: details.startDate, end: details.endDate })
+      if ((details.endDate.toJSDate() > now) !== past) occurrences.push({ item: details.item, start: details.startDate, end: details.endDate })
     }
   }
 
   return occurrences
-    .filter(({ item, start, end }) => (end ?? start).toJSDate() > now && start.toJSDate() < until
-      && item.component.getFirstPropertyValue('status') !== 'CANCELLED')
+    .filter(({ item, start, end }) => past
+      ? (end ?? start).toJSDate() <= now
+      : (end ?? start).toJSDate() > now && start.toJSDate() < until)
+    .filter(({ item }) => item.component.getFirstPropertyValue('status') !== 'CANCELLED')
     .map(({ item, start, end }) => {
       const begins = start.toJSDate()
       const local = berlinParts(begins)
@@ -121,39 +138,60 @@ export function parseCalendar(ics: string, now = new Date(), until = listUntil):
         date: start.isDate ? start.toString().slice(0, 10) : local.date,
         time: start.isDate ? undefined : local.time,
         type,
+        kind: eventKind(title, type),
         title,
         place: eventPlace(title, type, (item.location ?? '').trim()),
         description: sanitizeDescription(description),
         registerUrl: registerUrl(url, description),
       }
     })
-    .sort((a, b) => a.start.localeCompare(b.start))
+    .sort((a, b) => past ? b.start.localeCompare(a.start) : a.start.localeCompare(b.start))
 }
 
-// An event listed in both calendars shows once, as written in the Google Calendar.
-// Luma descriptions only repeat the event link and address, so they are dropped.
-export function mergeCalendars(google: CalendarEvent[], luma: CalendarEvent[]): CalendarEvent[] {
-  const listed = (e: CalendarEvent) => google.some(g => (e.registerUrl && g.registerUrl === e.registerUrl)
-    || (g.start === e.start && g.title === e.title))
-  return [...google, ...luma.filter(e => !listed(e)).map(e => ({ ...e, description: '' }))]
-    .sort((a, b) => a.start.localeCompare(b.start))
+// The same event in both calendars: the same registration link, or the same start (titles are written differently).
+const sameEvent = (a: CalendarEvent, b: CalendarEvent) => a.start === b.start || (!!a.registerUrl && a.registerUrl === b.registerUrl)
+
+// An event listed in both calendars shows once: the Luma title and registration link with the Google description and place.
+// The type comes from the Google title, which carries the keywords (e.g. "[Intro Course]"). Luma-only events keep no
+// description, as it only repeats the event link and address.
+// Sorted like the inputs: `newestFirst` for past events.
+export function mergeCalendars(google: CalendarEvent[], luma: CalendarEvent[], newestFirst = false): CalendarEvent[] {
+  const lumaOnly = luma.filter(l => !google.some(g => sameEvent(g, l)))
+  const merged = google.map(g => {
+    const match = luma.find(l => sameEvent(g, l))
+    return match ? { ...g, title: match.title, registerUrl: match.registerUrl ?? g.registerUrl } : g
+  })
+  const order = (a: CalendarEvent, b: CalendarEvent) => newestFirst ? b.start.localeCompare(a.start) : a.start.localeCompare(b.start)
+  return [...merged, ...lumaOnly.map(e => ({ ...e, description: '' }))].sort(order)
 }
 
-async function fetchCalendar(url: string) {
+async function fetchFeed(url: string) {
   const response = await fetch(url)
   if (!response.ok) throw new Error(`Could not load the event calendar ${url} (${response.status} ${response.statusText})`)
-  return parseCalendar(await response.text())
+  return response.text()
 }
 
-// Fetched once per build; the dev server refetches every few minutes.
-let cached: { at: number; events: Promise<CalendarEvent[]> } | undefined
+// Feeds are fetched once per build (the dev server refetches every few minutes) and parsed for both lists.
+let cached: { at: number; feeds: Promise<[string, string]> } | undefined
 
-export function loadCalendar(): Promise<CalendarEvent[]> {
+function feeds() {
   if (!cached || Date.now() - cached.at > 5 * 60_000) {
-    const events = Promise.all([fetchCalendar(calendarFeed), fetchCalendar(lumaFeed)])
-      .then(([google, luma]) => mergeCalendars(google, luma))
-    cached = { at: Date.now(), events }
-    events.catch(() => { cached = undefined })
+    const pending = Promise.all([fetchFeed(calendarFeed), fetchFeed(lumaFeed)])
+    cached = { at: Date.now(), feeds: pending }
+    pending.catch(() => { cached = undefined })
   }
-  return cached.events
+  return cached.feeds
+}
+
+// Upcoming events for the home page.
+export async function loadCalendar(): Promise<CalendarEvent[]> {
+  const [google, luma] = await feeds()
+  return mergeCalendars(parseCalendar(google), parseCalendar(luma))
+}
+
+// Events that have ended, newest first, for the archive page.
+export async function loadPastEvents(): Promise<CalendarEvent[]> {
+  const [google, luma] = await feeds()
+  const options = { past: true }
+  return mergeCalendars(parseCalendar(google, new Date(), listUntil, options), parseCalendar(luma, new Date(), listUntil, options), true)
 }
