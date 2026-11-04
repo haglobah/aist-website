@@ -103,8 +103,8 @@ export const eventTypes: EventType[] = [
     id: 'introductory-course',
     name: { en: 'Introductory Course: a three-part course', de: 'Einführung in KI-Sicherheit: ein dreiteiliger Kurs' },
     info: {
-      en: 'Room TBA | in German',
-      de: 'Raum TBA | auf Deutsch',
+      en: 'Tuesdays 18:00 | Wilhelmstr. 22, room 106 | in German',
+      de: 'Dienstags 18:00 | Wilhelmstr. 22, Raum 106 | auf Deutsch',
     },
     description: {
       en: 'Over the course of three weeks we will learn the fundamentals of: how an AI works – what happens during your interaction with it – what it can and can’t do – in which ways it carries risks – what we can do about them. No technical background required!',
@@ -115,8 +115,8 @@ export const eventTypes: EventType[] = [
     id: 'ai-governance',
     name: { en: 'Weekly AI Governance Group', de: 'Wöchentliche Governance-Lesegruppe' },
     info: {
-      en: 'Starting in the week of 23 November | Wilhelmstr. 22, first floor | in German',
-      de: 'Ab der Woche vom 23. November | Wilhelmstr. 22, erster Stock | auf Deutsch',
+      en: 'Tuesdays 18:00, starting in the week of 23 November | Wilhelmstr. 22, room 106 | in German',
+      de: 'Dienstags 18:00, ab der Woche vom 23. November | Wilhelmstr. 22, Raum 106 | auf Deutsch',
     },
     description: {
       en: 'Join us as we grab dinner and check out different proposals on how to govern AI – the position of middle powers – international treaties – legal challenges and so on. No previous knowledge required. The reading list is not set in stone – tell us what you would like to learn about!',
