@@ -115,8 +115,8 @@ export const eventTypes: EventType[] = [
     id: 'ai-governance',
     name: { en: 'Weekly AI Governance Group', de: 'Wöchentliche Governance-Lesegruppe' },
     info: {
-      en: 'Tuesdays 18:00, starting in the week of 23 November | Wilhelmstr. 22, room 106 | in German',
-      de: 'Dienstags 18:00, ab der Woche vom 23. November | Wilhelmstr. 22, Raum 106 | auf Deutsch',
+      en: 'Tuesdays 18:00, starting in the week of 23 November | Wilhelmstr. 22, room 106 | in English',
+      de: 'Dienstags 18:00, ab der Woche vom 23. November | Wilhelmstr. 22, Raum 106 | auf Englisch',
     },
     description: {
       en: 'Join us as we grab dinner and check out different proposals on how to govern AI – the position of middle powers – international treaties – legal challenges and so on. No previous knowledge required. The reading list is not set in stone – tell us what you would like to learn about!',
