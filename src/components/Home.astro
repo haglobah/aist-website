@@ -9,6 +9,7 @@ import Resources from './Resources.astro'
 import SiteHeader from './SiteHeader.astro'
 import SiteFooter from './SiteFooter.astro'
 import Emphasis from './Emphasis.astro'
+import EventLink from './EventLink.astro'
 import SocialIcon from './SocialIcon.astro'
 import { eventTypes, hangout, hero, parts, registerUrl, site, socials } from '../data/site'
 import { loadCalendar } from '../data/calendar'
@@ -24,6 +25,8 @@ const [noteBefore, noteAfter = ''] = t('whatsappNote').split('{link}')
 
 const pillButton = 'mt-4 inline-flex min-h-11 cursor-pointer items-center justify-center border border-ink px-5 py-2 text-base text-ink hover:bg-ink/5'
 const disclosureSummary = 'action -mx-3 flex cursor-pointer list-none items-center justify-between gap-4 px-3 py-3 hover:bg-surface [&::-webkit-details-marker]:hidden'
+// The event a link points at (see scripts/event-links.ts).
+const linkedEvent = 'data-[linked=true]:bg-highlight data-[linked=true]:shadow-[inset_4px_0_0_var(--color-accent)]'
 const subheading = 'mb-4 font-serif text-2xl text-balance'
 const accentLink = 'text-accent underline decoration-accent/40 underline-offset-4 hover:text-ink hover:decoration-accent'
 ---
@@ -131,18 +134,21 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
       <aside class="border border-rule bg-sheet" id="calendar">
         <!-- Filled from the Google Calendar at build time; past events are removed in the browser.
              The list scrolls once it is longer than ten events or than the event types beside it. -->
-        <ol role="list" id="calendar-events" data-filter-target aria-live="polite" class="thin-scrollbar overflow-y-auto overscroll-contain">
+        <ol role="list" id="calendar-events" data-filter-target data-event-archive={getRelativeLocaleUrl(lang, 'archive/')} aria-live="polite" class="thin-scrollbar overflow-y-auto overscroll-contain">
           {events.map((e, index) => {
             const d = parts(e.date, lang)
             return (
-              <li class="calendar-event group data-[highlighted=true]:bg-highlight grid grid-cols-5 gap-3 py-4 px-7 hover:bg-accent/5" data-event-type={e.type} data-calendar-end={e.end}>
+              <li id={e.id} data-event class={`calendar-event group data-[highlighted=true]:bg-highlight grid grid-cols-5 gap-3 py-4 px-7 hover:bg-accent/5 ${linkedEvent}`} data-event-type={e.type} data-calendar-end={e.end}>
                 <time class="col-span-1 text-base leading-relaxed text-muted tabular-nums" datetime={e.date}>
                   <b class="block font-bold text-ink">{d.weekday} {d.day}</b> {d.monthShort}
                   {e.time && <span class="block">{e.time}</span>}
                 </time>
                 <div class="col-span-4">
                   <!-- The description opens on hover, or on click/tap via the title. -->
-                  <button type="button" data-calendar-toggle aria-expanded="false" aria-controls={`calendar-details-${index}`} class="block w-full cursor-pointer text-left font-serif text-lg leading-snug hover:text-accent aria-expanded:text-accent">{e.title}</button>
+                  <div class="flex items-start gap-2">
+                    <button type="button" data-calendar-toggle aria-expanded="false" aria-controls={`calendar-details-${index}`} class="block min-w-0 flex-1 cursor-pointer text-left font-serif text-lg leading-snug hover:text-accent aria-expanded:text-accent">{e.title}</button>
+                    <EventLink id={e.id} lang={lang} />
+                  </div>
                   {e.place && <p class="mt-1 text-base text-muted">{e.place}</p>}
                   {e.registerUrl && <a href={e.registerUrl} target="_blank" rel="noopener noreferrer" class={`${accentLink} inline-flex min-h-10 items-center gap-2`}>{t('register')} <Arrow direction="up-right" /></a>}
                   <div id={`calendar-details-${index}`} class="reveal mt-2 hidden text-base leading-relaxed group-hover:block group-has-[[aria-expanded=true]]:block [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ul]:list-disc [&_ul]:pl-6">
@@ -173,3 +179,4 @@ const accentLink = 'text-accent underline decoration-accent/40 underline-offset-
 
 <script src="../scripts/calendar.ts"></script>
 <script src="../scripts/event-toggle.ts"></script>
+<script src="../scripts/event-links.ts"></script>

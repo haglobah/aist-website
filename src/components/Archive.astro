@@ -3,6 +3,7 @@ import { getRelativeLocaleUrl } from 'astro:i18n'
 import Base from '../layouts/Base.astro'
 import SiteHeader from './SiteHeader.astro'
 import Arrow from './Arrow.astro'
+import EventLink from './EventLink.astro'
 import SiteFooter from './SiteFooter.astro'
 import { kindLabels, photos, withoutPrefix } from '../data/archive'
 import { loadPastEvents } from '../data/calendar'
@@ -49,8 +50,9 @@ function formatDate(iso: string) {
       <section aria-labelledby="past-events-heading" class="section-rule">
         <h2 id="past-events-heading" class="font-serif text-4xl md:text-5xl">{t('pastEvents')}</h2>
         <ol role="list" class="mt-6 divide-y divide-rule">
+          {/* Rows have no padding, so the highlight of a linked event (scripts/event-links.ts) reaches out on both sides. */}
           {pastEvents.map((event, index) => (
-            <li class="group grid gap-1 py-4 hover:bg-accent/5 sm:grid-cols-[11rem_1fr] sm:gap-6">
+            <li id={event.id} data-event class="group grid gap-1 py-4 hover:bg-accent/5 data-[linked=true]:bg-highlight data-[linked=true]:shadow-[-12px_0_0_var(--color-highlight),-16px_0_0_var(--color-accent),12px_0_0_var(--color-highlight)] sm:grid-cols-[11rem_1fr] sm:gap-6">
               <p class="text-base text-muted tabular-nums">
                 <time datetime={event.date}>{formatDate(event.date)}</time>
                 <span class="block text-sm">{l(kindLabels[event.kind], lang)}</span>
@@ -58,10 +60,16 @@ function formatDate(iso: string) {
               <div>
                 {/* The description opens on hover, or on click/tap via the title. */}
                 {event.description ? (
-                  <button type="button" data-calendar-toggle aria-expanded="false" aria-controls={`past-details-${index}`} class="block w-full cursor-pointer text-pretty text-left font-serif text-lg leading-snug hover:text-accent aria-expanded:text-accent">{withoutPrefix(event.title)}</button>
+                  <div class="flex items-start gap-2">
+                    <button type="button" data-calendar-toggle aria-expanded="false" aria-controls={`past-details-${index}`} class="block min-w-0 flex-1 cursor-pointer text-pretty text-left font-serif text-lg leading-snug hover:text-accent aria-expanded:text-accent">{withoutPrefix(event.title)}</button>
+                    <EventLink id={event.id} lang={lang} />
+                  </div>
                   <div id={`past-details-${index}`} class="reveal mt-1 hidden text-pretty text-base leading-relaxed text-muted group-hover:block group-has-[[aria-expanded=true]]:block [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ul]:list-disc [&_ul]:pl-6" set:html={event.description} />
                 ) : (
-                  <p class="text-pretty font-serif text-lg leading-snug">{withoutPrefix(event.title)}</p>
+                  <div class="flex items-start gap-2">
+                    <p class="min-w-0 flex-1 text-pretty font-serif text-lg leading-snug">{withoutPrefix(event.title)}</p>
+                    <EventLink id={event.id} lang={lang} />
+                  </div>
                 )}
               </div>
             </li>
@@ -75,3 +83,4 @@ function formatDate(iso: string) {
 </Base>
 
 <script src="../scripts/event-toggle.ts"></script>
+<script src="../scripts/event-links.ts"></script>

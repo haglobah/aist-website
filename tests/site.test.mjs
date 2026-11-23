@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { eventKind, eventType, mergeCalendars, parseCalendar, sanitizeDescription } from '../src/data/calendar.ts'
+import { eventKind, eventType, mergeCalendars, parseCalendar, sanitizeDescription, slug, withIds } from '../src/data/calendar.ts'
 import { eventTypes, typeById } from '../src/data/site.ts'
 
 const ics = (...events) => [
@@ -154,4 +154,17 @@ test('event kinds come from the title prefix, falling back to the event type', (
   assert.equal(kind('Intro Talk: What is AI Safety?'), 'talk')
   assert.equal(kind('AI Governance Reading Group'), 'governance')
   assert.equal(kind('Dies Universitatis'), 'other')
+})
+
+test('event ids are the date and the title without its prefix, readable and unique', () => {
+  assert.equal(slug('[Talk] Compute Governance: Wer kontrolliert die GPUs?'), 'compute-governance-wer-kontrolliert-die-gpus')
+  assert.equal(slug('Einführungskurs – Teil 1: Größere Modelle, schöne Grüße'), 'einfuehrungskurs-teil-1-groessere-modelle-schoene')
+  assert.equal(slug('Understanding the AI Act and the Code of Practice'), 'understanding-the-ai-act')
+  const event = (date, time, title) => ({ date, time, title })
+  const ids = withIds([
+    event('2026-11-25', '18:00', '[Social] Pub Quiz'),
+    event('2026-11-26', '12:00', 'Reading Group'),
+    event('2026-11-26', '18:00', 'Reading Group'),
+  ]).map(e => e.id)
+  assert.deepEqual(ids, ['2026-11-25-pub-quiz', '2026-11-26-1200-reading-group', '2026-11-26-1800-reading-group'])
 })

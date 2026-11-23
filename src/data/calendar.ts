@@ -26,6 +26,11 @@ export interface CalendarEvent {
   registerUrl?: string
 }
 
+// An event as listed on the site, with the id that links to it (/#2026-11-25-compute-governance).
+export interface ListedEvent extends CalendarEvent {
+  id: string
+}
+
 // The calendar has no categories, so the event type (for the filter) comes from the title.
 const typeKeywords: [EventTypeId, RegExp][] = [
   ['ai-governance', /governance/i],
@@ -165,6 +170,32 @@ export function mergeCalendars(google: CalendarEvent[], luma: CalendarEvent[], n
   return [...merged, ...lumaOnly.map(e => ({ ...e, description: '' }))].sort(order)
 }
 
+// Ids are the date and the first words of the title, without its "[Talk]" prefix, so a link reads like what it points at
+// and stays the same on the home page and in the archive. Two events of the same title on one day add their start time.
+export function slug(title: string) {
+  const words = title.replace(/^\[[^\]]*\]\s*/, '').toLowerCase()
+    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+    .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+    .split(/[^a-z0-9]+/).filter(Boolean)
+  const kept = words.slice(0, 6)
+  while (kept.length > 1 && fillers.has(kept.at(-1)!)) kept.pop()
+  return kept.join('-')
+}
+
+// Not worth ending an id on.
+const fillers = new Set(['a', 'an', 'and', 'at', 'for', 'from', 'in', 'of', 'on', 'or', 'the', 'to', 'with',
+  'das', 'der', 'die', 'ein', 'eine', 'einer', 'fuer', 'im', 'mit', 'oder', 'und', 'von', 'zu', 'zur'])
+
+export function withIds(events: CalendarEvent[]): ListedEvent[] {
+  const base = (e: CalendarEvent) => [e.date, slug(e.title)].filter(Boolean).join('-')
+  const counts = new Map<string, number>()
+  for (const e of events) counts.set(base(e), (counts.get(base(e)) ?? 0) + 1)
+  return events.map(e => {
+    const id = base(e)
+    return { ...e, id: counts.get(id)! > 1 && e.time ? `${e.date}-${e.time.replace(':', '')}-${slug(e.title)}` : id }
+  })
+}
+
 async function fetchFeed(url: string) {
   const response = await fetch(url)
   if (!response.ok) throw new Error(`Could not load the event calendar ${url} (${response.status} ${response.statusText})`)
@@ -184,14 +215,14 @@ function feeds() {
 }
 
 // Upcoming events for the home page.
-export async function loadCalendar(): Promise<CalendarEvent[]> {
+export async function loadCalendar(): Promise<ListedEvent[]> {
   const [google, luma] = await feeds()
-  return mergeCalendars(parseCalendar(google), parseCalendar(luma))
+  return withIds(mergeCalendars(parseCalendar(google), parseCalendar(luma)))
 }
 
 // Events that have ended, newest first, for the archive page.
-export async function loadPastEvents(): Promise<CalendarEvent[]> {
+export async function loadPastEvents(): Promise<ListedEvent[]> {
   const [google, luma] = await feeds()
   const options = { past: true }
-  return mergeCalendars(parseCalendar(google, new Date(), listUntil, options), parseCalendar(luma, new Date(), listUntil, options), true)
+  return withIds(mergeCalendars(parseCalendar(google, new Date(), listUntil, options), parseCalendar(luma, new Date(), listUntil, options), true))
 }
